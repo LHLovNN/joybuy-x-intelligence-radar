@@ -33,6 +33,12 @@ without a local server.
 
 This repo uses deterministic sample data by default so the dashboard can be reviewed without API keys. TwitterAPI.io can be enabled manually through environment variables for real X data testing.
 
+GitHub Actions status:
+
+- `Daily report` runs daily at UTC 00:00, which is Beijing time 08:00.
+- Current MVP automation caps are 140 total X posts per day: up to 100 Joybuy/JD/京东 posts and up to 40 Temu posts.
+- `Fermentation refresh` is manual-only for now. Its scheduled triggers are intentionally disabled until real historical metric refresh is ready and the API budget is approved.
+
 Current sample output:
 
 - 5 Joybuy intelligence clusters.
@@ -111,6 +117,7 @@ After the bake-off, run a capped daily test:
 
 ```bash
 export X_SOURCE_PROVIDER=twitterapi_io
+export X_DAILY_LIMIT=140
 export X_JOYBUY_DAILY_LIMIT=100
 export X_TEMU_DAILY_LIMIT=40
 python3 scripts/run_daily.py
@@ -130,14 +137,14 @@ NODE_PATH=/Users/liuhe89/.cache/codex-runtimes/codex-primary-runtime/dependencie
 
 The repository includes GitHub Actions workflows:
 
-- `.github/workflows/daily-report.yml`
-- `.github/workflows/fermentation-refresh.yml`
+- `.github/workflows/daily-report.yml`: daily automatic report and GitHub Pages publish.
+- `.github/workflows/fermentation-refresh.yml`: manual fermentation refresh only during the MVP bake-off.
 
 Set GitHub Pages source to `GitHub Actions`, then run the daily workflow manually once.
 
 ## Next Step
 
-Validate the first TwitterAPI.io bake-off output, then run a 3-5 day source bake-off.
+Let the capped `Daily report` workflow collect several scheduled runs, then review data quality, source coverage and dashboard story value.
 
 See:
 

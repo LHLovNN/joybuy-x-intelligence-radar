@@ -4,9 +4,9 @@
     "fallback": ["twitterapi_io", "xpoz", "apify", "aisa_x"]
   },
   "limits": {
-    "max_posts_per_day": 10000,
-    "max_joybuy_posts_per_day": 7000,
-    "max_temu_posts_per_day": 3000,
+    "max_posts_per_day": 140,
+    "max_joybuy_posts_per_day": 100,
+    "max_temu_posts_per_day": 40,
     "max_tavily_calls_per_day": 80,
     "max_perplexity_calls_per_day": 20
   },
@@ -15,4 +15,3 @@
     "stop_when_daily_estimated_cost_above_usd": 8
   }
 }
-

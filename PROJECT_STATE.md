@@ -17,6 +17,9 @@ Build the Joybuy X Intelligence Radar MVP:
 - Python pipeline generates JSON data.
 - Security red line: never commit or paste API keys, tokens, cookies, credentials, private config or local secret files. Use local environment variables and GitHub Secrets only.
 - Generated real-provider data and dashboard JSON are run artifacts and should be ignored by Git.
+- GitHub Actions `Daily report` is the production-like daily automation: UTC 00:00 / Beijing time 08:00.
+- Current MVP automation caps are 140 total X posts per day: up to 100 Joybuy/JD/京东 posts and up to 40 Temu posts.
+- GitHub Actions `Fermentation refresh` is manual-only during the current MVP bake-off. Scheduled triggers are intentionally disabled until real historical metric refresh is complete and API budget is approved.
 - The first implementation uses deterministic sample data until API keys are available.
 - Joybuy is a canonical brand entity:
   - Joybuy
@@ -69,19 +72,22 @@ Build the Joybuy X Intelligence Radar MVP:
 - Renamed generated cluster IDs from `joybuy-sample-###` to `joybuy-cluster-###`.
 - Added `SECURITY.md`, expanded `.gitignore`, and added `scripts/security_check.py` before GitHub publishing.
 - Updated GitHub Actions and provider selection so `TWITTERAPI_IO_KEY` alone enables TwitterAPI.io, while `X_SOURCE_PROVIDER` remains an optional override.
+- Created and published the GitHub repository, configured GitHub Pages through GitHub Actions, and added `TWITTERAPI_IO_KEY` as a repository Secret.
+- Confirmed the first manual GitHub Actions `Daily report` run succeeded.
+- Added explicit MVP GitHub Actions caps: `X_DAILY_LIMIT=140`, `X_JOYBUY_DAILY_LIMIT=100`, `X_TEMU_DAILY_LIMIT=40`.
+- Changed `Fermentation refresh` to manual-only to avoid unnecessary API calls during the weekend source bake-off.
 
 ## In Progress
 
-- Plan the remaining MVP milestones after the first successful capped real-data daily run.
+- Run multi-day capped `Daily report` bake-off and review real data quality.
 
 ## Next
 
 - Continue real-data quality bake-off over multiple days or with larger capped limits.
 - Add Tavily verification adapter for high-risk/low-confidence intelligence checks.
 - Add Perplexity executive-summary adapter for high-priority intelligence interpretation.
-- Add production-oriented scheduling/deployment setup through GitHub Pages and GitHub Actions secrets.
-- Create GitHub repository, push source-only project, configure `TWITTERAPI_IO_KEY` as a GitHub Actions secret, and enable GitHub Pages.
-- Run 3-5 day source bake-off.
+- Review GitHub Pages output after several scheduled `Daily report` runs.
+- Build real fermentation metric hydration and then re-enable scheduled intraday refresh if the value/cost ratio is acceptable.
 - Redesign and polish the dashboard UI. Current layout is a functional MVP shell, but it still needs a much more premium, executive-ready visual design before showing to important stakeholders.
 
 ## Milestone Plan
@@ -92,7 +98,7 @@ Build the Joybuy X Intelligence Radar MVP:
 4. Real daily report pipeline with capped production-like limits.
 5. AI-assisted verification and executive analysis.
 6. Fermentation tracking against real historical metrics.
-7. GitHub Pages deployment and scheduled refresh.
+7. GitHub Pages deployment and scheduled daily refresh.
 8. Premium dashboard redesign and stakeholder-ready polish.
 
 ## Verification
