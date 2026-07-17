@@ -30,11 +30,13 @@ def main() -> None:
     source = load(DATA / "source-status.json")
     providers = set(source.get("providers", []))
     is_sample = providers == {"sample"}
+    is_real_provider = not is_sample
     bundle_path = ROOT / "public" / "dashboard-data-bundle.js"
     assert_true(bundle_path.exists(), "dashboard-data-bundle.js should exist for file:// preview")
 
     clusters = daily.get("clusters", [])
-    assert_true(clusters, "daily clusters should not be empty")
+    if is_sample:
+        assert_true(clusters, "sample daily clusters should not be empty")
     assert_true(latest["metrics"]["effective_intelligence"] == len(clusters), "effective intelligence metric mismatch")
     assert_true(source["status"] == "normal", "source status should be normal for sample data")
     assert_true(source["raw_posts_collected"] >= source["effective_posts"], "raw posts should be >= effective posts")
@@ -59,7 +61,10 @@ def main() -> None:
 
     competitor_total = sum(competitor["sentiment"].values())
     assert_true(competitor_total == competitor["volume"], "competitor sentiment total mismatch")
-    assert_true(competitor["top_posts"], "competitor top posts should not be empty")
+    if is_sample:
+        assert_true(competitor["top_posts"], "sample competitor top posts should not be empty")
+    if is_real_provider and source["raw_posts_collected"] == 0:
+        assert_true(competitor["volume"] == 0, "empty real source should not create competitor volume")
 
     print("Dashboard data verification passed.")
     print(f"Providers: {', '.join(sorted(providers))}")

@@ -76,6 +76,8 @@ Build the Joybuy X Intelligence Radar MVP:
 - Confirmed the first manual GitHub Actions `Daily report` run succeeded.
 - Added explicit MVP GitHub Actions caps: `X_DAILY_LIMIT=140`, `X_JOYBUY_DAILY_LIMIT=100`, `X_TEMU_DAILY_LIMIT=40`.
 - Changed `Fermentation refresh` to manual-only to avoid unnecessary API calls during the weekend source bake-off.
+- Added `scripts/report_run_summary.py` and wired it into GitHub Actions so each run prints a metrics-only summary.
+- Relaxed real-provider dashboard verification so a quiet day with 0 Joybuy clusters can still publish successfully.
 
 ## In Progress
 

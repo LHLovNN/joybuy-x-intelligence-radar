@@ -68,6 +68,7 @@ scripts/
   run_daily.py
   run_fermentation_refresh.py
   check_dashboard_data.py
+  report_run_summary.py
 
 src/
   pipeline/
@@ -93,6 +94,7 @@ python3 scripts/run_daily.py
 python3 scripts/run_fermentation_refresh.py
 python3 scripts/check_dashboard_data.py
 python3 scripts/verify_data.py
+python3 scripts/report_run_summary.py
 PYTHONPYCACHEPREFIX=.pycache python3 -m compileall scripts src
 node --check public/assets/app.js
 ```
@@ -141,6 +143,8 @@ The repository includes GitHub Actions workflows:
 - `.github/workflows/fermentation-refresh.yml`: manual fermentation refresh only during the MVP bake-off.
 
 Set GitHub Pages source to `GitHub Actions`, then run the daily workflow manually once.
+The workflows print a metrics-only report summary after generation so scheduled
+runs can be reviewed without exposing post text in logs.
 
 ## Next Step
 

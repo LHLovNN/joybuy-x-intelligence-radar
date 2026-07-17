@@ -48,6 +48,7 @@ jobs:
         run: |
           python3 scripts/check_dashboard_data.py
           python3 scripts/verify_data.py
+          python3 scripts/report_run_summary.py
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
