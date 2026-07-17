@@ -1,0 +1,25 @@
+{
+  "ips_weights": {
+    "brand_relevance": 0.2,
+    "risk_or_opportunity_intensity": 0.18,
+    "current_impact": 0.16,
+    "future_potential": 0.15,
+    "credibility": 0.13,
+    "business_impact": 0.1,
+    "urgency": 0.08
+  },
+  "risk_thresholds": {
+    "urgent": 88,
+    "high": 78,
+    "medium": 58,
+    "low": 0
+  },
+  "special_boosts": {
+    "fraud_or_safety": 8,
+    "privacy_or_security": 8,
+    "media_or_kol_involved": 6,
+    "competitor_comparison": 4,
+    "fast_growth": 5
+  }
+}
+

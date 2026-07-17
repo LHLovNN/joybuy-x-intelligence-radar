@@ -1,0 +1,39 @@
+# OS/editor noise
+.DS_Store
+
+# Dependencies and build output
+node_modules/
+dist/
+build/
+.venv/
+.pycache/
+__pycache__/
+*.pyc
+
+# Local secrets and credentials. Never commit these.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p8
+*.p12
+*.crt
+*.cert
+*.credentials
+credentials.*
+secrets.*
+*.secret
+*.token
+
+# Generated data and real-provider run artifacts.
+data/raw/
+data/processed/
+data/logs/
+data/clusters/
+public/dashboard-data/
+public/dashboard-data-bundle.js
+
+# Temporary files
+*.tmp
+*.log

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Joybuy X Intelligence Radar</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <div class="brand-block">
+          <div class="brand-mark">JX</div>
+          <div>
+            <div class="brand-title">Joybuy X</div>
+            <div class="brand-subtitle">Intelligence Radar</div>
+          </div>
+        </div>
+        <nav class="nav-list">
+          <a href="#/" data-route="overview">总览</a>
+          <a href="#/daily" data-route="daily">今日日报</a>
+          <a href="#/fermentation" data-route="fermentation">发酵雷达</a>
+          <a href="#/competitor" data-route="competitor">Temu 雷达</a>
+          <a href="#/source-status" data-route="source-status">数据源状态</a>
+        </nav>
+      </aside>
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">X PUBLIC INTELLIGENCE</p>
+            <h1 id="page-title">总览</h1>
+          </div>
+          <div class="topbar-meta">
+            <span id="generated-at">Loading</span>
+            <span id="health-pill" class="status-pill neutral">Loading</span>
+          </div>
+        </header>
+        <section id="content" class="content-area" aria-live="polite"></section>
+      </main>
+    </div>
+    <script src="./dashboard-data-bundle.js"></script>
+    <script src="./assets/app.js"></script>
+  </body>
+</html>
