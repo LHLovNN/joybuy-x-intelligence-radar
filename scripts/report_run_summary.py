@@ -12,6 +12,12 @@ def load(path: Path) -> dict[str, Any]:
         return json.load(file)
 
 
+def load_optional(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    return load(path)
+
+
 def format_top_cluster(clusters: list[dict[str, Any]]) -> str:
     if not clusters:
         return "none"
@@ -30,13 +36,23 @@ def main() -> None:
     daily = load(DATA / "daily" / "latest.json")
     source = load(DATA / "source-status.json")
     competitor = load(DATA / "competitor.json")
+    run_status = load_optional(DATA / "run-status.json")
+    collection_status = run_status.get("collection_status", {})
     metrics = latest.get("metrics", {})
     breakdown = source.get("brand_breakdown", {})
     clusters = daily.get("clusters", [])
+    providers = source.get("providers") or [run_status.get("provider", "unknown")]
 
     print("Daily report summary")
     print(f"- Generated: {latest.get('generated_at_label', latest.get('generated_at', 'unknown'))}")
-    print(f"- Providers: {', '.join(source.get('providers', ['unknown']))}")
+    print(f"- Providers: {', '.join(providers)}")
+    print(f"- Collection status: {collection_status.get('status', 'unknown')}")
+    if collection_status:
+        print(
+            "- API requests used/cap: "
+            f"{collection_status.get('api_requests_used', 'n/a')}/"
+            f"{collection_status.get('max_api_requests', 'n/a')}"
+        )
     print(f"- Raw posts collected: {source.get('raw_posts_collected', 0)}")
     print(f"- Effective posts: {source.get('effective_posts', 0)}")
     print(f"- Joybuy candidates/effective: {breakdown.get('joybuy_candidates', 0)}/{breakdown.get('joybuy_effective', 0)}")
@@ -48,6 +64,8 @@ def main() -> None:
     print(f"- Top cluster: {format_top_cluster(clusters)}")
     print(f"- Temu baseline volume: {competitor.get('volume', 0)}")
     print(f"- Estimated source cost USD: {source.get('estimated_cost_usd', 0)}")
+    for warning in collection_status.get("warnings", [])[:3]:
+        print(f"- Collection warning: {warning}")
 
 
 if __name__ == "__main__":

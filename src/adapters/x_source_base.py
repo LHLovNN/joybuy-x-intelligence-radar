@@ -16,3 +16,6 @@ class XSourceBase:
 class ProviderNotConfigured(RuntimeError):
     pass
 
+
+class ProviderBudgetExceeded(RuntimeError):
+    pass

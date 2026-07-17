@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from typing import Any
 
-from src.adapters.x_source_base import ProviderNotConfigured, XSourceBase
+from src.adapters.x_source_base import ProviderBudgetExceeded, ProviderNotConfigured, XSourceBase
 from src.utils.time import from_iso, now_utc, to_iso
 
 
@@ -25,6 +25,7 @@ class TwitterApiIoAdapter(XSourceBase):
         request_pause_seconds: float = 5.2,
         max_pages_per_query: int = 200,
         max_retries: int = 3,
+        max_requests_per_run: int | None = None,
     ) -> None:
         if not api_key:
             raise ProviderNotConfigured("TWITTERAPI_IO_KEY is required.")
@@ -33,6 +34,9 @@ class TwitterApiIoAdapter(XSourceBase):
         self.request_pause_seconds = request_pause_seconds
         self.max_pages_per_query = max_pages_per_query
         self.max_retries = max_retries
+        self.max_requests_per_run = max_requests_per_run
+        self.requests_used = 0
+        self.request_budget_exhausted = False
         self.last_request_at = 0.0
 
     def search_posts(self, query: str, start_time: str, end_time: str, limit: int) -> list[dict[str, Any]]:
@@ -97,6 +101,7 @@ class TwitterApiIoAdapter(XSourceBase):
         )
         body = ""
         for attempt in range(self.max_retries + 1):
+            self._reserve_request_budget()
             self._wait_before_request()
             try:
                 with urllib.request.urlopen(request, timeout=self.timeout_seconds) as response:
@@ -124,6 +129,18 @@ class TwitterApiIoAdapter(XSourceBase):
         if isinstance(payload, dict) and payload.get("error"):
             raise RuntimeError(f"TwitterAPI.io returned error: {payload.get('error')}")
         return payload
+
+    def _reserve_request_budget(self) -> None:
+        if self.max_requests_per_run is None:
+            self.requests_used += 1
+            return
+        if self.requests_used >= self.max_requests_per_run:
+            self.request_budget_exhausted = True
+            raise ProviderBudgetExceeded(
+                f"TwitterAPI.io request budget exhausted: "
+                f"{self.requests_used}/{self.max_requests_per_run} requests used."
+            )
+        self.requests_used += 1
 
     def _wait_before_request(self) -> None:
         elapsed = time.monotonic() - self.last_request_at

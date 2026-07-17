@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.adapters.twitterapi_io import TwitterApiIoAdapter
+from src.adapters.twitterapi_io import ProviderBudgetExceeded, TwitterApiIoAdapter
 
 
 def main() -> None:
@@ -47,6 +47,15 @@ def main() -> None:
     assert mapped["quote_count"] == 1
     assert mapped["view_count"] == 1200
     assert mapped["links"] == ["https://example.com/case"]
+    capped = TwitterApiIoAdapter(api_key="test-key", max_requests_per_run=0)
+    try:
+        capped.search_posts("joybuy", "2026-07-16T00:00:00Z", "2026-07-17T00:00:00Z", 1)
+    except ProviderBudgetExceeded:
+        pass
+    else:
+        raise AssertionError("expected ProviderBudgetExceeded when request cap is zero")
+    assert capped.requests_used == 0
+    assert capped.request_budget_exhausted is True
     print("TwitterAPI.io mapping test passed.")
 
 

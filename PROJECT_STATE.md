@@ -18,8 +18,9 @@ Build the Joybuy X Intelligence Radar MVP:
 - Security red line: never commit or paste API keys, tokens, cookies, credentials, private config or local secret files. Use local environment variables and GitHub Secrets only.
 - Generated real-provider data and dashboard JSON are run artifacts and should be ignored by Git.
 - GitHub Actions `Daily report` is the production-like daily automation: UTC 00:00 / Beijing time 08:00.
-- Current MVP automation caps are 140 total X posts per day: up to 100 Joybuy/JD/京东 posts and up to 40 Temu posts.
+- Weekend guardrail caps are 60 total X posts per day: up to 45 Joybuy/JD/京东 posts, up to 15 Temu posts and up to 6 X API requests per run.
 - GitHub Actions `Fermentation refresh` is manual-only during the current MVP bake-off. Scheduled triggers are intentionally disabled until real historical metric refresh is complete and API budget is approved.
+- If the X provider budget is exhausted or the request cap is reached, the daily workflow should publish a partial report and expose collection warnings in `run-status.json` and the Actions summary.
 - The first implementation uses deterministic sample data until API keys are available.
 - Joybuy is a canonical brand entity:
   - Joybuy
@@ -78,6 +79,7 @@ Build the Joybuy X Intelligence Radar MVP:
 - Changed `Fermentation refresh` to manual-only to avoid unnecessary API calls during the weekend source bake-off.
 - Added `scripts/report_run_summary.py` and wired it into GitHub Actions so each run prints a metrics-only summary.
 - Relaxed real-provider dashboard verification so a quiet day with 0 Joybuy clusters can still publish successfully.
+- Added a weekend API guardrail: lower automatic X collection caps, per-run X API request cap, partial-report handling and run-status output.
 
 ## In Progress
 
@@ -85,7 +87,7 @@ Build the Joybuy X Intelligence Radar MVP:
 
 ## Next
 
-- Continue real-data quality bake-off over multiple days or with larger capped limits.
+- Continue real-data quality bake-off over multiple days with weekend guardrails; review whether to restore larger caps after Monday inspection.
 - Add Tavily verification adapter for high-risk/low-confidence intelligence checks.
 - Add Perplexity executive-summary adapter for high-priority intelligence interpretation.
 - Review GitHub Pages output after several scheduled `Daily report` runs.

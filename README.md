@@ -36,8 +36,9 @@ This repo uses deterministic sample data by default so the dashboard can be revi
 GitHub Actions status:
 
 - `Daily report` runs daily at UTC 00:00, which is Beijing time 08:00.
-- Current MVP automation caps are 140 total X posts per day: up to 100 Joybuy/JD/京东 posts and up to 40 Temu posts.
+- Weekend guardrail caps are 60 total X posts per day: up to 45 Joybuy/JD/京东 posts, up to 15 Temu posts and up to 6 X API requests per run.
 - `Fermentation refresh` is manual-only for now. Its scheduled triggers are intentionally disabled until real historical metric refresh is ready and the API budget is approved.
+- If the X API budget is exhausted or the request cap is reached, the daily workflow publishes a partial report with collection warnings instead of failing the whole dashboard deployment.
 
 Current sample output:
 
@@ -119,9 +120,10 @@ After the bake-off, run a capped daily test:
 
 ```bash
 export X_SOURCE_PROVIDER=twitterapi_io
-export X_DAILY_LIMIT=140
-export X_JOYBUY_DAILY_LIMIT=100
-export X_TEMU_DAILY_LIMIT=40
+export X_DAILY_LIMIT=60
+export X_JOYBUY_DAILY_LIMIT=45
+export X_TEMU_DAILY_LIMIT=15
+export X_MAX_API_REQUESTS=6
 python3 scripts/run_daily.py
 ```
 
@@ -148,7 +150,7 @@ runs can be reviewed without exposing post text in logs.
 
 ## Next Step
 
-Let the capped `Daily report` workflow collect several scheduled runs, then review data quality, source coverage and dashboard story value.
+Let the weekend-guarded `Daily report` workflow collect several scheduled runs, then review data quality, source coverage, API consumption and dashboard story value.
 
 See:
 

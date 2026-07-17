@@ -13,6 +13,7 @@ def build_dashboard_data(
     joybuy_clusters: list[dict[str, Any]],
     normalized_posts: list[dict[str, Any]],
     output_dir: str,
+    provider_hint: str | None = None,
 ) -> dict[str, Any]:
     target = Path(output_dir)
     target.mkdir(parents=True, exist_ok=True)
@@ -47,7 +48,7 @@ def build_dashboard_data(
         "opportunity_top": [cluster_summary(cluster) for cluster in positive[:10]],
         "fermentation_snapshot": [cluster_summary(cluster) for cluster in fermentation_items[:8]],
         "competitor": competitor,
-        "source_status": source_status(normalized_posts),
+        "source_status": source_status(normalized_posts, provider_hint),
         "routes": {
             "daily": "dashboard-data/daily/latest.json",
             "fermentation": "dashboard-data/fermentation.json",
@@ -144,8 +145,10 @@ def cluster_detail(cluster: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def source_status(posts: list[dict[str, Any]]) -> dict[str, Any]:
+def source_status(posts: list[dict[str, Any]], provider_hint: str | None = None) -> dict[str, Any]:
     providers = sorted({post.get("source_provider", "unknown") for post in posts})
+    if not providers and provider_hint:
+        providers = [provider_hint]
     is_sample = providers == ["sample"]
     joybuy_posts = [post for post in posts if post.get("brand") == "joybuy"]
     temu_posts = [post for post in posts if post.get("brand") == "temu"]

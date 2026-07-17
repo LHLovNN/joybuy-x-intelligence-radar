@@ -31,9 +31,10 @@ jobs:
         run: python3 scripts/run_daily.py
         env:
           X_SOURCE_PROVIDER: ${{ secrets.X_SOURCE_PROVIDER }}
-          X_DAILY_LIMIT: "140"
-          X_JOYBUY_DAILY_LIMIT: "100"
-          X_TEMU_DAILY_LIMIT: "40"
+          X_DAILY_LIMIT: "60"
+          X_JOYBUY_DAILY_LIMIT: "45"
+          X_TEMU_DAILY_LIMIT: "15"
+          X_MAX_API_REQUESTS: "6"
           TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
           XPOZ_API_KEY: ${{ secrets.XPOZ_API_KEY }}
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
@@ -46,9 +47,10 @@ jobs:
         run: python3 scripts/run_fermentation_refresh.py
         env:
           X_SOURCE_PROVIDER: ${{ secrets.X_SOURCE_PROVIDER }}
-          X_DAILY_LIMIT: "140"
-          X_JOYBUY_DAILY_LIMIT: "100"
-          X_TEMU_DAILY_LIMIT: "40"
+          X_DAILY_LIMIT: "60"
+          X_JOYBUY_DAILY_LIMIT: "45"
+          X_TEMU_DAILY_LIMIT: "15"
+          X_MAX_API_REQUESTS: "6"
           TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
           XPOZ_API_KEY: ${{ secrets.XPOZ_API_KEY }}
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}

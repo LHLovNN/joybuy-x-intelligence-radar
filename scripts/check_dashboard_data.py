@@ -14,6 +14,7 @@ REQUIRED = [
     ROOT / "public" / "dashboard-data" / "fermentation.json",
     ROOT / "public" / "dashboard-data" / "competitor.json",
     ROOT / "public" / "dashboard-data" / "source-status.json",
+    ROOT / "public" / "dashboard-data" / "run-status.json",
 ]
 
 
