@@ -1,12 +1,208 @@
 {
   "brand": "temu",
-  "volume": 14,
+  "volume": 13,
   "sentiment": {
-    "positive": 0,
-    "neutral": 14,
-    "negative": 0
+    "negative": 4,
+    "neutral": 9,
+    "positive": 0
   },
-  "top_terms": [],
-  "top_posts": [],
+  "top_terms": [
+    {
+      "term": "delivery",
+      "count": 3
+    },
+    {
+      "term": "scam",
+      "count": 1
+    }
+  ],
+  "top_posts": [
+    {
+      "post_id": "2078990545112928464",
+      "url": "https://x.com/Tripple_JC/status/2078990545112928464",
+      "text": "@RealAlexJones @RealAlexJones thats the same shit NYC \nhad in the fuckin 80s bitch\n\nshut your unpatriotic ass up\nyou stoke fear in your fellow citizens \nin order to drive your own profits\n\nyoure fuckin false prophet\n\nyou sell 200 dollar temu slippers \nto grandma you fearbate all fuckin day long\n\nYOU CAN TELL A MANS CHARACTER \n BY WHAT HE TRIES TO SELL YOU",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_handle": "Tripple_JC",
+      "created_at": "2026-07-19T23:49:06Z",
+      "metrics": {
+        "likes": 13,
+        "reposts": 0,
+        "replies": 4,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 1374
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2078988694476763361",
+      "url": "https://x.com/MMargo_tt/status/2078988694476763361",
+      "text": "@matinialdo Messi i Scaloni powinni dostać jakiś order od Argentyny za to, że osiągnęli wyniki tak bardzo ponad stan patrząc na stan i możliwości ich kadry. Przecież teraz jak i 4 lata temu nie mieli kadry nawet na top 5 Mundialu, a zdobyli mistrzostwo i wicemistrzostwo świata. Są wielcy.",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_handle": "MMargo_tt",
+      "created_at": "2026-07-19T23:41:45Z",
+      "metrics": {
+        "likes": 13,
+        "reposts": 1,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 184
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2078991065101574519",
+      "url": "https://x.com/Solape_e/status/2078991065101574519",
+      "text": "Temu warriors,please help me o are they saying i should place an order for just one and get the free gifts??(English hard abeg 😭) btw this offer only pop up at night.",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_handle": "Solape_e",
+      "created_at": "2026-07-19T23:51:10Z",
+      "metrics": {
+        "likes": 1,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 1,
+        "bookmarks": 0,
+        "views": 62
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2078986278066884616",
+      "url": "https://x.com/thegr8vhiz/status/2078986278066884616",
+      "text": "@chrisnuzi He go don order podcast mic from Temu down.",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_handle": "thegr8vhiz",
+      "created_at": "2026-07-19T23:32:09Z",
+      "metrics": {
+        "likes": 2,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 203
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2078986968822636561",
+      "url": "https://x.com/GideonAdebayo01/status/2078986968822636561",
+      "text": "Organic Koh. Mechanic ni. \n\nTemu did a very huge PR. Almost every app. Have their ads on it.",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_handle": "GideonAdebayo01",
+      "created_at": "2026-07-19T23:34:53Z",
+      "metrics": {
+        "likes": 1,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 3
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2078984172899619014",
+      "url": "https://x.com/firstclasstwat/status/2078984172899619014",
+      "text": "When you order Wolverine off Temu.",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_handle": "firstclasstwat",
+      "created_at": "2026-07-19T23:23:47Z",
+      "metrics": {
+        "likes": 1,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 9
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2078990705754820973",
+      "url": "https://x.com/kheneyp/status/2078990705754820973",
+      "text": "@jojosinniva Delivery services, I don't pay for delivery on temu",
+      "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
+      "author_handle": "kheneyp",
+      "created_at": "2026-07-19T23:49:44Z",
+      "metrics": {
+        "likes": 0,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 6
+      },
+      "sentiment": "negative",
+      "matched_terms": [
+        "delivery"
+      ]
+    },
+    {
+      "post_id": "2078989953086652912",
+      "url": "https://x.com/the_miidey/status/2078989953086652912",
+      "text": "the fact that I get to shop all I need in just one app, &amp; it’s quite seamless is why I fw temu, it’s like a mall where I pick all I need &amp; add to my cart, then pay.\nalso free delivery for everything I ordered too.\ncan’t do this in lagos mkt or  ng vendors w/o getting stressed.",
+      "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
+      "author_handle": "the_miidey",
+      "created_at": "2026-07-19T23:46:45Z",
+      "metrics": {
+        "likes": 0,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 57
+      },
+      "sentiment": "negative",
+      "matched_terms": [
+        "delivery"
+      ]
+    },
+    {
+      "post_id": "2078988417304518791",
+      "url": "https://x.com/ThreatHunter76/status/2078988417304518791",
+      "text": "@debola_00 you can order me too from Temu 😂",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_handle": "ThreatHunter76",
+      "created_at": "2026-07-19T23:40:39Z",
+      "metrics": {
+        "likes": 0,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 5
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2078980687030296930",
+      "url": "https://x.com/Wale116_/status/2078980687030296930",
+      "text": "@jojosinniva Never the same price, very cheap on Temu and also free delivery",
+      "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
+      "author_handle": "Wale116_",
+      "created_at": "2026-07-19T23:09:56Z",
+      "metrics": {
+        "likes": 0,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 56
+      },
+      "sentiment": "negative",
+      "matched_terms": [
+        "delivery"
+      ]
+    }
+  ],
   "anomalies": []
 }
