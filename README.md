@@ -43,6 +43,7 @@ GitHub Actions status:
 - `Daily report` runs daily at UTC 00:23, which is Beijing time 08:23. This avoids GitHub Actions top-of-hour scheduling delays while staying in the morning report window.
 - Weekend guardrail caps are 60 total X posts per day: up to 45 Joybuy/JD/京东 posts, up to 15 Temu posts and up to 6 X API requests per run.
 - Each successful daily run commits the public dashboard JSON archive back to Git, then deploys GitHub Pages. This keeps historical daily reports browsable without pulling old data from Pages.
+- `Deploy dashboard` is manual-only and deploys the already committed `public/` dashboard without calling any X provider or API Secret.
 - `Fermentation refresh` is manual-only for now. Its scheduled triggers are intentionally disabled until real historical metric refresh is ready and the API budget is approved.
 - If the X API budget is exhausted or the request cap is reached, the daily workflow publishes a partial report with collection warnings instead of failing the whole dashboard deployment.
 
@@ -148,6 +149,7 @@ NODE_PATH=/Users/liuhe89/.cache/codex-runtimes/codex-primary-runtime/dependencie
 The repository includes GitHub Actions workflows:
 
 - `.github/workflows/daily-report.yml`: daily automatic report and GitHub Pages publish.
+- `.github/workflows/deploy-dashboard.yml`: manual deploy-only workflow for already committed dashboard data. Use this when the UI or archived JSON has changed but no new X collection should run.
 - `.github/workflows/fermentation-refresh.yml`: manual fermentation refresh only during the MVP bake-off.
 
 Set GitHub Pages source to `GitHub Actions`, then run the daily workflow manually once.
@@ -157,6 +159,8 @@ The daily workflow also writes the generated dashboard archive back to the repo
 using `GITHUB_TOKEN`; only `public/dashboard-data/*.json`,
 `public/dashboard-data/daily/*.json` and `public/dashboard-data-bundle.js` are
 staged by that step.
+The deploy-only workflow does not receive provider secrets and does not run
+`scripts/run_daily.py`.
 
 ## Next Step
 

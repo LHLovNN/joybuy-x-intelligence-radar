@@ -20,6 +20,7 @@ Build the Joybuy X Intelligence Radar MVP:
 - GitHub Actions `Daily report` is the production-like daily automation: UTC 00:23 / Beijing time 08:23, moved off the top of the hour after scheduled runs landed around 09:40-09:50 BJT.
 - Weekend guardrail caps are 60 total X posts per day: up to 45 Joybuy/JD/京东 posts, up to 15 Temu posts and up to 6 X API requests per run.
 - GitHub Actions `Fermentation refresh` is manual-only during the current MVP bake-off. Scheduled triggers are intentionally disabled until real historical metric refresh is complete and API budget is approved.
+- GitHub Actions `Deploy dashboard` is manual-only and deploys already committed `public/` dashboard files without calling any X provider or API Secret.
 - If the X provider budget is exhausted or the request cap is reached, the daily workflow should publish a partial report and expose collection warnings in `run-status.json` and the Actions summary.
 - Each successful daily workflow commits `public/dashboard-data/*.json`, `public/dashboard-data/daily/*.json` and `public/dashboard-data-bundle.js` back to Git before deploying Pages, so the dashboard can browse historical daily reports without pulling history from Pages.
 - The first implementation uses deterministic sample data until API keys are available.
@@ -85,6 +86,7 @@ Build the Joybuy X Intelligence Radar MVP:
 - Moved the daily schedule from UTC 00:00 to UTC 00:23 to reduce GitHub Actions top-of-hour delay risk.
 - Added `日报中心` historical browsing with a left-side daily archive list and date-level metrics/summary view.
 - Seeded summary-only public daily archives for 2026-07-17, 2026-07-18 and 2026-07-19. Future successful runs will create full daily archives automatically.
+- Added a deploy-only GitHub Actions workflow so committed dashboard changes can be published without consuming X API credits.
 
 ## In Progress
 
