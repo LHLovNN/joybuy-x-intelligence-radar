@@ -46,6 +46,7 @@ GitHub Actions status:
 - `Deploy dashboard` is manual-only and deploys the already committed `public/` dashboard without calling any X provider or API Secret.
 - `Fermentation refresh` is manual-only for now. Its scheduled triggers are intentionally disabled until real historical metric refresh is ready and the API budget is approved.
 - If the X API budget is exhausted or the request cap is reached, the daily workflow publishes a partial report with collection warnings instead of failing the whole dashboard deployment.
+- The dashboard information architecture follows a clearer intelligence-product hierarchy: `今日精选`, `全部情报`, `日报中心`, `发酵追踪`, and `设置`. `日报中心` contains both Joybuy Radar and the Temu competitor baseline, with signals shown on a publish-time vertical timeline.
 
 Current seeded public archive:
 

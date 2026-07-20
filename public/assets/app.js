@@ -7,14 +7,15 @@ const state = {
   competitor: null,
   sourceStatus: null,
   currentEvidenceTab: "origin",
+  allBrandFilter: "all",
 };
 
 const routeTitles = {
-  overview: "总览",
+  overview: "今日精选",
+  all: "全部情报",
   daily: "日报中心",
-  fermentation: "发酵雷达",
-  competitor: "Temu 雷达",
-  "source-status": "数据源状态",
+  fermentation: "发酵追踪",
+  settings: "设置",
   detail: "情报详情",
 };
 
@@ -49,12 +50,14 @@ function route() {
   const hash = window.location.hash || "#/";
   const parts = hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   if (parts[0] === "intel") return { name: "detail", id: parts[1] };
+  if (parts[0] === "source-status") return { name: "settings" };
+  if (parts[0] === "competitor") return { name: "daily" };
   return { name: parts[0] || "overview" };
 }
 
 function render() {
   const current = route();
-  document.getElementById("page-title").textContent = routeTitles[current.name] || "总览";
+  document.getElementById("page-title").textContent = routeTitles[current.name] || "今日精选";
   document.getElementById("generated-at").textContent = state.overview.generated_at_label;
   const health = document.getElementById("health-pill");
   health.textContent = state.overview.health === "normal" ? "Data healthy" : state.overview.health;
@@ -64,111 +67,169 @@ function render() {
   });
 
   const content = document.getElementById("content");
-  if (current.name === "daily") content.innerHTML = dailyPage();
+  if (current.name === "all") content.innerHTML = allIntelligencePage();
+  else if (current.name === "daily") content.innerHTML = dailyPage();
   else if (current.name === "fermentation") content.innerHTML = fermentationPage();
-  else if (current.name === "competitor") content.innerHTML = competitorPage();
-  else if (current.name === "source-status") content.innerHTML = sourceStatusPage();
+  else if (current.name === "settings") content.innerHTML = settingsPage();
   else if (current.name === "detail") renderDetail(current.id);
   else content.innerHTML = overviewPage();
   bindPageEvents();
 }
 
 function overviewPage() {
-  const metrics = state.overview.metrics;
+  const daily = state.daily;
+  const metrics = daily.metrics || state.overview.metrics;
+  const highlights = buildJoybuyEvents(daily).slice(0, 3);
+  const competitorEvents = buildCompetitorEvents(daily).slice(0, 2);
   return `
+    <section class="brief-hero">
+      <div>
+        <p class="eyebrow">DAILY COMMAND BRIEF</p>
+        <h2>${escapeHtml(daily.executive_summary?.headline || "No meaningful Joybuy signal detected.")}</h2>
+        <p class="muted">${escapeHtml(daily.window_label || "Past 24 hours")}</p>
+      </div>
+      <div class="brief-action">
+        <span class="score-badge"><span class="score-number">${escapeHtml(String(topIps(daily)))}</span><span class="score-label">Top IPS</span></span>
+        <a class="text-button primary" href="#/daily">进入日报</a>
+      </div>
+    </section>
     <div class="metric-grid">
-      ${metric("有效情报", metrics.effective_intelligence, "清洗聚类后的 Joybuy 情报簇")}
-      ${metric("高风险", metrics.high_risk, "需优先核查或回应")}
-      ${metric("发酵中", metrics.fermenting, "进入升温或发酵状态")}
-      ${metric("需核查", metrics.needs_review, "建议人工介入")}
-      ${metric("Joybuy 声量", metrics.joybuy_volume, "有效 Joybuy 内容")}
-      ${metric("Temu 声量", metrics.temu_volume, "轻量竞品基线")}
-      ${metric("负面占比", `${metrics.negative_share}%`, "按情报簇统计")}
-      ${metric("数据成本", `$${state.sourceStatus?.estimated_cost_usd ?? 0}`, "本次采集估算")}
+      ${metric("Joybuy 有效", metrics.joybuy_volume, "进入分析的品牌情报")}
+      ${metric("高风险", metrics.high_risk || 0, "需优先核查或回应")}
+      ${metric("Temu 基线", metrics.temu_volume, "当日竞品有效声量")}
+      ${metric("API 请求", formatApiUsage(daily.collection_status), "本次采集消耗")}
     </div>
     <div class="grid-two">
       <section class="section">
-        <div class="section-header"><h2>AI 执行摘要</h2><span class="tag">Past 24h</span></div>
-        <div class="summary-stack">
-          ${summaryLine("今日重点", state.overview.executive_summary.headline)}
-          ${summaryLine("风险判断", state.overview.executive_summary.risk)}
-          ${summaryLine("建议动作", state.overview.executive_summary.action)}
-        </div>
+        <div class="section-header"><h2>今日精选</h2><span class="tag">${highlights.length} Joybuy</span></div>
+        <div class="intel-list">${highlights.map(featureCard).join("") || empty("暂无 Joybuy 有效情报")}</div>
       </section>
       <section class="section">
-        <div class="section-header"><h2>发酵雷达快照</h2><a class="text-button primary" href="#/fermentation">查看全部</a></div>
-        <div class="intel-list">
-          ${state.overview.fermentation_snapshot.slice(0, 3).map(compactFermentation).join("") || empty("暂无升温事件")}
-        </div>
+        <div class="section-header"><h2>竞品快照</h2><span class="tag">Temu</span></div>
+        <div class="intel-list">${competitorEvents.map(featureCard).join("") || empty("暂无 Temu 竞品内容")}</div>
       </section>
     </div>
     <section class="section">
-      <div class="section-header"><h2>高优先级情报 Top 10</h2><a class="text-button primary" href="#/daily">进入日报</a></div>
-      <div class="intel-list">${state.overview.top_intelligence.map(intelCard).join("") || empty("暂无 Joybuy 有效情报簇")}</div>
-    </section>
-    <section class="section">
-      <div class="section-header"><h2>Joybuy vs Temu 基线</h2><a class="text-button primary" href="#/competitor">查看竞品雷达</a></div>
-      ${competitorBaseline()}
+      <div class="section-header"><h2>今日建议</h2><a class="text-button primary" href="#/fermentation">查看发酵追踪</a></div>
+      <div class="summary-stack">
+        ${summaryLine("风险判断", daily.executive_summary?.risk || "Low")}
+        ${summaryLine("建议动作", daily.executive_summary?.action || "Continue monitoring.")}
+      </div>
     </section>
   `;
 }
 
-function dailyPage() {
-  const selected = state.selectedDaily || state.daily;
-  const history = state.dailyIndex?.items || [];
-  const metrics = selected.metrics || state.overview.metrics;
-  const source = selected.source_status || state.sourceStatus;
-  const collection = selected.collection_status || {};
-  const clusters = selected.clusters || [];
+function allIntelligencePage() {
+  const daily = state.selectedDaily || state.daily;
+  let events = buildDailyEvents(daily);
+  if (state.allBrandFilter !== "all") {
+    events = events.filter((event) => event.brand === state.allBrandFilter);
+  }
   return `
     <div class="daily-layout">
-      <aside class="section daily-history">
-        <div class="section-header">
-          <h2>历史日报</h2>
-          <span class="tag">${history.length} days</span>
-        </div>
-        <div class="daily-history-list">
-          ${history.map(dailyHistoryItem).join("") || empty("暂无历史日报")}
-        </div>
-      </aside>
+      ${historyRail()}
       <section class="section">
         <div class="section-header">
           <div>
-            <h2>${formatDailyTitle(selected)}</h2>
-            <p class="muted">${escapeHtml(selected.window_label || "Past 24 hours")}</p>
+            <h2>${formatDailyTitle(daily)} 全部情报</h2>
+            <p class="muted">Joybuy 与竞品信息统一按发布时间排序，作为日报素材库。</p>
           </div>
-          <span class="tag">${clusters.length} clusters</span>
-        </div>
-        ${selected.summary_only ? `<div class="notice">该日报为摘要级归档：可查看当日指标与主题，原帖级详情从历史归档功能上线后开始保留。</div>` : ""}
-        <div class="metric-grid compact">
-          ${metric("Joybuy 有效", brandBreakdown(source, "joybuy_effective", metrics.joybuy_volume), "过滤后进入分析")}
-          ${metric("Temu 有效", brandBreakdown(source, "temu_effective", metrics.temu_volume), "竞品基线")}
-          ${metric("高风险", metrics.high_risk || 0, "需优先核查或回应")}
-          ${metric("API 请求", formatApiUsage(collection), "本次采集消耗")}
-        </div>
-        <div class="summary-stack daily-summary">
-          ${summaryLine("今日重点", selected.executive_summary?.headline || "No meaningful Joybuy signal detected.")}
-          ${summaryLine("风险判断", selected.executive_summary?.risk || "Low")}
-          ${summaryLine("建议动作", selected.executive_summary?.action || "Continue monitoring.")}
+          <span class="tag">${events.length} items</span>
         </div>
         <div class="filter-row">
-          <label>排序 <select id="daily-sort">
-            <option value="ips">IPS</option>
-            <option value="current_impact">当前影响力</option>
-            <option value="future_potential">未来潜力</option>
-            <option value="credibility">可信度</option>
-          </select></label>
-          <label>风险 <select id="daily-filter">
-            <option value="all">全部</option>
-            <option value="urgent">紧急</option>
-            <option value="high">高</option>
-            <option value="medium">中</option>
-            <option value="positive">正面机会</option>
+          <label>品牌 <select id="all-brand-filter">
+            <option value="all" ${state.allBrandFilter === "all" ? "selected" : ""}>全部</option>
+            <option value="joybuy" ${state.allBrandFilter === "joybuy" ? "selected" : ""}>Joybuy</option>
+            <option value="temu" ${state.allBrandFilter === "temu" ? "selected" : ""}>Temu</option>
           </select></label>
         </div>
-        <div id="daily-list" class="intel-list">${clusters.map(intelCard).join("") || empty("该日暂无 Joybuy 有效情报簇")}</div>
+        ${publishTimeline(daily.date, events, "该日暂无可展示情报")}
       </section>
     </div>
+  `;
+}
+
+function dailyPage() {
+  const daily = state.selectedDaily || state.daily;
+  const metrics = daily.metrics || state.overview.metrics;
+  const source = daily.source_status || state.sourceStatus;
+  const collection = daily.collection_status || {};
+  const joybuyEvents = buildJoybuyEvents(daily);
+  const competitorEvents = buildCompetitorEvents(daily);
+  const trackingEvents = buildTrackingEvents(daily);
+  return `
+    <div class="daily-layout report-layout">
+      ${historyRail()}
+      <article class="daily-report">
+        <section class="report-hero">
+          <div>
+            <p class="eyebrow">VOL.${escapeHtml(String(daily.date || "").replace(/-/g, "."))} · X INTELLIGENCE DAILY</p>
+            <h2>${formatDailyTitle(daily)}</h2>
+            <p class="muted">${escapeHtml(daily.window_label || "Past 24 hours")}</p>
+          </div>
+          <div class="report-stat-row">
+            <span><strong>${escapeHtml(String(metrics.joybuy_volume || 0))}</strong> Joybuy</span>
+            <span><strong>${escapeHtml(String(metrics.temu_volume || 0))}</strong> Temu</span>
+            <span><strong>${escapeHtml(String(metrics.high_risk || 0))}</strong> 高风险</span>
+          </div>
+        </section>
+        ${daily.summary_only ? `<div class="notice">该日报为摘要级归档：可查看当日指标与主题，原帖级详情从历史归档功能上线后开始保留。</div>` : ""}
+        <section class="section">
+          <div class="section-header"><h2>今日看点</h2><span class="tag">${formatApiUsage(collection)} API</span></div>
+          <div class="report-toc">
+            ${reportTocItem("01", "Joybuy 雷达", daily.executive_summary?.headline || "No meaningful Joybuy signal detected.", joybuyEvents.length)}
+            ${reportTocItem("02", "竞品雷达", "Temu 当日声量、情绪和高互动内容。", competitorEvents.length)}
+            ${reportTocItem("03", "发酵追踪", "历史情报是否出现二次传播或升温。", trackingEvents.length)}
+          </div>
+        </section>
+        <section id="joybuy-radar" class="section report-section">
+          <div class="section-header">
+            <div>
+              <h2>01 Joybuy 雷达</h2>
+              <p class="muted">${brandBreakdown(source, "joybuy_effective", metrics.joybuy_volume)} 条有效内容，${metrics.high_risk || 0} 个高风险情报。</p>
+            </div>
+            <span class="tag">IPS first</span>
+          </div>
+          ${publishTimeline(daily.date, joybuyEvents, "该日暂无 Joybuy 有效情报")}
+        </section>
+        <section id="competitor-radar" class="section report-section">
+          <div class="section-header">
+            <div>
+              <h2>02 竞品雷达</h2>
+              <p class="muted">当前竞品：Temu。MVP 阶段做轻量基线，后续可扩展更多竞品。</p>
+            </div>
+            <span class="tag">${brandBreakdown(source, "temu_effective", metrics.temu_volume)} effective</span>
+          </div>
+          ${competitorSummary(daily.competitor || state.competitor)}
+          ${publishTimeline(daily.date, competitorEvents, "该日暂无 Temu 竞品内容")}
+        </section>
+        <section id="tracking-radar" class="section report-section">
+          <div class="section-header">
+            <div>
+              <h2>03 发酵追踪</h2>
+              <p class="muted">跨日观察历史情报是否被高影响力账号二次传播。</p>
+            </div>
+            <span class="tag">${trackingEvents.length} tracking</span>
+          </div>
+          ${publishTimeline(daily.date, trackingEvents, "该日暂无需要高频追踪的发酵事件")}
+        </section>
+      </article>
+    </div>
+  `;
+}
+
+function historyRail() {
+  const history = state.dailyIndex?.items || [];
+  return `
+    <aside class="section daily-history">
+      <div class="section-header">
+        <h2>历史日报</h2>
+        <span class="tag">${history.length} days</span>
+      </div>
+      <div class="daily-history-list">
+        ${history.map(dailyHistoryItem).join("") || empty("暂无历史日报")}
+      </div>
+    </aside>
   `;
 }
 
@@ -188,38 +249,9 @@ function dailyHistoryItem(item) {
   `;
 }
 
-function formatDailyTitle(daily) {
-  if (!daily?.date) return "过去 24 小时情报";
-  return `${daily.date} 日报`;
-}
-
-function formatDateShort(date) {
-  if (!date) return "--";
-  const parts = date.split("-");
-  return `${Number(parts[1])}/${Number(parts[2])}`;
-}
-
-function brandBreakdown(source, key, fallback = 0) {
-  return source?.brand_breakdown?.[key] ?? fallback ?? 0;
-}
-
-function formatApiUsage(collection) {
-  if (!collection || collection.api_requests_used == null) return "n/a";
-  if (collection.max_api_requests == null) return String(collection.api_requests_used);
-  return `${collection.api_requests_used}/${collection.max_api_requests}`;
-}
-
-async function selectDaily(date) {
-  try {
-    state.selectedDaily = await loadJson(`./dashboard-data/daily/${date}.json`);
-  } catch (error) {
-    state.selectedDaily = state.daily;
-  }
-  render();
-}
-
 function fermentationPage() {
-  const items = state.fermentation.items;
+  const items = state.fermentation.items || [];
+  const events = items.map((item) => clusterToEvent(item, "joybuy", "Joybuy 发酵池"));
   return `
     <div class="metric-grid">
       ${metric("追踪中", items.length, "进入发酵追踪池")}
@@ -228,49 +260,13 @@ function fermentationPage() {
       ${metric("已归档", dailyArchiveClusterCount(), "历史情报库总量")}
     </div>
     <section class="section">
-      <div class="section-header"><h2>风险生命线</h2><span class="tag">7-14 day tracking</span></div>
-      <div class="timeline">
-        ${items.map(timelineItem).join("") || empty("暂无需要高频追踪的情报")}
-      </div>
-    </section>
-    <section class="section">
-      <div class="section-header"><h2>发酵事件</h2></div>
-      <div class="intel-list">${items.map(intelCard).join("")}</div>
+      <div class="section-header"><h2>发酵时间线</h2><span class="tag">7-14 day tracking</span></div>
+      ${publishTimeline(state.daily.date, events, "暂无需要高频追踪的情报")}
     </section>
   `;
 }
 
-function competitorPage() {
-  const competitor = state.competitor;
-  return `
-    <div class="metric-grid">
-      ${metric("Temu 声量", competitor.volume, "采集量")}
-      ${metric("负面", competitor.sentiment.negative, "按关键词轻量判定")}
-      ${metric("中性", competitor.sentiment.neutral, "非深度评分")}
-      ${metric("正面", competitor.sentiment.positive, "体验或客服正向")}
-    </div>
-    <div class="grid-two">
-      <section class="section">
-        <div class="section-header"><h2>Temu Top 词</h2></div>
-        <div class="bar-grid">
-          ${competitor.top_terms.map((term) => bar(term.term, term.count, competitor.volume, "orange")).join("")}
-        </div>
-      </section>
-      <section class="section">
-        <div class="section-header"><h2>异常波动</h2></div>
-        <div class="summary-stack">
-          ${(competitor.anomalies || []).map((item) => summaryLine("Signal", item)).join("") || empty("暂无明显异常")}
-        </div>
-      </section>
-    </div>
-    <section class="section">
-      <div class="section-header"><h2>Temu Top 内容</h2></div>
-      <div class="intel-list">${competitor.top_posts.map(competitorPost).join("")}</div>
-    </section>
-  `;
-}
-
-function sourceStatusPage() {
+function settingsPage() {
   const source = state.sourceStatus;
   return `
     <section class="section">
@@ -344,6 +340,213 @@ function detailPage(detail) {
   `;
 }
 
+function buildDailyEvents(daily) {
+  return [...buildJoybuyEvents(daily), ...buildCompetitorEvents(daily)].sort(compareEvents);
+}
+
+function buildJoybuyEvents(daily) {
+  return (daily.clusters || []).map((cluster) => clusterToEvent(cluster, "joybuy", "Joybuy / JD"));
+}
+
+function buildCompetitorEvents(daily) {
+  const competitor = daily.competitor || state.competitor || {};
+  const posts = competitor.top_posts || [];
+  if (!posts.length && competitor.volume) {
+    return [
+      {
+        brand: "temu",
+        source: "Temu 竞品基线",
+        title: `Temu 当日有效声量 ${competitor.volume}`,
+        summary: "摘要级归档仅保留当日声量与情绪分布，原帖级竞品内容从历史归档功能上线后开始保留。",
+        scoreLabel: "Volume",
+        scoreValue: competitor.volume,
+        timeLabel: "汇总",
+        tags: sentimentTags(competitor.sentiment),
+        reason: "用于对照 Joybuy 当日声量和风险语境。",
+      },
+    ];
+  }
+  return posts.map((post) => {
+    const interactions = Number(post.metrics?.likes || 0) + Number(post.metrics?.reposts || 0) + Number(post.metrics?.replies || 0) + Number(post.metrics?.quotes || 0);
+    return {
+      brand: "temu",
+      source: `Temu · @${post.author_handle || "unknown"}`,
+      title: post.text || "Temu competitor signal",
+      summary: post.summary_zh || post.text || "",
+      scoreLabel: "Interactions",
+      scoreValue: interactions,
+      time: post.created_at,
+      tags: [post.sentiment, ...(post.matched_terms || [])].filter(Boolean),
+      href: post.url,
+      external: true,
+      reason: "竞品基线内容，用于观察 Temu 当日讨论主题和互动强度。",
+    };
+  });
+}
+
+function buildTrackingEvents(daily) {
+  return (daily.clusters || [])
+    .filter((cluster) => cluster.tracking_eligible || ["升温中", "发酵中"].includes(cluster.fermentation?.status))
+    .map((cluster) => clusterToEvent(cluster, "joybuy", "发酵追踪"));
+}
+
+function clusterToEvent(cluster, brand, source) {
+  return {
+    brand,
+    source,
+    title: cluster.title,
+    summary: cluster.summary_zh || cluster.summary,
+    scoreLabel: "IPS",
+    scoreValue: cluster.score?.ips ?? "n/a",
+    time: cluster.first_seen_at || cluster.last_seen_at,
+    tags: [...(cluster.risk_types || []), ...(cluster.opportunity_types || []), cluster.topic].filter(Boolean),
+    href: cluster.cluster_id && !String(cluster.cluster_id).startsWith("archive-") ? `#/intel/${cluster.cluster_id}` : "",
+    reason: cluster.score?.explanation || cluster.tracking_reason || "进入当日情报归档。",
+    score: cluster.score,
+    fermentation: cluster.fermentation,
+    postCount: cluster.post_count,
+  };
+}
+
+function compareEvents(a, b) {
+  const aTime = a.time ? new Date(a.time).getTime() : 0;
+  const bTime = b.time ? new Date(b.time).getTime() : 0;
+  return bTime - aTime;
+}
+
+function publishTimeline(date, events, emptyText) {
+  const sorted = [...events].sort(compareEvents);
+  if (!sorted.length) return empty(emptyText);
+  return `
+    <div class="timeline-date-heading">
+      <h3>${formatDateShort(date)}</h3>
+      <span class="muted">${weekdayLabel(date)} · ${sorted.length} 条</span>
+    </div>
+    <div class="publish-timeline">
+      ${sorted.map(timelineCard).join("")}
+    </div>
+  `;
+}
+
+function timelineCard(event) {
+  return `
+    <div class="publish-item">
+      <div class="publish-time">${escapeHtml(event.timeLabel || formatEventTime(event.time))}</div>
+      <div class="publish-line"><span></span></div>
+      <article class="publish-card">
+        <div class="publish-source">
+          <span>${escapeHtml(event.source)}</span>
+          ${event.scoreValue !== "n/a" ? `<span class="tag">${escapeHtml(event.scoreLabel)} ${escapeHtml(String(event.scoreValue))}</span>` : ""}
+        </div>
+        <h3>${escapeHtml(event.title)}</h3>
+        <p class="muted">${escapeHtml(event.summary)}</p>
+        <div class="tag-row">${(event.tags || []).slice(0, 6).map((tag) => `<span class="plain-tag">#${escapeHtml(tag)}</span>`).join("")}</div>
+        ${event.reason ? `<div class="reason-line">推荐理由：${escapeHtml(String(event.reason))}</div>` : ""}
+        ${event.href ? `<div class="button-row"><a class="text-button primary" href="${escapeHtml(event.href)}" ${event.external ? `target="_blank" rel="noreferrer"` : ""}>查看详情</a></div>` : ""}
+      </article>
+    </div>
+  `;
+}
+
+function featureCard(event) {
+  return `
+    <article class="intel-card">
+      <div class="card-top">
+        <div class="card-title">
+          <div class="publish-source"><span>${escapeHtml(event.source)}</span></div>
+          <h3>${escapeHtml(event.title)}</h3>
+          <p class="muted">${escapeHtml(event.summary)}</p>
+        </div>
+        <div class="score-badge"><div class="score-number">${escapeHtml(String(event.scoreValue))}</div><div class="score-label">${escapeHtml(event.scoreLabel)}</div></div>
+      </div>
+      <div class="tag-row">${(event.tags || []).slice(0, 5).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>
+    </article>
+  `;
+}
+
+function reportTocItem(index, title, summary, count) {
+  const target = index === "01" ? "joybuy-radar" : index === "02" ? "competitor-radar" : "tracking-radar";
+  return `
+    <button class="toc-card" type="button" data-scroll-target="${target}">
+      <span>${escapeHtml(index)}</span>
+      <strong>${escapeHtml(title)}</strong>
+      <p>${escapeHtml(summary)}</p>
+      <em>${escapeHtml(String(count))}</em>
+    </button>
+  `;
+}
+
+function competitorSummary(competitor) {
+  const sentiment = competitor?.sentiment || {};
+  return `
+    <div class="metric-grid compact three">
+      ${metric("Temu 声量", competitor?.volume || 0, "竞品有效内容")}
+      ${metric("负面", sentiment.negative || 0, "轻量情绪判断")}
+      ${metric("正面", sentiment.positive || 0, "轻量情绪判断")}
+    </div>
+  `;
+}
+
+function sentimentTags(sentiment = {}) {
+  return Object.entries(sentiment)
+    .filter(([, value]) => value)
+    .map(([key, value]) => `${key}:${value}`);
+}
+
+function topIps(daily) {
+  const scores = (daily.clusters || []).map((cluster) => Number(cluster.score?.ips || 0));
+  return Math.max(0, ...scores);
+}
+
+function formatDailyTitle(daily) {
+  if (!daily?.date) return "过去 24 小时情报";
+  return `${daily.date} 日报`;
+}
+
+function formatDateShort(date) {
+  if (!date) return "--";
+  const parts = String(date).split("-");
+  if (parts.length !== 3) return date;
+  return `${Number(parts[1])}月${Number(parts[2])}日`;
+}
+
+function weekdayLabel(date) {
+  if (!date) return "";
+  const value = new Date(`${date}T00:00:00+08:00`);
+  if (Number.isNaN(value.getTime())) return "";
+  return value.toLocaleDateString("zh-CN", { weekday: "long", timeZone: "Asia/Shanghai" });
+}
+
+function formatEventTime(iso) {
+  if (!iso) return "--:--";
+  const value = new Date(iso);
+  if (Number.isNaN(value.getTime())) return "--:--";
+  return value.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Shanghai" });
+}
+
+function brandBreakdown(source, key, fallback = 0) {
+  return source?.brand_breakdown?.[key] ?? fallback ?? 0;
+}
+
+function formatApiUsage(collection) {
+  if (!collection || collection.api_requests_used == null) return "n/a";
+  if (collection.max_api_requests == null) return String(collection.api_requests_used);
+  return `${collection.api_requests_used}/${collection.max_api_requests}`;
+}
+
+async function selectDaily(date) {
+  try {
+    state.selectedDaily = await loadJson(`./dashboard-data/daily/${date}.json`);
+  } catch (error) {
+    state.selectedDaily = state.daily;
+  }
+  render();
+}
+
+function dailyArchiveClusterCount() {
+  return (state.dailyIndex?.items || []).reduce((sum, item) => sum + Number(item.cluster_count || 0), 0);
+}
+
 function metric(label, value, note) {
   return `<div class="metric"><div class="metric-label">${escapeHtml(label)}</div><div class="metric-value">${escapeHtml(String(value))}</div><div class="metric-note">${escapeHtml(note)}</div></div>`;
 }
@@ -352,98 +555,37 @@ function summaryLine(label, text) {
   return `<div class="summary-line"><span class="meta">${escapeHtml(label)}</span><p>${escapeHtml(text)}</p></div>`;
 }
 
-function intelCard(item) {
-  const hasDetail = item.cluster_id && !String(item.cluster_id).startsWith("archive-");
-  return `
-    <article class="intel-card">
-      <div class="card-top">
-        <div class="card-title">
-          <h3>${escapeHtml(item.title)}</h3>
-          <p class="muted">${escapeHtml(item.summary_zh || item.summary)}</p>
-        </div>
-        ${scoreBadge(item.score)}
-      </div>
-      <div class="tag-row">
-        ${levelPill(item.score)}
-        <span class="tag">${escapeHtml(item.score.sentiment)}</span>
-        <span class="tag">原帖 ${item.post_count}</span>
-        <span class="tag">${escapeHtml(item.fermentation?.status || "未追踪")}</span>
-      </div>
-      <div class="card-meta">
-        <span>可信度 ${item.score.credibility}</span>
-        <span>当前影响 ${item.score.current_impact}</span>
-        <span>未来潜力 ${item.score.future_potential}</span>
-        <span>建议 ${escapeHtml(item.score.recommended_action)}</span>
-      </div>
-      <div class="button-row">${
-        hasDetail
-          ? `<a class="text-button primary" href="#/intel/${item.cluster_id}">查看详情</a>`
-          : `<span class="tag">摘要归档</span>`
-      }</div>
-    </article>
-  `;
+function scoreBadge(score) {
+  return `<div class="score-badge"><div class="score-number">${escapeHtml(String(score.ips))}</div><div class="score-label">IPS</div></div>`;
 }
 
-function compactFermentation(item) {
-  return `
-    <article class="intel-card">
-      <div class="card-top">
-        <h3>${escapeHtml(item.title)}</h3>
-        ${scoreBadge(item.score)}
-      </div>
-      <p class="muted">${escapeHtml((item.fermentation.signals || ["暂无信号"])[0])}</p>
-      <a class="text-button primary" href="#/intel/${item.cluster_id}">查看</a>
-    </article>
-  `;
+function levelPill(score) {
+  const levelText = { urgent: "紧急", high: "高风险", medium: "中风险", low: "低风险" }[score.level] || score.level;
+  const cls = score.sentiment === "positive" ? "positive" : score.level;
+  return `<span class="level ${cls}">${levelText}</span>`;
 }
 
-function competitorBaseline() {
-  const joybuyVolume = state.overview.metrics.joybuy_volume;
-  const temuVolume = state.overview.metrics.temu_volume;
-  const max = Math.max(joybuyVolume, temuVolume, 1);
+function scoreBars(score) {
+  const rows = [
+    ["品牌相关度", score.brand_relevance, "green"],
+    ["风险/机会强度", score.risk_or_opportunity_intensity, "red"],
+    ["当前影响力", score.current_impact, "orange"],
+    ["未来潜力", score.future_potential, "orange"],
+    ["可信度", score.credibility, ""],
+    ["业务影响面", score.business_impact, "red"],
+    ["处置紧迫性", score.urgency, "red"],
+  ];
+  return rows.map(([label, value, color]) => bar(label, value, 100, color)).join("");
+}
+
+function bar(label, value, max, color = "") {
+  const width = Math.max(4, Math.min(100, (Number(value) / Math.max(1, Number(max))) * 100));
   return `
-    <div class="bar-grid">
-      ${bar("Joybuy 声量", joybuyVolume, max, "green")}
-      ${bar("Temu 声量", temuVolume, max, "orange")}
-      ${bar("Joybuy 负面占比", state.overview.metrics.negative_share, 100, "red")}
+    <div class="bar-line">
+      <span>${escapeHtml(label)}</span>
+      <div class="bar-track"><div class="bar-fill ${color}" style="--value:${width}%"></div></div>
+      <span class="meta">${escapeHtml(String(value))}</span>
     </div>
-  `;
-}
-
-function dailyArchiveClusterCount() {
-  return (state.dailyIndex?.items || []).reduce((sum, item) => sum + Number(item.cluster_count || 0), 0);
-}
-
-function timelineItem(item) {
-  return `
-    <div class="timeline-item">
-      <div class="timeline-dot">${escapeHtml(item.fermentation.status)}</div>
-      <div class="intel-card">
-        <div class="card-top">
-          <h3>${escapeHtml(item.title)}</h3>
-          ${scoreBadge(item.score)}
-        </div>
-        <p class="muted">${escapeHtml((item.fermentation.signals || ["暂无信号"]).join("；"))}</p>
-        <a class="text-button primary" href="#/intel/${item.cluster_id}">查看时间线</a>
-      </div>
-    </div>
-  `;
-}
-
-function competitorPost(post) {
-  const interactions = post.metrics.likes + post.metrics.reposts + post.metrics.replies + post.metrics.quotes;
-  return `
-    <article class="intel-card">
-      <div class="card-top">
-        <div class="card-title">
-          <h3>@${escapeHtml(post.author_handle)}</h3>
-          <p class="muted">${escapeHtml(post.summary_zh)}</p>
-        </div>
-        <div class="score-badge"><div class="score-number">${interactions}</div><div class="score-label">Interactions</div></div>
-      </div>
-      <p>${escapeHtml(post.text)}</p>
-      <div class="button-row"><a class="text-button primary" href="${post.url}" target="_blank" rel="noreferrer">Open on X</a></div>
-    </article>
   `;
 }
 
@@ -491,71 +633,27 @@ function evidenceCard(item) {
   `;
 }
 
-function scoreBadge(score) {
-  return `<div class="score-badge"><div class="score-number">${score.ips}</div><div class="score-label">IPS</div></div>`;
-}
-
-function levelPill(score) {
-  const levelText = { urgent: "紧急", high: "高风险", medium: "中风险", low: "低风险" }[score.level] || score.level;
-  const cls = score.sentiment === "positive" ? "positive" : score.level;
-  return `<span class="level ${cls}">${levelText}</span>`;
-}
-
-function scoreBars(score) {
-  const rows = [
-    ["品牌相关度", score.brand_relevance, "green"],
-    ["风险/机会强度", score.risk_or_opportunity_intensity, "red"],
-    ["当前影响力", score.current_impact, "orange"],
-    ["未来潜力", score.future_potential, "orange"],
-    ["可信度", score.credibility, ""],
-    ["业务影响面", score.business_impact, "red"],
-    ["处置紧迫性", score.urgency, "red"],
-  ];
-  return rows.map(([label, value, color]) => bar(label, value, 100, color)).join("");
-}
-
-function bar(label, value, max, color = "") {
-  const width = Math.max(4, Math.min(100, (Number(value) / Math.max(1, Number(max))) * 100));
-  return `
-    <div class="bar-line">
-      <span>${escapeHtml(label)}</span>
-      <div class="bar-track"><div class="bar-fill ${color}" style="--value:${width}%"></div></div>
-      <span class="meta">${escapeHtml(String(value))}</span>
-    </div>
-  `;
-}
-
 function empty(text) {
   return `<div class="empty">${escapeHtml(text)}</div>`;
 }
 
 function bindPageEvents(detail = null) {
-  const sort = document.getElementById("daily-sort");
-  const filter = document.getElementById("daily-filter");
-  if (sort && filter) {
-    const update = () => {
-      let clusters = [...((state.selectedDaily || state.daily).clusters || [])];
-      const filterValue = filter.value;
-      if (filterValue !== "all") {
-        clusters = clusters.filter((item) => {
-          if (filterValue === "positive") return item.score.sentiment === "positive";
-          return item.score.level === filterValue;
-        });
-      }
-      clusters.sort((a, b) => {
-        const key = sort.value;
-        const aValue = key === "ips" ? a.score.ips : a.score[key];
-        const bValue = key === "ips" ? b.score.ips : b.score[key];
-        return bValue - aValue;
-      });
-      document.getElementById("daily-list").innerHTML = clusters.map(intelCard).join("") || empty("暂无匹配情报");
-    };
-    sort.addEventListener("change", update);
-    filter.addEventListener("change", update);
+  const allBrandFilter = document.getElementById("all-brand-filter");
+  if (allBrandFilter) {
+    allBrandFilter.addEventListener("change", () => {
+      state.allBrandFilter = allBrandFilter.value;
+      render();
+    });
   }
 
   document.querySelectorAll("[data-daily-date]").forEach((button) => {
     button.addEventListener("click", () => selectDaily(button.dataset.dailyDate));
+  });
+
+  document.querySelectorAll("[data-scroll-target]").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.getElementById(button.dataset.scrollTarget)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   });
 
   document.querySelectorAll("[data-evidence]").forEach((button) => {

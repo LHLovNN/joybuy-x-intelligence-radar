@@ -87,10 +87,11 @@ Build the Joybuy X Intelligence Radar MVP:
 - Added `日报中心` historical browsing with a left-side daily archive list and date-level metrics/summary view.
 - Seeded summary-only public daily archives for 2026-07-17, 2026-07-18 and 2026-07-19. Future successful runs will create full daily archives automatically.
 - Added a deploy-only GitHub Actions workflow so committed dashboard changes can be published without consuming X API credits.
+- Started product information-architecture refactor inspired by AIhot: navigation is now `今日精选 / 全部情报 / 日报中心 / 发酵追踪 / 设置`, and the daily report uses a publish-time vertical timeline for Joybuy and Temu signals.
 
 ## In Progress
 
-- Review the historical daily report UX and continue real-data quality bake-off after source credit status is confirmed.
+- Review the new information architecture and publish-time timeline prototype before deeper visual polish.
 
 ## Next
 

@@ -5,6 +5,16 @@ const { chromium } = require("playwright");
 const root = path.resolve(__dirname, "..");
 const publicDir = path.join(root, "public");
 const outDir = path.join(root, "data", "logs", "screenshots");
+const localBrowserCandidates = [
+  process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+  "/Applications/Chromium.app/Contents/MacOS/Chromium",
+].filter(Boolean);
+
+function localBrowserExecutable() {
+  return localBrowserCandidates.find((candidate) => fs.existsSync(candidate));
+}
 
 function readText(relativePath) {
   return fs.readFileSync(path.join(publicDir, relativePath), "utf8");
@@ -56,18 +66,18 @@ function shellHtml() {
           </div>
         </div>
         <nav class="nav-list">
-          <a href="#/" data-route="overview">总览</a>
+          <a href="#/" data-route="overview">今日精选</a>
+          <a href="#/all" data-route="all">全部情报</a>
           <a href="#/daily" data-route="daily">日报中心</a>
-          <a href="#/fermentation" data-route="fermentation">发酵雷达</a>
-          <a href="#/competitor" data-route="competitor">Temu 雷达</a>
-          <a href="#/source-status" data-route="source-status">数据源状态</a>
+          <a href="#/fermentation" data-route="fermentation">发酵追踪</a>
+          <a href="#/settings" data-route="settings">设置</a>
         </nav>
       </aside>
       <main class="main-panel">
         <header class="topbar">
           <div>
             <p class="eyebrow">X PUBLIC INTELLIGENCE</p>
-            <h1 id="page-title">总览</h1>
+            <h1 id="page-title">今日精选</h1>
           </div>
           <div class="topbar-meta">
             <span id="generated-at">Loading</span>
@@ -97,7 +107,8 @@ function shellHtml() {
 
 async function main() {
   fs.mkdirSync(outDir, { recursive: true });
-  const browser = await chromium.launch();
+  const executablePath = localBrowserExecutable();
+  const browser = await chromium.launch(executablePath ? { executablePath } : {});
   const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } });
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -110,23 +121,23 @@ async function main() {
   await page.screenshot({ path: path.join(outDir, "overview.png"), fullPage: true });
 
   await page.click('a[href="#/daily"]');
-  await page.waitForSelector("#daily-list", { timeout: 5000 });
+  await page.waitForSelector(".publish-timeline", { timeout: 5000 });
   await page.waitForSelector(".daily-history-item", { timeout: 5000 });
-  await page.selectOption("#daily-filter", "high");
   await page.screenshot({ path: path.join(outDir, "daily.png"), fullPage: true });
 
-  await page.click('a[href="#/fermentation"]');
-  await page.waitForSelector(".timeline", { timeout: 5000 });
+  await page.click('a[href="#/all"]');
+  await page.waitForSelector("#all-brand-filter", { timeout: 5000 });
+  await page.selectOption("#all-brand-filter", "joybuy");
 
-  await page.click('a[href="#/competitor"]');
-  await page.waitForSelector(".bar-grid", { timeout: 5000 });
+  await page.click('a[href="#/fermentation"]');
+  await page.waitForSelector(".section", { timeout: 5000 });
 
   await page.click('a[href="#/daily"]');
-  await page.waitForSelector("#daily-list", { timeout: 5000 });
-  const detailLink = await page.$('#daily-list a[href^="#/intel/"]');
+  await page.waitForSelector(".publish-timeline", { timeout: 5000 });
+  const detailLink = await page.$('.publish-timeline a[href^="#/intel/"]');
   if (detailLink) {
     const detailHref = await detailLink.evaluate((node) => node.getAttribute("href"));
-    await page.click(`#daily-list a[href="${detailHref}"]`);
+    await page.click(`.publish-timeline a[href="${detailHref}"]`);
     await page.waitForSelector(".evidence-tabs", { timeout: 5000 });
     await page.click('[data-evidence="popular"]');
     await page.waitForSelector("#evidence-list", { timeout: 5000 });
