@@ -6,7 +6,7 @@ Build the Joybuy X Intelligence Radar MVP:
 
 - X-only monitoring for Joybuy/JD/京东 and Joybuy European sites.
 - Temu as lightweight competitor baseline.
-- Daily report at Beijing time 08:00.
+- Daily report in the Beijing time 08:00 morning window.
 - Fermentation radar for delayed spread.
 - Static GitHub Pages-ready dashboard.
 
@@ -17,7 +17,7 @@ Build the Joybuy X Intelligence Radar MVP:
 - Python pipeline generates JSON data.
 - Security red line: never commit or paste API keys, tokens, cookies, credentials, private config or local secret files. Use local environment variables and GitHub Secrets only.
 - Generated real-provider data and dashboard JSON are run artifacts and should be ignored by Git.
-- GitHub Actions `Daily report` is the production-like daily automation: UTC 00:00 / Beijing time 08:00.
+- GitHub Actions `Daily report` is the production-like daily automation: UTC 00:23 / Beijing time 08:23, moved off the top of the hour after scheduled runs landed around 09:40-09:50 BJT.
 - Weekend guardrail caps are 60 total X posts per day: up to 45 Joybuy/JD/京东 posts, up to 15 Temu posts and up to 6 X API requests per run.
 - GitHub Actions `Fermentation refresh` is manual-only during the current MVP bake-off. Scheduled triggers are intentionally disabled until real historical metric refresh is complete and API budget is approved.
 - If the X provider budget is exhausted or the request cap is reached, the daily workflow should publish a partial report and expose collection warnings in `run-status.json` and the Actions summary.
@@ -80,6 +80,8 @@ Build the Joybuy X Intelligence Radar MVP:
 - Added `scripts/report_run_summary.py` and wired it into GitHub Actions so each run prints a metrics-only summary.
 - Relaxed real-provider dashboard verification so a quiet day with 0 Joybuy clusters can still publish successfully.
 - Added a weekend API guardrail: lower automatic X collection caps, per-run X API request cap, partial-report handling and run-status output.
+- Confirmed the 2026-07-18 and 2026-07-19 scheduled runs completed with TwitterAPI.io, complete collection status, 4/6 API requests used and low estimated source cost.
+- Moved the daily schedule from UTC 00:00 to UTC 00:23 to reduce GitHub Actions top-of-hour delay risk.
 
 ## In Progress
 

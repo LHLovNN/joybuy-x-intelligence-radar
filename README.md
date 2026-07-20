@@ -35,7 +35,7 @@ This repo uses deterministic sample data by default so the dashboard can be revi
 
 GitHub Actions status:
 
-- `Daily report` runs daily at UTC 00:00, which is Beijing time 08:00.
+- `Daily report` runs daily at UTC 00:23, which is Beijing time 08:23. This avoids GitHub Actions top-of-hour scheduling delays while staying in the morning report window.
 - Weekend guardrail caps are 60 total X posts per day: up to 45 Joybuy/JD/京东 posts, up to 15 Temu posts and up to 6 X API requests per run.
 - `Fermentation refresh` is manual-only for now. Its scheduled triggers are intentionally disabled until real historical metric refresh is ready and the API budget is approved.
 - If the X API budget is exhausted or the request cap is reached, the daily workflow publishes a partial report with collection warnings instead of failing the whole dashboard deployment.
