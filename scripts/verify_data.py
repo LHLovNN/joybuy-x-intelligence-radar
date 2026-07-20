@@ -25,6 +25,7 @@ def assert_true(condition: bool, message: str) -> None:
 def main() -> None:
     latest = load(DATA / "latest.json")
     daily = load(DATA / "daily" / "latest.json")
+    daily_index = load(DATA / "daily" / "index.json")
     fermentation = load(DATA / "fermentation.json")
     competitor = load(DATA / "competitor.json")
     source = load(DATA / "source-status.json")
@@ -37,6 +38,12 @@ def main() -> None:
     clusters = daily.get("clusters", [])
     if is_sample:
         assert_true(clusters, "sample daily clusters should not be empty")
+    assert_true(daily.get("date"), "daily latest should include report date")
+    assert_true(daily_index.get("items"), "daily history index should not be empty")
+    assert_true(daily_index["items"][0]["date"] == daily["date"], "daily history latest date mismatch")
+    for item in daily_index["items"]:
+        archive_path = DATA / "daily" / f"{item['date']}.json"
+        assert_true(archive_path.exists(), f"missing daily archive file for {item['date']}")
     assert_true(latest["metrics"]["effective_intelligence"] == len(clusters), "effective intelligence metric mismatch")
     assert_true(source["status"] == "normal", "source status should be normal for sample data")
     assert_true(source["raw_posts_collected"] >= source["effective_posts"], "raw posts should be >= effective posts")
@@ -49,6 +56,8 @@ def main() -> None:
 
     for cluster in clusters:
         cluster_id = cluster["cluster_id"]
+        if daily.get("summary_only") or str(cluster_id).startswith("archive-"):
+            continue
         detail_path = DATA / "clusters" / f"{cluster_id}.json"
         assert_true(detail_path.exists(), f"missing detail file for {cluster_id}")
         detail = load(detail_path)

@@ -14,7 +14,7 @@ The current build is a working local prototype:
 ## Quick Start
 
 ```bash
-python3 scripts/run_daily.py
+python3 scripts/check_dashboard_data.py
 python3 scripts/verify_data.py
 python3 -m http.server 4173 --directory public
 ```
@@ -29,6 +29,11 @@ You can also open `public/index.html` directly in a browser. The build includes
 `public/dashboard-data-bundle.js` so the dashboard can render under `file://`
 without a local server.
 
+The repo includes seeded public dashboard data for preview. Running
+`python3 scripts/run_daily.py` without a real provider regenerates deterministic
+sample data for local development, so review the resulting dashboard files
+before committing.
+
 ## Current MVP Status
 
 This repo uses deterministic sample data by default so the dashboard can be reviewed without API keys. TwitterAPI.io can be enabled manually through environment variables for real X data testing.
@@ -37,15 +42,16 @@ GitHub Actions status:
 
 - `Daily report` runs daily at UTC 00:23, which is Beijing time 08:23. This avoids GitHub Actions top-of-hour scheduling delays while staying in the morning report window.
 - Weekend guardrail caps are 60 total X posts per day: up to 45 Joybuy/JD/京东 posts, up to 15 Temu posts and up to 6 X API requests per run.
+- Each successful daily run commits the public dashboard JSON archive back to Git, then deploys GitHub Pages. This keeps historical daily reports browsable without pulling old data from Pages.
 - `Fermentation refresh` is manual-only for now. Its scheduled triggers are intentionally disabled until real historical metric refresh is ready and the API budget is approved.
 - If the X API budget is exhausted or the request cap is reached, the daily workflow publishes a partial report with collection warnings instead of failing the whole dashboard deployment.
 
-Current sample output:
+Current seeded public archive:
 
-- 5 Joybuy intelligence clusters.
-- 4 fermentation-tracked clusters.
-- Temu lightweight competitor baseline.
-- Static dashboard data in `public/dashboard-data/`.
+- `2026-07-17`: summary-only placeholder for the first manual run before history storage existed.
+- `2026-07-18`: summary-only archive from the scheduled Daily report run.
+- `2026-07-19`: summary-only archive from the scheduled Daily report run.
+- Future scheduled runs will add full daily archive files under `public/dashboard-data/daily/`.
 
 Provider secrets:
 
@@ -87,17 +93,17 @@ public/
 - `JD` is treated as an ambiguous keyword and must be supported by ecommerce context.
 - Quote posts are public propagation signals. Bookmarks are save signals and are optional.
 - All valid Joybuy intelligence clusters are archived in history, but only high-value clusters enter the fermentation tracking pool.
+- Public dashboard JSON is product content and can be committed. Raw provider outputs, local logs, cluster detail caches and all credentials remain excluded.
 
 ## Verification
 
 ```bash
-python3 scripts/run_daily.py
-python3 scripts/run_fermentation_refresh.py
 python3 scripts/check_dashboard_data.py
 python3 scripts/verify_data.py
 python3 scripts/report_run_summary.py
 PYTHONPYCACHEPREFIX=.pycache python3 -m compileall scripts src
 node --check public/assets/app.js
+node --check public/dashboard-data-bundle.js
 ```
 
 ## TwitterAPI.io Bake-Off
@@ -147,10 +153,15 @@ The repository includes GitHub Actions workflows:
 Set GitHub Pages source to `GitHub Actions`, then run the daily workflow manually once.
 The workflows print a metrics-only report summary after generation so scheduled
 runs can be reviewed without exposing post text in logs.
+The daily workflow also writes the generated dashboard archive back to the repo
+using `GITHUB_TOKEN`; only `public/dashboard-data/*.json`,
+`public/dashboard-data/daily/*.json` and `public/dashboard-data-bundle.js` are
+staged by that step.
 
 ## Next Step
 
-Let the weekend-guarded `Daily report` workflow collect several scheduled runs, then review data quality, source coverage, API consumption and dashboard story value.
+Review the `日报中心` historical view, then continue the real-data quality
+bake-off once source credits or fallback source coverage are confirmed.
 
 See:
 

@@ -1,0 +1,18 @@
+{
+  "status": "normal",
+  "providers": [
+    "twitterapi_io"
+  ],
+  "raw_posts_collected": 22,
+  "effective_posts": 20,
+  "brand_breakdown": {
+    "joybuy_candidates": 7,
+    "joybuy_effective": 6,
+    "temu_candidates": 15,
+    "temu_effective": 14
+  },
+  "estimated_cost_usd": 0.0033,
+  "notes": [
+    "Backfilled summary-only archive."
+  ]
+}

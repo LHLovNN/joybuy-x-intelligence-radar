@@ -11,6 +11,7 @@ REQUIRED = [
     ROOT / "public" / "assets" / "styles.css",
     ROOT / "public" / "dashboard-data" / "latest.json",
     ROOT / "public" / "dashboard-data" / "daily" / "latest.json",
+    ROOT / "public" / "dashboard-data" / "daily" / "index.json",
     ROOT / "public" / "dashboard-data" / "fermentation.json",
     ROOT / "public" / "dashboard-data" / "competitor.json",
     ROOT / "public" / "dashboard-data" / "source-status.json",

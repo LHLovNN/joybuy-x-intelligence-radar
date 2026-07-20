@@ -31,8 +31,7 @@ data/raw/
 data/processed/
 data/logs/
 data/clusters/
-public/dashboard-data/
-public/dashboard-data-bundle.js
+public/dashboard-data/clusters/
 
 # Temporary files
 *.tmp

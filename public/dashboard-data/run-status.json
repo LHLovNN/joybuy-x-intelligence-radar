@@ -1,0 +1,26 @@
+{
+  "status": "ok",
+  "generated_at": "2026-07-19T09:52:00Z",
+  "window_label": "2026-07-18 08:00 BJT - 2026-07-19 08:00 BJT",
+  "provider": "twitterapi_io",
+  "raw_posts": 22,
+  "normalized_posts": 20,
+  "joybuy_clusters": 1,
+  "collection_status": {
+    "status": "complete",
+    "warnings": [],
+    "api_requests_used": 4,
+    "max_api_requests": 6,
+    "request_budget_exhausted": false
+  },
+  "dashboard_metrics": {
+    "effective_intelligence": 1,
+    "high_risk": 0,
+    "fermenting": 0,
+    "needs_review": 0,
+    "joybuy_volume": 6,
+    "joybuy_candidate_volume": 7,
+    "temu_volume": 14,
+    "negative_share": 0
+  }
+}

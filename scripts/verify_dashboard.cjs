@@ -18,14 +18,23 @@ function buildDataMap() {
   const map = {
     "dashboard-data/latest.json": readJson("dashboard-data/latest.json"),
     "dashboard-data/daily/latest.json": readJson("dashboard-data/daily/latest.json"),
+    "dashboard-data/daily/index.json": readJson("dashboard-data/daily/index.json"),
     "dashboard-data/fermentation.json": readJson("dashboard-data/fermentation.json"),
     "dashboard-data/competitor.json": readJson("dashboard-data/competitor.json"),
     "dashboard-data/source-status.json": readJson("dashboard-data/source-status.json"),
   };
+  const dailyDir = path.join(publicDir, "dashboard-data", "daily");
+  for (const file of fs.readdirSync(dailyDir)) {
+    if (file.endsWith(".json") && file !== "latest.json" && file !== "index.json") {
+      map[`dashboard-data/daily/${file}`] = JSON.parse(fs.readFileSync(path.join(dailyDir, file), "utf8"));
+    }
+  }
   const clustersDir = path.join(publicDir, "dashboard-data", "clusters");
-  for (const file of fs.readdirSync(clustersDir)) {
-    if (file.endsWith(".json")) {
-      map[`dashboard-data/clusters/${file}`] = JSON.parse(fs.readFileSync(path.join(clustersDir, file), "utf8"));
+  if (fs.existsSync(clustersDir)) {
+    for (const file of fs.readdirSync(clustersDir)) {
+      if (file.endsWith(".json")) {
+        map[`dashboard-data/clusters/${file}`] = JSON.parse(fs.readFileSync(path.join(clustersDir, file), "utf8"));
+      }
     }
   }
   return map;
@@ -48,7 +57,7 @@ function shellHtml() {
         </div>
         <nav class="nav-list">
           <a href="#/" data-route="overview">总览</a>
-          <a href="#/daily" data-route="daily">今日日报</a>
+          <a href="#/daily" data-route="daily">日报中心</a>
           <a href="#/fermentation" data-route="fermentation">发酵雷达</a>
           <a href="#/competitor" data-route="competitor">Temu 雷达</a>
           <a href="#/source-status" data-route="source-status">数据源状态</a>
@@ -97,28 +106,32 @@ async function main() {
   });
 
   await page.setContent(shellHtml(), { waitUntil: "domcontentloaded" });
-  await page.waitForSelector(".intel-card", { timeout: 5000 });
+  await page.waitForSelector(".metric-grid", { timeout: 5000 });
   await page.screenshot({ path: path.join(outDir, "overview.png"), fullPage: true });
 
   await page.click('a[href="#/daily"]');
-  await page.waitForSelector("#daily-list .intel-card", { timeout: 5000 });
+  await page.waitForSelector("#daily-list", { timeout: 5000 });
+  await page.waitForSelector(".daily-history-item", { timeout: 5000 });
   await page.selectOption("#daily-filter", "high");
   await page.screenshot({ path: path.join(outDir, "daily.png"), fullPage: true });
 
   await page.click('a[href="#/fermentation"]');
-  await page.waitForSelector(".timeline-item", { timeout: 5000 });
+  await page.waitForSelector(".timeline", { timeout: 5000 });
 
   await page.click('a[href="#/competitor"]');
   await page.waitForSelector(".bar-grid", { timeout: 5000 });
 
   await page.click('a[href="#/daily"]');
-  await page.waitForSelector("#daily-list .intel-card", { timeout: 5000 });
-  const detailHref = await page.$eval('#daily-list a[href^="#/intel/"]', (node) => node.getAttribute("href"));
-  await page.click(`#daily-list a[href="${detailHref}"]`);
-  await page.waitForSelector(".evidence-tabs", { timeout: 5000 });
-  await page.click('[data-evidence="popular"]');
-  await page.waitForSelector("#evidence-list .post-card", { timeout: 5000 });
-  await page.screenshot({ path: path.join(outDir, "detail.png"), fullPage: true });
+  await page.waitForSelector("#daily-list", { timeout: 5000 });
+  const detailLink = await page.$('#daily-list a[href^="#/intel/"]');
+  if (detailLink) {
+    const detailHref = await detailLink.evaluate((node) => node.getAttribute("href"));
+    await page.click(`#daily-list a[href="${detailHref}"]`);
+    await page.waitForSelector(".evidence-tabs", { timeout: 5000 });
+    await page.click('[data-evidence="popular"]');
+    await page.waitForSelector("#evidence-list", { timeout: 5000 });
+    await page.screenshot({ path: path.join(outDir, "detail.png"), fullPage: true });
+  }
 
   await browser.close();
   if (errors.length) {
@@ -133,4 +146,3 @@ main().catch((error) => {
   console.error(error);
   process.exit(1);
 });
-

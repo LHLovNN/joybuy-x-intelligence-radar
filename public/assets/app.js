@@ -1,6 +1,8 @@
 const state = {
   overview: null,
   daily: null,
+  dailyIndex: null,
+  selectedDaily: null,
   fermentation: null,
   competitor: null,
   sourceStatus: null,
@@ -9,7 +11,7 @@ const state = {
 
 const routeTitles = {
   overview: "总览",
-  daily: "今日日报",
+  daily: "日报中心",
   fermentation: "发酵雷达",
   competitor: "Temu 雷达",
   "source-status": "数据源状态",
@@ -34,6 +36,8 @@ async function loadJson(path) {
 async function init() {
   state.overview = await loadJson("./dashboard-data/latest.json");
   state.daily = await loadJson("./dashboard-data/daily/latest.json");
+  state.dailyIndex = await loadJson("./dashboard-data/daily/index.json");
+  state.selectedDaily = state.daily;
   state.fermentation = await loadJson("./dashboard-data/fermentation.json");
   state.competitor = await loadJson("./dashboard-data/competitor.json");
   state.sourceStatus = await loadJson("./dashboard-data/source-status.json");
@@ -77,10 +81,10 @@ function overviewPage() {
       ${metric("高风险", metrics.high_risk, "需优先核查或回应")}
       ${metric("发酵中", metrics.fermenting, "进入升温或发酵状态")}
       ${metric("需核查", metrics.needs_review, "建议人工介入")}
-      ${metric("Joybuy 声量", metrics.joybuy_volume, "样例原始帖")}
+      ${metric("Joybuy 声量", metrics.joybuy_volume, "有效 Joybuy 内容")}
       ${metric("Temu 声量", metrics.temu_volume, "轻量竞品基线")}
       ${metric("负面占比", `${metrics.negative_share}%`, "按情报簇统计")}
-      ${metric("数据成本", "$0", "当前为样例数据")}
+      ${metric("数据成本", `$${state.sourceStatus?.estimated_cost_usd ?? 0}`, "本次采集估算")}
     </div>
     <div class="grid-two">
       <section class="section">
@@ -100,7 +104,7 @@ function overviewPage() {
     </div>
     <section class="section">
       <div class="section-header"><h2>高优先级情报 Top 10</h2><a class="text-button primary" href="#/daily">进入日报</a></div>
-      <div class="intel-list">${state.overview.top_intelligence.map(intelCard).join("")}</div>
+      <div class="intel-list">${state.overview.top_intelligence.map(intelCard).join("") || empty("暂无 Joybuy 有效情报簇")}</div>
     </section>
     <section class="section">
       <div class="section-header"><h2>Joybuy vs Temu 基线</h2><a class="text-button primary" href="#/competitor">查看竞品雷达</a></div>
@@ -110,30 +114,108 @@ function overviewPage() {
 }
 
 function dailyPage() {
+  const selected = state.selectedDaily || state.daily;
+  const history = state.dailyIndex?.items || [];
+  const metrics = selected.metrics || state.overview.metrics;
+  const source = selected.source_status || state.sourceStatus;
+  const collection = selected.collection_status || {};
+  const clusters = selected.clusters || [];
   return `
-    <section class="section">
-      <div class="section-header">
-        <h2>过去 24 小时情报</h2>
-        <span class="tag">${state.daily.clusters.length} clusters</span>
-      </div>
-      <div class="filter-row">
-        <label>排序 <select id="daily-sort">
-          <option value="ips">IPS</option>
-          <option value="current_impact">当前影响力</option>
-          <option value="future_potential">未来潜力</option>
-          <option value="credibility">可信度</option>
-        </select></label>
-        <label>风险 <select id="daily-filter">
-          <option value="all">全部</option>
-          <option value="urgent">紧急</option>
-          <option value="high">高</option>
-          <option value="medium">中</option>
-          <option value="positive">正面机会</option>
-        </select></label>
-      </div>
-      <div id="daily-list" class="intel-list">${state.daily.clusters.map(intelCard).join("")}</div>
-    </section>
+    <div class="daily-layout">
+      <aside class="section daily-history">
+        <div class="section-header">
+          <h2>历史日报</h2>
+          <span class="tag">${history.length} days</span>
+        </div>
+        <div class="daily-history-list">
+          ${history.map(dailyHistoryItem).join("") || empty("暂无历史日报")}
+        </div>
+      </aside>
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>${formatDailyTitle(selected)}</h2>
+            <p class="muted">${escapeHtml(selected.window_label || "Past 24 hours")}</p>
+          </div>
+          <span class="tag">${clusters.length} clusters</span>
+        </div>
+        ${selected.summary_only ? `<div class="notice">该日报为摘要级归档：可查看当日指标与主题，原帖级详情从历史归档功能上线后开始保留。</div>` : ""}
+        <div class="metric-grid compact">
+          ${metric("Joybuy 有效", brandBreakdown(source, "joybuy_effective", metrics.joybuy_volume), "过滤后进入分析")}
+          ${metric("Temu 有效", brandBreakdown(source, "temu_effective", metrics.temu_volume), "竞品基线")}
+          ${metric("高风险", metrics.high_risk || 0, "需优先核查或回应")}
+          ${metric("API 请求", formatApiUsage(collection), "本次采集消耗")}
+        </div>
+        <div class="summary-stack daily-summary">
+          ${summaryLine("今日重点", selected.executive_summary?.headline || "No meaningful Joybuy signal detected.")}
+          ${summaryLine("风险判断", selected.executive_summary?.risk || "Low")}
+          ${summaryLine("建议动作", selected.executive_summary?.action || "Continue monitoring.")}
+        </div>
+        <div class="filter-row">
+          <label>排序 <select id="daily-sort">
+            <option value="ips">IPS</option>
+            <option value="current_impact">当前影响力</option>
+            <option value="future_potential">未来潜力</option>
+            <option value="credibility">可信度</option>
+          </select></label>
+          <label>风险 <select id="daily-filter">
+            <option value="all">全部</option>
+            <option value="urgent">紧急</option>
+            <option value="high">高</option>
+            <option value="medium">中</option>
+            <option value="positive">正面机会</option>
+          </select></label>
+        </div>
+        <div id="daily-list" class="intel-list">${clusters.map(intelCard).join("") || empty("该日暂无 Joybuy 有效情报簇")}</div>
+      </section>
+    </div>
   `;
+}
+
+function dailyHistoryItem(item) {
+  const active = item.date === (state.selectedDaily || state.daily).date;
+  return `
+    <button class="daily-history-item ${active ? "active" : ""}" data-daily-date="${escapeHtml(item.date)}">
+      <span class="daily-date">${formatDateShort(item.date)}</span>
+      <span class="daily-title">${escapeHtml(item.title)}</span>
+      <span class="daily-meta">
+        Joybuy ${escapeHtml(String(item.joybuy_effective ?? 0))}
+        · Temu ${escapeHtml(String(item.temu_effective ?? 0))}
+        · ${escapeHtml(item.collection_status || "unknown")}
+      </span>
+      ${item.summary_only ? `<span class="tag">摘要</span>` : ""}
+    </button>
+  `;
+}
+
+function formatDailyTitle(daily) {
+  if (!daily?.date) return "过去 24 小时情报";
+  return `${daily.date} 日报`;
+}
+
+function formatDateShort(date) {
+  if (!date) return "--";
+  const parts = date.split("-");
+  return `${Number(parts[1])}/${Number(parts[2])}`;
+}
+
+function brandBreakdown(source, key, fallback = 0) {
+  return source?.brand_breakdown?.[key] ?? fallback ?? 0;
+}
+
+function formatApiUsage(collection) {
+  if (!collection || collection.api_requests_used == null) return "n/a";
+  if (collection.max_api_requests == null) return String(collection.api_requests_used);
+  return `${collection.api_requests_used}/${collection.max_api_requests}`;
+}
+
+async function selectDaily(date) {
+  try {
+    state.selectedDaily = await loadJson(`./dashboard-data/daily/${date}.json`);
+  } catch (error) {
+    state.selectedDaily = state.daily;
+  }
+  render();
 }
 
 function fermentationPage() {
@@ -143,7 +225,7 @@ function fermentationPage() {
       ${metric("追踪中", items.length, "进入发酵追踪池")}
       ${metric("升温中", items.filter((item) => item.fermentation.status === "升温中").length, "互动或扩散增强")}
       ${metric("发酵中", items.filter((item) => item.fermentation.status === "发酵中").length, "需要重点关注")}
-      ${metric("已归档", state.daily.clusters.length, "历史情报库总量")}
+      ${metric("已归档", dailyArchiveClusterCount(), "历史情报库总量")}
     </div>
     <section class="section">
       <div class="section-header"><h2>风险生命线</h2><span class="tag">7-14 day tracking</span></div>
@@ -162,7 +244,7 @@ function competitorPage() {
   const competitor = state.competitor;
   return `
     <div class="metric-grid">
-      ${metric("Temu 声量", competitor.volume, "样例采集量")}
+      ${metric("Temu 声量", competitor.volume, "采集量")}
       ${metric("负面", competitor.sentiment.negative, "按关键词轻量判定")}
       ${metric("中性", competitor.sentiment.neutral, "非深度评分")}
       ${metric("正面", competitor.sentiment.positive, "体验或客服正向")}
@@ -194,10 +276,10 @@ function sourceStatusPage() {
     <section class="section">
       <div class="section-header"><h2>数据源状态</h2><span class="status-pill ${source.status}">${source.status}</span></div>
       <div class="metric-grid">
-        ${metric("原始采集", source.raw_posts_collected, "当前样例数据")}
+        ${metric("原始采集", source.raw_posts_collected, "本次采集量")}
         ${metric("有效内容", source.effective_posts, "过滤后进入分析")}
         ${metric("数据源", source.providers.join(", "), "当前 provider")}
-        ${metric("估算成本", `$${source.estimated_cost_usd}`, "样例阶段")}
+        ${metric("估算成本", `$${source.estimated_cost_usd}`, "本次采集估算")}
       </div>
     </section>
     <section class="section">
@@ -271,6 +353,7 @@ function summaryLine(label, text) {
 }
 
 function intelCard(item) {
+  const hasDetail = item.cluster_id && !String(item.cluster_id).startsWith("archive-");
   return `
     <article class="intel-card">
       <div class="card-top">
@@ -292,9 +375,11 @@ function intelCard(item) {
         <span>未来潜力 ${item.score.future_potential}</span>
         <span>建议 ${escapeHtml(item.score.recommended_action)}</span>
       </div>
-      <div class="button-row">
-        <a class="text-button primary" href="#/intel/${item.cluster_id}">查看详情</a>
-      </div>
+      <div class="button-row">${
+        hasDetail
+          ? `<a class="text-button primary" href="#/intel/${item.cluster_id}">查看详情</a>`
+          : `<span class="tag">摘要归档</span>`
+      }</div>
     </article>
   `;
 }
@@ -323,6 +408,10 @@ function competitorBaseline() {
       ${bar("Joybuy 负面占比", state.overview.metrics.negative_share, 100, "red")}
     </div>
   `;
+}
+
+function dailyArchiveClusterCount() {
+  return (state.dailyIndex?.items || []).reduce((sum, item) => sum + Number(item.cluster_count || 0), 0);
 }
 
 function timelineItem(item) {
@@ -445,7 +534,7 @@ function bindPageEvents(detail = null) {
   const filter = document.getElementById("daily-filter");
   if (sort && filter) {
     const update = () => {
-      let clusters = [...state.daily.clusters];
+      let clusters = [...((state.selectedDaily || state.daily).clusters || [])];
       const filterValue = filter.value;
       if (filterValue !== "all") {
         clusters = clusters.filter((item) => {
@@ -464,6 +553,10 @@ function bindPageEvents(detail = null) {
     sort.addEventListener("change", update);
     filter.addEventListener("change", update);
   }
+
+  document.querySelectorAll("[data-daily-date]").forEach((button) => {
+    button.addEventListener("click", () => selectDaily(button.dataset.dailyDate));
+  });
 
   document.querySelectorAll("[data-evidence]").forEach((button) => {
     button.addEventListener("click", async () => {

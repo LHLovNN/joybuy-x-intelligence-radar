@@ -20,7 +20,7 @@ from src.pipeline.normalizer import normalize_posts
 from src.pipeline.query_builder import build_x_search_queries
 from src.pipeline.scoring import score_clusters
 from src.utils.io import read_json, write_json, write_jsonl
-from src.utils.time import beijing_daily_window, beijing_label, now_utc, to_iso
+from src.utils.time import BEIJING, beijing_daily_window, beijing_label, now_utc, to_iso
 
 
 def selected_provider(source_config: dict[str, Any]) -> str:
@@ -161,7 +161,8 @@ def main() -> None:
     joybuy_clusters = update_fermentation(joybuy_clusters)
 
     start, end = beijing_daily_window(now_utc())
-    today = end.astimezone().strftime("%Y-%m-%d")
+    today = end.astimezone(BEIJING).strftime("%Y-%m-%d")
+    window_label = f"{beijing_label(start)} - {beijing_label(end)}"
 
     write_jsonl(str(ROOT / "data" / "raw" / "x" / f"{provider}-posts.jsonl"), raw_posts)
     write_jsonl(str(ROOT / "data" / "processed" / "normalized-posts.jsonl"), normalized)
@@ -172,13 +173,16 @@ def main() -> None:
         normalized,
         str(ROOT / "public" / "dashboard-data"),
         provider_hint=provider,
+        report_date=today,
+        window_label=window_label,
+        collection_status=collection_status,
     )
     run_log = {
         "status": "ok",
         "generated_at": to_iso(now_utc()),
         "window_start": to_iso(start),
         "window_end": to_iso(end),
-        "window_label": f"{beijing_label(start)} - {beijing_label(end)}",
+        "window_label": window_label,
         "provider": provider,
         "raw_posts": len(raw_posts),
         "normalized_posts": len(normalized),

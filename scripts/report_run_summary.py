@@ -34,6 +34,7 @@ def format_top_cluster(clusters: list[dict[str, Any]]) -> str:
 def main() -> None:
     latest = load(DATA / "latest.json")
     daily = load(DATA / "daily" / "latest.json")
+    daily_index = load_optional(DATA / "daily" / "index.json")
     source = load(DATA / "source-status.json")
     competitor = load(DATA / "competitor.json")
     run_status = load_optional(DATA / "run-status.json")
@@ -64,6 +65,7 @@ def main() -> None:
     print(f"- Top cluster: {format_top_cluster(clusters)}")
     print(f"- Temu baseline volume: {competitor.get('volume', 0)}")
     print(f"- Estimated source cost USD: {source.get('estimated_cost_usd', 0)}")
+    print(f"- Daily archive days: {len(daily_index.get('items', []))}")
     for warning in collection_status.get("warnings", [])[:3]:
         print(f"- Collection warning: {warning}")
 

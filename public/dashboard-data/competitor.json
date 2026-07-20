@@ -1,0 +1,12 @@
+{
+  "brand": "temu",
+  "volume": 14,
+  "sentiment": {
+    "positive": 0,
+    "neutral": 14,
+    "negative": 0
+  },
+  "top_terms": [],
+  "top_posts": [],
+  "anomalies": []
+}

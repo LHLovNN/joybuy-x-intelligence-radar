@@ -1,0 +1,107 @@
+{
+  "date": "2026-07-19",
+  "generated_at": "2026-07-19T09:52:00Z",
+  "generated_at_label": "2026-07-19 09:52 BJT",
+  "window_label": "2026-07-18 08:00 BJT - 2026-07-19 08:00 BJT",
+  "summary_only": true,
+  "archive_note": "Backfilled from GitHub Actions summary. Original post-level archive was not available before history storage was added.",
+  "metrics": {
+    "effective_intelligence": 1,
+    "high_risk": 0,
+    "fermenting": 0,
+    "needs_review": 0,
+    "joybuy_volume": 6,
+    "joybuy_candidate_volume": 7,
+    "temu_volume": 14,
+    "negative_share": 0
+  },
+  "source_status": {
+    "status": "normal",
+    "providers": [
+      "twitterapi_io"
+    ],
+    "raw_posts_collected": 22,
+    "effective_posts": 20,
+    "brand_breakdown": {
+      "joybuy_candidates": 7,
+      "joybuy_effective": 6,
+      "temu_candidates": 15,
+      "temu_effective": 14
+    },
+    "estimated_cost_usd": 0.0033,
+    "notes": [
+      "Backfilled summary-only archive."
+    ]
+  },
+  "collection_status": {
+    "status": "complete",
+    "warnings": [],
+    "api_requests_used": 4,
+    "max_api_requests": 6,
+    "request_budget_exhausted": false
+  },
+  "executive_summary": {
+    "headline": "General Joybuy/JD overseas shopping discussion",
+    "risk": "Overall risk is medium with IPS 62.",
+    "action": "No high-risk or review-needed cluster was detected in the summary."
+  },
+  "competitor": {
+    "brand": "temu",
+    "volume": 14,
+    "sentiment": {
+      "positive": 0,
+      "neutral": 14,
+      "negative": 0
+    },
+    "top_terms": [],
+    "top_posts": [],
+    "anomalies": []
+  },
+  "clusters": [
+    {
+      "cluster_id": "archive-2026-07-19-001",
+      "title": "General Joybuy/JD overseas shopping discussion",
+      "summary": "Summary-only archive from the scheduled daily report.",
+      "summary_zh": "围绕 Joybuy/JD 海外购物的一般讨论；该日无高风险、无需人工核查。",
+      "topic": "general",
+      "risk_types": [],
+      "opportunity_types": [],
+      "post_count": 6,
+      "first_seen_at": "2026-07-19T00:00:00Z",
+      "last_seen_at": "2026-07-19T23:59:59Z",
+      "metrics": {
+        "total_likes": 0,
+        "total_reposts": 0,
+        "total_replies": 0,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 0
+      },
+      "score": {
+        "ips": 62,
+        "level": "medium",
+        "brand_relevance": 80,
+        "risk_or_opportunity_intensity": 48,
+        "current_impact": 50,
+        "future_potential": 50,
+        "credibility": 70,
+        "business_impact": 48,
+        "urgency": 30,
+        "sentiment": "neutral",
+        "confidence": 0.65,
+        "recommended_action": "持续监测",
+        "risk_labels": [],
+        "opportunity_labels": [],
+        "special_flags": [],
+        "explanation": "Backfilled from summary metrics only."
+      },
+      "fermentation": {
+        "status": "未追踪",
+        "signals": []
+      },
+      "tracking_eligible": false,
+      "tracking_reason": "Summary-only archive.",
+      "evidence_counts": {}
+    }
+  ]
+}

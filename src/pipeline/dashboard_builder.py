@@ -14,10 +14,14 @@ def build_dashboard_data(
     normalized_posts: list[dict[str, Any]],
     output_dir: str,
     provider_hint: str | None = None,
+    report_date: str | None = None,
+    window_label: str | None = None,
+    collection_status: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     target = Path(output_dir)
     target.mkdir(parents=True, exist_ok=True)
     current = now_utc()
+    report_date = report_date or current.astimezone(BEIJING).strftime("%Y-%m-%d")
     competitor = build_competitor_radar(normalized_posts)
     fermentation_items = [cluster for cluster in joybuy_clusters if cluster.get("tracking_eligible")]
     high_risk = [cluster for cluster in joybuy_clusters if cluster["score"]["level"] in {"urgent", "high"}]
@@ -30,7 +34,9 @@ def build_dashboard_data(
         "title": "Joybuy X Intelligence Radar",
         "generated_at": to_iso(current),
         "generated_at_label": beijing_label(current),
+        "report_date": report_date,
         "report_window": "Past 24 hours",
+        "window_label": window_label,
         "health": "normal",
         "metrics": {
             "effective_intelligence": len(joybuy_clusters),
@@ -58,8 +64,16 @@ def build_dashboard_data(
     }
 
     daily = {
+        "date": report_date,
         "generated_at": overview["generated_at"],
         "generated_at_label": overview["generated_at_label"],
+        "window_label": window_label,
+        "metrics": overview["metrics"],
+        "source_status": overview["source_status"],
+        "collection_status": collection_status or {},
+        "executive_summary": overview["executive_summary"],
+        "competitor": competitor,
+        "summary_only": False,
         "clusters": [cluster_summary(cluster, include_posts=False) for cluster in joybuy_clusters],
     }
     fermentation = {
@@ -69,6 +83,7 @@ def build_dashboard_data(
 
     write_json(str(target / "latest.json"), overview)
     write_json(str(target / "daily" / "latest.json"), daily)
+    write_daily_history(target, daily)
     write_json(str(target / "fermentation.json"), fermentation)
     write_json(str(target / "competitor.json"), competitor)
     write_json(str(target / "source-status.json"), overview["source_status"])
@@ -80,12 +95,86 @@ def build_dashboard_data(
         "dashboard-data/source-status.json": overview["source_status"],
         "clusters": {},
     }
+    for path, payload in daily_history_files(target).items():
+        data_bundle[path] = payload
     for cluster in joybuy_clusters:
         detail = cluster_detail(cluster)
         write_json(str(target / "clusters" / f"{cluster['cluster_id']}.json"), detail)
-        data_bundle["clusters"][f"dashboard-data/clusters/{cluster['cluster_id']}.json"] = detail
     write_data_bundle(target.parent / "dashboard-data-bundle.js", data_bundle)
     return overview
+
+
+def write_daily_history(target: Path, current_daily: dict[str, Any]) -> None:
+    daily_dir = target / "daily"
+    daily_dir.mkdir(parents=True, exist_ok=True)
+    records: dict[str, dict[str, Any]] = {}
+    for record in load_existing_daily_records(daily_dir):
+        records[record["date"]] = record
+    records[current_daily["date"]] = current_daily
+
+    for record in records.values():
+        write_json(str(daily_dir / f"{record['date']}.json"), record)
+
+    index = {
+        "latest_date": current_daily["date"],
+        "generated_at": current_daily["generated_at"],
+        "items": [daily_index_item(record) for record in sorted(records.values(), key=lambda item: item["date"], reverse=True)],
+    }
+    write_json(str(daily_dir / "index.json"), index)
+
+
+def load_existing_daily_records(daily_dir: Path) -> list[dict[str, Any]]:
+    records = []
+    for path in sorted(daily_dir.glob("*.json")):
+        if path.name in {"latest.json", "index.json"}:
+            continue
+        try:
+            with open(path, "r", encoding="utf-8") as file:
+                record = json.load(file)
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(record, dict) and record.get("date"):
+            records.append(record)
+    return records
+
+
+def daily_history_files(target: Path) -> dict[str, Any]:
+    daily_dir = target / "daily"
+    files: dict[str, Any] = {}
+    for path in sorted(daily_dir.glob("*.json")):
+        try:
+            with open(path, "r", encoding="utf-8") as file:
+                files[f"dashboard-data/daily/{path.name}"] = json.load(file)
+        except (OSError, json.JSONDecodeError):
+            continue
+    return files
+
+
+def daily_index_item(record: dict[str, Any]) -> dict[str, Any]:
+    metrics = record.get("metrics", {})
+    source_status = record.get("source_status", {})
+    collection = record.get("collection_status", {})
+    summary = record.get("executive_summary", {})
+    clusters = record.get("clusters", [])
+    top_cluster = clusters[0] if clusters else record.get("top_cluster", {})
+    score = top_cluster.get("score", {})
+    return {
+        "date": record.get("date"),
+        "generated_at_label": record.get("generated_at_label"),
+        "window_label": record.get("window_label"),
+        "title": top_cluster.get("title") or summary.get("headline") or "No meaningful Joybuy signal detected",
+        "cluster_count": len(clusters) if clusters else metrics.get("effective_intelligence", 0),
+        "joybuy_effective": source_status.get("brand_breakdown", {}).get("joybuy_effective", metrics.get("joybuy_volume", 0)),
+        "temu_effective": source_status.get("brand_breakdown", {}).get("temu_effective", metrics.get("temu_volume", 0)),
+        "high_risk": metrics.get("high_risk", 0),
+        "needs_review": metrics.get("needs_review", 0),
+        "collection_status": collection.get("status", "unknown"),
+        "api_requests_used": collection.get("api_requests_used"),
+        "max_api_requests": collection.get("max_api_requests"),
+        "ips": score.get("ips"),
+        "level": score.get("level"),
+        "summary_only": bool(record.get("summary_only")),
+    }
 
 
 def write_data_bundle(path: Path, data: dict[str, Any]) -> None:

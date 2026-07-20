@@ -16,11 +16,12 @@ Build the Joybuy X Intelligence Radar MVP:
 - Dashboard data lives under `public/dashboard-data/`.
 - Python pipeline generates JSON data.
 - Security red line: never commit or paste API keys, tokens, cookies, credentials, private config or local secret files. Use local environment variables and GitHub Secrets only.
-- Generated real-provider data and dashboard JSON are run artifacts and should be ignored by Git.
+- Public dashboard JSON is product content and is committed to Git for daily history. Raw provider outputs, local logs, cluster detail caches and all credentials remain excluded.
 - GitHub Actions `Daily report` is the production-like daily automation: UTC 00:23 / Beijing time 08:23, moved off the top of the hour after scheduled runs landed around 09:40-09:50 BJT.
 - Weekend guardrail caps are 60 total X posts per day: up to 45 Joybuy/JD/京东 posts, up to 15 Temu posts and up to 6 X API requests per run.
 - GitHub Actions `Fermentation refresh` is manual-only during the current MVP bake-off. Scheduled triggers are intentionally disabled until real historical metric refresh is complete and API budget is approved.
 - If the X provider budget is exhausted or the request cap is reached, the daily workflow should publish a partial report and expose collection warnings in `run-status.json` and the Actions summary.
+- Each successful daily workflow commits `public/dashboard-data/*.json`, `public/dashboard-data/daily/*.json` and `public/dashboard-data-bundle.js` back to Git before deploying Pages, so the dashboard can browse historical daily reports without pulling history from Pages.
 - The first implementation uses deterministic sample data until API keys are available.
 - Joybuy is a canonical brand entity:
   - Joybuy
@@ -82,14 +83,17 @@ Build the Joybuy X Intelligence Radar MVP:
 - Added a weekend API guardrail: lower automatic X collection caps, per-run X API request cap, partial-report handling and run-status output.
 - Confirmed the 2026-07-18 and 2026-07-19 scheduled runs completed with TwitterAPI.io, complete collection status, 4/6 API requests used and low estimated source cost.
 - Moved the daily schedule from UTC 00:00 to UTC 00:23 to reduce GitHub Actions top-of-hour delay risk.
+- Added `日报中心` historical browsing with a left-side daily archive list and date-level metrics/summary view.
+- Seeded summary-only public daily archives for 2026-07-17, 2026-07-18 and 2026-07-19. Future successful runs will create full daily archives automatically.
 
 ## In Progress
 
-- Run multi-day capped `Daily report` bake-off and review real data quality.
+- Review the historical daily report UX and continue real-data quality bake-off after source credit status is confirmed.
 
 ## Next
 
-- Continue real-data quality bake-off over multiple days with weekend guardrails; review whether to restore larger caps after Monday inspection.
+- Confirm TwitterAPI.io credit/renewal behavior or pick a fallback source before increasing automatic collection volume.
+- Continue real-data quality bake-off; review whether to restore larger caps after source budget is stable.
 - Add Tavily verification adapter for high-risk/low-confidence intelligence checks.
 - Add Perplexity executive-summary adapter for high-priority intelligence interpretation.
 - Review GitHub Pages output after several scheduled `Daily report` runs.
@@ -111,10 +115,9 @@ Build the Joybuy X Intelligence Radar MVP:
 
 Passed:
 
-- `python3 scripts/run_daily.py`
-- `python3 scripts/run_fermentation_refresh.py`
 - `python3 scripts/check_dashboard_data.py`
 - `python3 scripts/verify_data.py`
+- `python3 scripts/report_run_summary.py`
 - `PYTHONPYCACHEPREFIX=.pycache python3 -m compileall scripts src`
 - `node --check public/assets/app.js`
 - `node --check public/dashboard-data-bundle.js`
