@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "generated_at": "2026-07-20T03:25:27Z",
-  "window_start": "2026-07-19T00:00:00Z",
-  "window_end": "2026-07-20T00:00:00Z",
-  "window_label": "2026-07-19 08:00 BJT - 2026-07-20 08:00 BJT",
+  "generated_at": "2026-07-21T03:51:48Z",
+  "window_start": "2026-07-20T00:00:00Z",
+  "window_end": "2026-07-21T00:00:00Z",
+  "window_label": "2026-07-20 08:00 BJT - 2026-07-21 08:00 BJT",
   "provider": "twitterapi_io",
   "raw_posts": 19,
   "normalized_posts": 19,
@@ -17,7 +17,7 @@
       "max_temu_posts": 15,
       "max_api_requests": 6
     },
-    "api_requests_used": 5,
+    "api_requests_used": 4,
     "max_api_requests": 6,
     "request_budget_exhausted": false
   },
@@ -26,9 +26,9 @@
     "high_risk": 0,
     "fermenting": 0,
     "needs_review": 0,
-    "joybuy_volume": 3,
+    "joybuy_volume": 4,
     "joybuy_candidate_volume": 4,
-    "temu_volume": 13,
+    "temu_volume": 14,
     "negative_share": 0
   }
 }
