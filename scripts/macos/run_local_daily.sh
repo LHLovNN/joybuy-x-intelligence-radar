@@ -84,15 +84,16 @@ PY
 }
 
 run_daily() {
-  local args=()
-  if [[ "$RESUME_FROM_CHECKPOINT" == "1" ]]; then
-    args+=(--resume-from-checkpoint)
-  fi
-
   if command -v caffeinate >/dev/null 2>&1; then
-    caffeinate -dimsu "$PYTHON_BIN" scripts/run_daily.py "${args[@]}"
+    if [[ "$RESUME_FROM_CHECKPOINT" == "1" ]]; then
+      caffeinate -dimsu "$PYTHON_BIN" scripts/run_daily.py --resume-from-checkpoint
+    else
+      caffeinate -dimsu "$PYTHON_BIN" scripts/run_daily.py
+    fi
+  elif [[ "$RESUME_FROM_CHECKPOINT" == "1" ]]; then
+    "$PYTHON_BIN" scripts/run_daily.py --resume-from-checkpoint
   else
-    "$PYTHON_BIN" scripts/run_daily.py "${args[@]}"
+    "$PYTHON_BIN" scripts/run_daily.py
   fi
 }
 
