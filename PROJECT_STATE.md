@@ -42,6 +42,8 @@ Build the Joybuy X Intelligence Radar MVP:
 - Bookmark is a save action and optional.
 - User-facing product language should avoid exposing the internal "cluster" concept. Use `舆情焦点`, `舆情详情`, `焦点舆情`, `相关原帖` and `关注原因` instead.
 - `舆情焦点` should prioritize Joybuy/JD/京东 signals over Temu competitor baseline. Temu remains visible as competitor context, but it should not dominate the primary narrative.
+- Opinion cards in `舆情焦点`, `全部舆情` and `舆情日报` must show the translated X post itself as the main body. AI-derived summaries or scoring explanations may appear only as titles, tags or `关注原因`; they must not replace the source post content.
+- Treat X status URLs and links embedded inside a post as separate product concepts: `在 X 查看原帖` must use the X status URL, while embedded post links should be labeled as `帖内链接` if shown.
 
 ## Completed
 

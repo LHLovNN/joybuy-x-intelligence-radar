@@ -1,7 +1,7 @@
 {
   "date": "2026-07-22",
-  "generated_at": "2026-07-22T07:32:58Z",
-  "generated_at_label": "2026-07-22 15:32 BJT",
+  "generated_at": "2026-07-22T08:24:59Z",
+  "generated_at_label": "2026-07-22 16:24 BJT",
   "window_label": "2026-07-21 08:00 BJT - 2026-07-22 08:00 BJT",
   "metrics": {
     "effective_intelligence": 2,
@@ -373,6 +373,40 @@
       "title": "General Joybuy/JD overseas shopping discussion",
       "summary": "4 related posts discuss Joybuy/JD overseas shopping context.",
       "summary_zh": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "lead_post": {
+        "post_id": "2079619898234318981",
+        "created_at": "2026-07-21T17:29:55Z",
+        "author": {
+          "id": "2575210651",
+          "handle": "1_oeil",
+          "name": "𝓟𝓼𝔂𝓬𝓱𝓸_𝓒𝓪𝓽🐦",
+          "avatar_url": "https://pbs.twimg.com/profile_images/1920086537481469952/3NTPhutH_normal.jpg",
+          "followers": 400,
+          "verified": false
+        },
+        "author_name": "𝓟𝓼𝔂𝓬𝓱𝓸_𝓒𝓪𝓽🐦",
+        "author_handle": "1_oeil",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/1920086537481469952/3NTPhutH_normal.jpg",
+        "author_followers": 400,
+        "author_verified": false,
+        "url": "https://x.com/1_oeil/status/2079619898234318981",
+        "language": "fr",
+        "clean_text": "Commander sur JoyBuy le mardi à 1h du matin\nLa commande est préparée dans l'heure qui suit\nLa commande mise à disposition du transporteur à 6h\nLa commande a été retiré par le transporteur à 11h\nArrivé sur le centre de tri de départ à 12h\nBien sûr, c'est une livraison Express",
+        "links": [],
+        "translation_zh": "周二凌晨 1 点在 JoyBuy 下单\n订单在接下来的一小时内完成备货\n订单在 6 点交给承运商\n订单在 11 点被承运商取走\n12 点到达始发分拣中心\n当然，这是 Express 配送",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "metrics": {
+          "likes": 2,
+          "reposts": 0,
+          "replies": 1,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 114
+        },
+        "media": []
+      },
       "topic": "general",
       "risk_types": [
         "brand_trust"
@@ -443,6 +477,47 @@
       "title": "Positive price and delivery opportunity signals",
       "summary": "1 related posts mention fast delivery, discounts or positive value signals.",
       "summary_zh": "相关讨论体现价格、优惠或配送体验上的正向机会。",
+      "lead_post": {
+        "post_id": "2079439909182439571",
+        "created_at": "2026-07-21T05:34:43Z",
+        "author": {
+          "id": "1038326748943933440",
+          "handle": "SteelbookV",
+          "name": "Steelbook Jeux Vidéo - Scalou",
+          "avatar_url": "https://pbs.twimg.com/profile_images/1519236240251490304/MYRjRt7b_normal.jpg",
+          "followers": 2841,
+          "verified": false
+        },
+        "author_name": "Steelbook Jeux Vidéo - Scalou",
+        "author_handle": "SteelbookV",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/1519236240251490304/MYRjRt7b_normal.jpg",
+        "author_followers": 2841,
+        "author_verified": false,
+        "url": "https://x.com/SteelbookV/status/2079439909182439571",
+        "language": "fr",
+        "clean_text": "Splatoon Raiders sur Nintendo Switch 2 sort après demain ⤵️\n\nAmazon : \nFnac : \nJoyBuy : \nCdiscount : \nMicromania : \n\nInfos :",
+        "links": [
+          "https://amzn.to/431EReG",
+          "https://tidd.ly/3QUGLLe",
+          "https://tidd.ly/4dAdxKF",
+          "https://tidd.ly/3Qq7aAu",
+          "https://lk.gt/apnqa",
+          "https://www.steelbookjeuxvideo.fr/splatoon-raiders-nintendo-switch-2"
+        ],
+        "translation_zh": "Nintendo Switch 2 上的 Splatoon Raiders 后天发售 ⤵️\n\nAmazon：\nFnac：\nJoyBuy：\nCdiscount：\nMicromania：\n\n信息：",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户讨论价格、优惠或正向购物体验。",
+        "metrics": {
+          "likes": 2,
+          "reposts": 1,
+          "replies": 0,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 326
+        },
+        "media": []
+      },
       "topic": "price_opportunity",
       "risk_types": [],
       "opportunity_types": [

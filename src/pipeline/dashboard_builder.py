@@ -325,7 +325,45 @@ def representative_post(cluster: dict[str, Any]) -> dict[str, Any] | None:
     posts = cluster.get("posts", [])
     if not posts:
         return None
-    return sorted(posts, key=lambda post: public_interactions(post.get("metrics", {})), reverse=True)[0]
+    return sorted(posts, key=representative_post_rank, reverse=True)[0]
+
+
+def representative_post_rank(post: dict[str, Any]) -> tuple[int, int, int, str]:
+    text = f"{post.get('clean_text') or post.get('text') or ''} {post.get('translation_zh') or ''}".lower()
+    matched_terms = [str(term).lower() for term in post.get("matched_brand_terms", [])]
+    explicit_joybuy = "joybuy" in text or any("joybuy" in term for term in matched_terms)
+    ecommerce_context = any(
+        term in text
+        for term in [
+            "order",
+            "ordered",
+            "delivery",
+            "shipping",
+            "parcel",
+            "package",
+            "refund",
+            "return",
+            "customer service",
+            "coupon",
+            "discount",
+            "promo",
+            "warehouse",
+            "checkout",
+            "下单",
+            "订单",
+            "物流",
+            "配送",
+            "包裹",
+            "退款",
+            "退货",
+            "客服",
+            "优惠",
+            "仓库",
+        ]
+    )
+    direct_score = 2 if explicit_joybuy else 0
+    context_score = 1 if ecommerce_context else 0
+    return (direct_score, context_score, public_interactions(post.get("metrics", {})), str(post.get("created_at") or ""))
 
 
 def public_interactions(metrics: dict[str, Any]) -> int:
@@ -435,11 +473,13 @@ def build_hot_topics(joybuy_clusters: list[dict[str, Any]], featured_items: list
 
 
 def cluster_summary(cluster: dict[str, Any], include_posts: bool = False) -> dict[str, Any]:
+    post = representative_post(cluster)
     data = {
         "cluster_id": cluster["cluster_id"],
         "title": cluster["title"],
         "summary": cluster["summary"],
         "summary_zh": cluster["summary_zh"],
+        "lead_post": lead_post_summary(post) if post else {},
         "topic": cluster["topic"],
         "risk_types": cluster["risk_types"],
         "opportunity_types": cluster["opportunity_types"],
@@ -456,6 +496,29 @@ def cluster_summary(cluster: dict[str, Any], include_posts: bool = False) -> dic
     if include_posts:
         data["posts"] = cluster["posts"]
     return data
+
+
+def lead_post_summary(post: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "post_id": post.get("post_id"),
+        "created_at": post.get("created_at"),
+        "author": post.get("author", {}),
+        "author_name": post.get("author", {}).get("name") or post.get("author_name"),
+        "author_handle": post.get("author", {}).get("handle") or post.get("author_handle"),
+        "author_avatar_url": post.get("author", {}).get("avatar_url") or post.get("author_avatar_url"),
+        "author_followers": post.get("author", {}).get("followers", post.get("author_followers", 0)),
+        "author_verified": post.get("author", {}).get("verified", post.get("author_verified", False)),
+        "url": post.get("url", ""),
+        "language": post.get("language", "und"),
+        "clean_text": post.get("clean_text") or post.get("text") or "",
+        "links": post.get("links", []),
+        "translation_zh": post.get("translation_zh") or post.get("summary_zh") or post.get("clean_text") or post.get("text") or "",
+        "translation_status": post.get("translation_status", "unknown"),
+        "translation_provider": post.get("translation_provider", "none"),
+        "summary_zh": post.get("summary_zh", ""),
+        "metrics": post.get("metrics", {}),
+        "media": media_items(post),
+    }
 
 
 def cluster_detail(cluster: dict[str, Any]) -> dict[str, Any]:

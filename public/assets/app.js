@@ -382,11 +382,29 @@ function sampleInlineBadge(item) {
   return `<em class="sample-inline-badge">样例数据</em>`;
 }
 
-function cardExternalAction(href, item, label = "原帖") {
+function cardExternalAction(href, item, label = "在 X 查看原帖") {
   if (!href || item?.is_sample) return "";
   const url = safeExternalUrl(href);
   if (!url) return "";
   return `<a class="text-button" href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${escapeHtml(label)}</a>`;
+}
+
+function leadPostFromCluster(cluster) {
+  return cluster?.lead_post || {};
+}
+
+function leadPostText(cluster) {
+  const post = leadPostFromCluster(cluster);
+  return post.translation_zh || post.summary_zh || post.clean_text || cluster?.summary_zh || cluster?.summary || "";
+}
+
+function leadPostSourceName(post, fallback = "Joybuy / JD") {
+  const handle = post.author_handle || post.author?.handle || "";
+  return handle ? `${fallback} · @${handle}` : fallback;
+}
+
+function leadPostAuthorName(post, fallback = "Joybuy / JD") {
+  return post.author_name || post.author?.name || post.author_handle || post.author?.handle || fallback;
 }
 
 function safeExternalUrl(href) {
@@ -406,34 +424,42 @@ function fallbackFeaturedItems(daily) {
     .filter((cluster) => daily.summary_only || isFeaturedClusterFallback(cluster))
     .map((cluster) => {
       const score = cluster.score || {};
+      const post = leadPostFromCluster(cluster);
+      const text = leadPostText(cluster);
+      const tags = [...(cluster.risk_types || []), ...(cluster.opportunity_types || []), cluster.topic].filter(Boolean);
       return normalizeFeaturedItem({
         id: `fallback-${cluster.cluster_id}`,
         brand: "joybuy",
         cluster_id: cluster.cluster_id,
-        source_type: daily.summary_only ? "摘要级归档" : "X 舆情",
-        source_name: "Joybuy / JD",
-        author_name: "Joybuy Radar",
-        author_handle: "",
-        post_url: "",
-        created_at: cluster.first_seen_at || cluster.last_seen_at,
-        title: cluster.title,
-        display_title: cluster.summary_zh || cluster.title,
-        original_text: cluster.summary || "",
-        translation_zh: cluster.summary_zh || cluster.summary || "",
+        source_type: daily.summary_only ? "摘要级归档" : "X 原帖",
+        source_name: leadPostSourceName(post, "Joybuy / JD"),
+        author_name: leadPostAuthorName(post, "Joybuy / JD"),
+        author_handle: post.author_handle || post.author?.handle || "",
+        author_avatar_url: post.author_avatar_url || post.author?.avatar_url || "",
+        author_followers: post.author_followers ?? post.author?.followers ?? 0,
+        author_verified: post.author_verified ?? post.author?.verified ?? false,
+        post_url: post.url || "",
+        created_at: post.created_at || cluster.first_seen_at || cluster.last_seen_at,
+        title: generatedOpinionTitle({ brand: "joybuy", tags, topic: cluster.topic, sentiment: score.sentiment || "neutral" }),
+        display_title: "",
+        original_text: post.clean_text || cluster.summary || "",
+        translation_zh: text,
+        translation_status: post.translation_status || "unknown",
+        translation_provider: post.translation_provider || "none",
         summary_zh: cluster.summary_zh || "",
-        media: [],
+        media: post.media || [],
         score,
         score_value: score.ips ?? "n/a",
         score_label: "IPS",
-        tags: [...(cluster.risk_types || []), ...(cluster.opportunity_types || []), cluster.topic].filter(Boolean),
+        tags,
         metrics: cluster.metrics || {},
-        post_metrics: {},
+        post_metrics: post.metrics || {},
         source_count: cluster.post_count || 1,
         related_sources: Math.max(0, Number(cluster.post_count || 1) - 1),
         selected_reason: score.explanation || cluster.tracking_reason || "摘要级归档保留了当日主题和指标，原帖级焦点舆情将在完整日报中展示。",
         recommended_action: score.recommended_action || "持续监测",
         href: cluster.cluster_id && !String(cluster.cluster_id).startsWith("archive-") ? `#/intel/${cluster.cluster_id}` : "",
-        external_href: "",
+        external_href: post.url || "",
         sentiment: score.sentiment || "neutral",
         level: score.level || "low",
       });
@@ -845,6 +871,8 @@ function allItemFromCluster(cluster, daily) {
   const metrics = cluster.metrics || {};
   const count = Number(cluster.post_count || 1);
   const summaryOnly = Boolean(daily.summary_only);
+  const post = leadPostFromCluster(cluster);
+  const tags = [...(cluster.risk_types || []), ...(cluster.opportunity_types || []), cluster.topic, ...(cluster.tracking_eligible ? ["发酵追踪"] : [])].filter(Boolean);
   return {
     id: `all-${daily.date}-${cluster.cluster_id}`,
     brand: "joybuy",
@@ -852,23 +880,29 @@ function allItemFromCluster(cluster, daily) {
     type: summaryOnly ? "summary" : score.sentiment === "positive" ? "opportunity" : "risk",
     kind: score.sentiment === "positive" ? "opportunity" : "risk",
     badge: summaryOnly ? "摘要" : "Joybuy",
-    source_name: "Joybuy / JD",
-    author_name: "Joybuy / JD",
-    author_handle: "",
-    source_subline: summaryOnly ? "历史摘要" : "X 舆情",
-    time: cluster.first_seen_at || cluster.last_seen_at,
-    title: cluster.title,
-    body_zh: cluster.summary_zh || cluster.summary || "",
+    source_name: leadPostSourceName(post, "Joybuy / JD"),
+    author_name: leadPostAuthorName(post, "Joybuy / JD"),
+    author_handle: post.author_handle || post.author?.handle || "",
+    author_avatar_url: post.author_avatar_url || post.author?.avatar_url || "",
+    author_followers: post.author_followers ?? post.author?.followers ?? 0,
+    author_verified: post.author_verified ?? post.author?.verified ?? false,
+    source_subline: summaryOnly ? "历史摘要" : "X 原帖",
+    time: post.created_at || cluster.first_seen_at || cluster.last_seen_at,
+    title: generatedOpinionTitle({ brand: "joybuy", tags, topic: cluster.topic, sentiment: score.sentiment || "neutral", kind: score.sentiment === "positive" ? "opportunity" : "risk" }),
+    body_zh: leadPostText(cluster),
+    translation_status: post.translation_status || "unknown",
+    translation_provider: post.translation_provider || "none",
     summary: cluster.summary || "",
     score,
     score_label: "IPS",
     score_value: score.ips ?? "n/a",
     metrics,
-    post_metrics: {},
-    tags: [...(cluster.risk_types || []), ...(cluster.opportunity_types || []), cluster.topic, ...(cluster.tracking_eligible ? ["发酵追踪"] : [])].filter(Boolean),
+    post_metrics: post.metrics || {},
+    media: post.media || [],
+    tags,
     reason: score.explanation || cluster.tracking_reason || "进入当日情报归档。",
     href: cluster.cluster_id && !String(cluster.cluster_id).startsWith("archive-") ? `#/intel/${cluster.cluster_id}` : "",
-    external_href: "",
+    external_href: post.url || "",
     source_count: count,
     source_count_label: count > 1 ? `${count} 条相关原帖` : "1 条相关原帖",
     is_sample: isDailySample(daily),
@@ -1049,6 +1083,10 @@ function dailyStoryCard(event) {
       </div>` : ""}
       <div class="tag-row">${(event.tags || []).slice(0, 6).map((tag) => `<span class="plain-tag">#${escapeHtml(tag)}</span>`).join("")}</div>
       ${event.reason ? `<div class="reason-line compact">关注原因：${escapeHtml(String(event.reason))}</div>` : ""}
+      <div class="button-row daily-story-actions">
+        ${event.href && !event.external ? `<a class="text-button primary" href="${escapeHtml(event.href)}">详情</a>` : ""}
+        ${event.externalHref ? externalLinkButton(event.externalHref, "在 X 查看原帖", "", { isSample: event.is_sample }) : ""}
+      </div>
     </article>
   `;
 }
@@ -1763,6 +1801,7 @@ function buildCompetitorEvents(daily) {
       time: post.created_at,
       tags: [post.sentiment, ...(post.matched_terms || [])].filter(Boolean),
       href: post.url,
+      externalHref: post.url,
       external: true,
       reason: "竞品基线内容，用于观察 Temu 当日讨论主题和互动强度。",
       metrics: post.metrics,
@@ -1778,21 +1817,24 @@ function buildTrackingEvents(daily) {
 }
 
 function clusterToEvent(cluster, brand, source, isSample = false) {
+  const post = leadPostFromCluster(cluster);
+  const tags = [...(cluster.risk_types || []), ...(cluster.opportunity_types || []), cluster.topic].filter(Boolean);
   return {
     brand,
-    source,
-    title: cluster.title,
-    summary: cluster.summary_zh || cluster.summary,
+    source: leadPostSourceName(post, source),
+    title: generatedOpinionTitle({ brand, tags, topic: cluster.topic, sentiment: cluster.score?.sentiment || "neutral" }),
+    summary: leadPostText(cluster),
     scoreLabel: "IPS",
     scoreValue: cluster.score?.ips ?? "n/a",
-    time: cluster.first_seen_at || cluster.last_seen_at,
-    tags: [...(cluster.risk_types || []), ...(cluster.opportunity_types || []), cluster.topic].filter(Boolean),
+    time: post.created_at || cluster.first_seen_at || cluster.last_seen_at,
+    tags,
     href: cluster.cluster_id && !String(cluster.cluster_id).startsWith("archive-") ? `#/intel/${cluster.cluster_id}` : "",
+    externalHref: post.url || "",
     reason: cluster.score?.explanation || cluster.tracking_reason || "进入当日情报归档。",
     score: cluster.score,
     fermentation: cluster.fermentation,
     postCount: cluster.post_count,
-    metrics: cluster.metrics,
+    metrics: post.metrics || cluster.metrics,
     is_sample: isSample,
   };
 }
