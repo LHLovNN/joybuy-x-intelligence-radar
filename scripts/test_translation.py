@@ -13,6 +13,7 @@ from src.pipeline.translation import (
     JoyBuilderTranslationService,
     NoopTranslationService,
     SampleDictionaryTranslationService,
+    TranslationRequestError,
     TranslationService,
     apply_translations,
     build_translation_service,
@@ -35,6 +36,27 @@ class TimeoutTranslationService(TranslationService):
 
     def translate_batch(self, items: list[dict[str, str]]) -> dict[str, str]:
         raise socket.timeout("simulated timeout")
+
+
+class SplittingJoyBuilderTranslationService(JoyBuilderTranslationService):
+    def __init__(self) -> None:
+        super().__init__(api_key="test-key", batch_size=4, retry_attempts=0, timeout_seconds=1)
+        self.calls: list[list[str]] = []
+
+    def _translate_chunk(self, items: list[dict[str, str]]) -> dict[str, str]:
+        ids = [item["id"] for item in items]
+        self.calls.append(ids)
+        if len(items) > 1:
+            raise TranslationRequestError("simulated batch timeout", timeout=True)
+        return {items[0]["id"]: f"中文译文 {items[0]['id']}"}
+
+
+class AlwaysFailingJoyBuilderTranslationService(JoyBuilderTranslationService):
+    def __init__(self) -> None:
+        super().__init__(api_key="test-key", batch_size=1, retry_attempts=0, timeout_seconds=1)
+
+    def _translate_chunk(self, items: list[dict[str, str]]) -> dict[str, str]:
+        raise TranslationRequestError("simulated single-item timeout", timeout=True)
 
 
 def test_sample_dictionary_translation() -> None:
@@ -131,6 +153,44 @@ def test_translation_timeout_falls_back_to_original() -> None:
     assert "simulated timeout" in posts[0]["translation_error"]
 
 
+def test_joybuilder_timeout_splits_batch_and_keeps_successful_translations() -> None:
+    posts = [
+        {
+            "post_id": f"split-{index}",
+            "language": "en",
+            "clean_text": f"Joybuy refund post {index}.",
+        }
+        for index in range(4)
+    ]
+    service = SplittingJoyBuilderTranslationService()
+    report = apply_translations(posts, service)
+
+    assert report["missing_count"] == 0
+    assert report["counts"]["translated"] == 4
+    assert service.calls[0] == ["0", "1", "2", "3"]
+    assert ["0"] in service.calls
+    assert ["3"] in service.calls
+    assert all(post["translation_status"] == "translated" for post in posts)
+    assert posts[2]["translation_zh"] == "中文译文 2"
+
+
+def test_joybuilder_single_item_failure_falls_back_to_original() -> None:
+    posts = [
+        {
+            "post_id": "single-timeout-1",
+            "language": "en",
+            "clean_text": "Joybuy refund is still pending.",
+        }
+    ]
+    report = apply_translations(posts, AlwaysFailingJoyBuilderTranslationService())
+
+    assert report["missing_count"] == 1
+    assert report["fallback_original_count"] == 1
+    assert posts[0]["translation_status"] == "error"
+    assert posts[0]["translation_zh"] == posts[0]["clean_text"]
+    assert "single-item timeout" in posts[0]["translation_error"]
+
+
 def test_missing_translation_config_falls_back_to_original() -> None:
     posts = [
         {
@@ -166,6 +226,8 @@ if __name__ == "__main__":
     test_joybuilder_request_body_uses_responses_input()
     test_translation_failure_falls_back_to_original()
     test_translation_timeout_falls_back_to_original()
+    test_joybuilder_timeout_splits_batch_and_keeps_successful_translations()
+    test_joybuilder_single_item_failure_falls_back_to_original()
     test_missing_translation_config_falls_back_to_original()
     test_default_real_provider_without_company_key_uses_noop_translation()
     print("Translation tests passed.")

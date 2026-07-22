@@ -184,7 +184,16 @@ Default runtime configuration:
 TRANSLATION_PROVIDER=joybuilder
 JDBUILDER_TRANSLATION_MODEL=GPT-5.5
 JDBUILDER_RESPONSES_URL=http://ai-api.jdcloud.com/v1/responses
+JDBUILDER_TRANSLATION_TIMEOUT_SECONDS=90
+JDBUILDER_TRANSLATION_BATCH_SIZE=6
+JDBUILDER_TRANSLATION_RETRIES=1
+JDBUILDER_TRANSLATION_MAX_CHARS=3500
 ```
+
+The daily runner uses small translation batches by default. If one batch times
+out, it is split into smaller batches and retried so that successful items still
+receive Chinese translations. Original-text fallback is only the final safety
+net for items that still fail after retry and split recovery.
 
 Setup steps:
 

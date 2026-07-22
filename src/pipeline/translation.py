@@ -4,6 +4,7 @@ import json
 import os
 import re
 import socket
+import time
 import urllib.error
 import urllib.request
 from typing import Any
@@ -15,6 +16,13 @@ ZH_LANGUAGES = {"zh", "zh-cn", "zh-hans", "zh-tw", "zh-hant", "cn"}
 
 class TranslationNotConfigured(RuntimeError):
     pass
+
+
+class TranslationRequestError(RuntimeError):
+    def __init__(self, message: str, *, retriable: bool = True, timeout: bool = False) -> None:
+        super().__init__(message)
+        self.retriable = retriable
+        self.timeout = timeout
 
 
 class TranslationService:
@@ -52,21 +60,87 @@ class JoyBuilderTranslationService(TranslationService):
         api_key: str,
         model: str | None = None,
         endpoint: str | None = None,
-        timeout_seconds: int = 45,
-        batch_size: int = 20,
+        timeout_seconds: int = 90,
+        batch_size: int = 6,
+        retry_attempts: int = 1,
+        max_chars_per_batch: int = 3500,
     ) -> None:
         self.api_key = api_key
         self.model = model or os.getenv("JDBUILDER_TRANSLATION_MODEL") or "GPT-5.5"
         self.endpoint = endpoint or os.getenv("JDBUILDER_RESPONSES_URL") or "http://ai-api.jdcloud.com/v1/responses"
-        self.timeout_seconds = int(os.getenv("JDBUILDER_TRANSLATION_TIMEOUT_SECONDS") or timeout_seconds)
-        self.batch_size = batch_size
+        self.timeout_seconds = positive_int_env("JDBUILDER_TRANSLATION_TIMEOUT_SECONDS", timeout_seconds)
+        self.batch_size = positive_int_env("JDBUILDER_TRANSLATION_BATCH_SIZE", batch_size)
+        self.retry_attempts = positive_int_env("JDBUILDER_TRANSLATION_RETRIES", retry_attempts, minimum=0)
+        self.max_chars_per_batch = positive_int_env("JDBUILDER_TRANSLATION_MAX_CHARS", max_chars_per_batch)
+        self.errors: list[str] = []
+        self.last_error = ""
 
     def translate_batch(self, items: list[dict[str, str]]) -> dict[str, str]:
+        self.errors = []
+        self.last_error = ""
         result: dict[str, str] = {}
-        for start in range(0, len(items), self.batch_size):
-            chunk = items[start : start + self.batch_size]
-            result.update(self._translate_chunk(chunk))
+        for chunk in self._split_items(items):
+            try:
+                result.update(self._translate_chunk_with_recovery(chunk))
+            except Exception as error:
+                self._record_error(error)
         return result
+
+    def _split_items(self, items: list[dict[str, str]]) -> list[list[dict[str, str]]]:
+        chunks: list[list[dict[str, str]]] = []
+        chunk: list[dict[str, str]] = []
+        char_count = 0
+        for item in items:
+            text_length = len(item.get("text", ""))
+            if chunk and (len(chunk) >= self.batch_size or char_count + text_length > self.max_chars_per_batch):
+                chunks.append(chunk)
+                chunk = []
+                char_count = 0
+            chunk.append(item)
+            char_count += text_length
+        if chunk:
+            chunks.append(chunk)
+        return chunks
+
+    def _translate_chunk_with_recovery(self, items: list[dict[str, str]]) -> dict[str, str]:
+        try:
+            return self._translate_chunk_with_retries(items)
+        except TranslationRequestError as error:
+            if len(items) <= 1:
+                raise
+            midpoint = max(1, len(items) // 2)
+            translations: dict[str, str] = {}
+            for sub_chunk in (items[:midpoint], items[midpoint:]):
+                try:
+                    translations.update(self._translate_chunk_with_recovery(sub_chunk))
+                except Exception as sub_error:
+                    self._record_error(sub_error)
+            if translations:
+                self._record_error(error)
+                return translations
+            raise error
+
+    def _translate_chunk_with_retries(self, items: list[dict[str, str]]) -> dict[str, str]:
+        last_error: TranslationRequestError | None = None
+        for attempt in range(self.retry_attempts + 1):
+            try:
+                return self._translate_chunk(items)
+            except TranslationRequestError as error:
+                last_error = error
+                if error.timeout and len(items) > 1:
+                    break
+                if attempt >= self.retry_attempts or not error.retriable:
+                    break
+                time.sleep(min(2**attempt, 4))
+        if last_error:
+            raise last_error
+        return {}
+
+    def _record_error(self, error: Exception) -> None:
+        message = str(error).strip() or error.__class__.__name__
+        if message and message not in self.errors and len(self.errors) < 3:
+            self.errors.append(message)
+        self.last_error = "; ".join(self.errors)
 
     def _build_request_body(self, items: list[dict[str, str]]) -> dict[str, Any]:
         system_prompt = (
@@ -107,17 +181,24 @@ class JoyBuilderTranslationService(TranslationService):
                 payload = json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as error:
             body = error.read().decode("utf-8", errors="replace")
-            raise RuntimeError(f"JoyBuilder translation request failed with HTTP {error.code}: {body[:300]}") from error
+            retriable = error.code == 429 or 500 <= error.code < 600
+            raise TranslationRequestError(
+                f"JoyBuilder translation request failed with HTTP {error.code}: {body[:300]}",
+                retriable=retriable,
+            ) from error
         except urllib.error.URLError as error:
-            raise RuntimeError(f"JoyBuilder translation request failed: {error}") from error
+            raise TranslationRequestError(f"JoyBuilder translation request failed: {error}") from error
         except (socket.timeout, TimeoutError) as error:
-            raise RuntimeError(f"JoyBuilder translation request timed out after {self.timeout_seconds}s") from error
+            raise TranslationRequestError(
+                f"JoyBuilder translation request timed out after {self.timeout_seconds}s",
+                timeout=True,
+            ) from error
 
         text = response_output_text(payload)
         try:
             records = json.loads(extract_json_array(text))
         except json.JSONDecodeError as error:
-            raise RuntimeError(f"JoyBuilder translation returned non-JSON output: {text[:300]}") from error
+            raise TranslationRequestError(f"JoyBuilder translation returned non-JSON output: {text[:300]}") from error
         translations: dict[str, str] = {}
         for record in records:
             item_id = str(record.get("id", ""))
@@ -173,6 +254,8 @@ def apply_translations(posts: list[dict[str, Any]], service: TranslationService)
             translations = service.translate_batch(pending)
         except Exception as error:
             error_message = f"{error.__class__.__name__}: {error}"
+        if not error_message:
+            error_message = str(getattr(service, "last_error", "") or "")
 
     for item in pending:
         post = posts[int(item["id"])]
@@ -187,6 +270,17 @@ def apply_translations(posts: list[dict[str, Any]], service: TranslationService)
                 post["translation_error"] = error_message[:300]
 
     return translation_report(posts, service.provider_name, error_message)
+
+
+def positive_int_env(name: str, fallback: int, minimum: int = 1) -> int:
+    raw = os.getenv(name)
+    if not raw:
+        return max(minimum, fallback)
+    try:
+        value = int(raw)
+    except ValueError:
+        return max(minimum, fallback)
+    return max(minimum, value)
 
 
 def needs_translation(post: dict[str, Any]) -> bool:

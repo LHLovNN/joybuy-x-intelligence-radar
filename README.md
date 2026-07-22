@@ -148,7 +148,16 @@ company JoyBuilder Responses API:
 JDCLOUD_GPT_API_KEY
 TRANSLATION_PROVIDER=joybuilder
 JDBUILDER_TRANSLATION_MODEL=GPT-5.5
+JDBUILDER_TRANSLATION_TIMEOUT_SECONDS=90
+JDBUILDER_TRANSLATION_BATCH_SIZE=6
+JDBUILDER_TRANSLATION_RETRIES=1
+JDBUILDER_TRANSLATION_MAX_CHARS=3500
 ```
+
+The translation runner uses small batches and split recovery: if a batch times
+out, it is divided into smaller requests so successful posts can still show
+Chinese translations. Original text is shown only when an item still cannot be
+translated after recovery.
 
 `JDCLOUD_GPT_API_KEY` must be stored only as a local environment variable or
 another company-trusted secret store. It must not be added to GitHub repository
