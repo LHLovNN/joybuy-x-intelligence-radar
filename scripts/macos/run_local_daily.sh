@@ -6,6 +6,7 @@ LOG_DIR="$ROOT/data/logs/macos"
 LOCK_DIR="${TMPDIR:-/tmp}/joybuy-radar-daily.lock"
 KEYCHAIN_ACCOUNT="${JOYBUY_RADAR_KEYCHAIN_ACCOUNT:-${USER:-$(id -un)}}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
+RESUME_FROM_CHECKPOINT="${JOYBUY_RADAR_RESUME_FROM_CHECKPOINT:-0}"
 
 mkdir -p "$LOG_DIR"
 
@@ -83,10 +84,15 @@ PY
 }
 
 run_daily() {
+  local args=()
+  if [[ "$RESUME_FROM_CHECKPOINT" == "1" ]]; then
+    args+=(--resume-from-checkpoint)
+  fi
+
   if command -v caffeinate >/dev/null 2>&1; then
-    caffeinate -dimsu "$PYTHON_BIN" scripts/run_daily.py
+    caffeinate -dimsu "$PYTHON_BIN" scripts/run_daily.py "${args[@]}"
   else
-    "$PYTHON_BIN" scripts/run_daily.py
+    "$PYTHON_BIN" scripts/run_daily.py "${args[@]}"
   fi
 }
 
@@ -117,7 +123,11 @@ export JDBUILDER_TRANSLATION_MAX_CHARS="${JDBUILDER_TRANSLATION_MAX_CHARS:-3500}
 export TWITTERAPI_IO_KEY
 export JDCLOUD_GPT_API_KEY
 
-TWITTERAPI_IO_KEY="$(require_keychain_secret TWITTERAPI_IO_KEY)"
+if [[ "$RESUME_FROM_CHECKPOINT" == "1" ]]; then
+  log "Resuming daily dashboard generation from local checkpoint without calling X."
+else
+  TWITTERAPI_IO_KEY="$(require_keychain_secret TWITTERAPI_IO_KEY)"
+fi
 JDCLOUD_GPT_API_KEY="$(require_keychain_secret JDCLOUD_GPT_API_KEY)"
 
 log "Generating real daily dashboard data."

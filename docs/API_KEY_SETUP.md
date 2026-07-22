@@ -67,6 +67,14 @@ export X_TEMU_DAILY_LIMIT=15
 npm run local:daily
 ```
 
+The normal local daily command saves a local checkpoint as soon as X collection
+finishes. If translation or dashboard generation fails after that point, use the
+resume command to continue without another X request:
+
+```bash
+npm run local:daily:resume
+```
+
 Notes:
 
 - Suitable as the first low-cost MVP candidate.

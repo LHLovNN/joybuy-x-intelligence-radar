@@ -177,6 +177,14 @@ Run one manual local daily job:
 npm run local:daily
 ```
 
+The normal daily job writes a local collection checkpoint immediately after X
+collection succeeds and before translation starts. If translation or later
+generation fails, resume from that checkpoint without calling X again:
+
+```bash
+npm run local:daily:resume
+```
+
 Install the 08:00 launchd schedule:
 
 ```bash

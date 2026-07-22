@@ -31,6 +31,7 @@ data/raw/
 data/processed/
 data/logs/
 data/clusters/
+data/checkpoints/
 public/dashboard-data/clusters/
 
 # Temporary files

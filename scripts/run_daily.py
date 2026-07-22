@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import math
 import os
 import sys
@@ -24,7 +25,20 @@ from src.pipeline.translation import (
     build_translation_service,
 )
 from src.utils.io import read_json, write_json, write_jsonl
-from src.utils.time import BEIJING, beijing_daily_window, beijing_label, now_utc, to_iso
+from src.utils.time import BEIJING, beijing_daily_window, beijing_label, from_iso, now_utc, to_iso
+
+
+CHECKPOINT_PATH = ROOT / "data" / "checkpoints" / "daily" / "latest.json"
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Generate Joybuy X Intelligence Radar daily dashboard data.")
+    parser.add_argument(
+        "--resume-from-checkpoint",
+        action="store_true",
+        help="Resume from the latest local collection checkpoint without calling the X provider.",
+    )
+    return parser.parse_args()
 
 
 def selected_provider(source_config: dict[str, Any]) -> str:
@@ -81,8 +95,9 @@ def collect_real_posts(
     x_source: Any,
     keyword_config: dict[str, Any],
     source_config: dict[str, Any],
+    start: Any,
+    end: Any,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    start, end = beijing_daily_window(now_utc())
     limits = source_config["limits"]
     brand_limits = {
         "joybuy": limit_from_env("X_JOYBUY_DAILY_LIMIT", limits["max_joybuy_posts_per_day"]),
@@ -139,26 +154,88 @@ def collect_real_posts(
     }
 
 
+def checkpoint_payload(
+    provider: str,
+    raw_posts: list[dict[str, Any]],
+    collection_status: dict[str, Any],
+    start: Any,
+    end: Any,
+    today: str,
+    window_label: str,
+) -> dict[str, Any]:
+    return {
+        "schema_version": 1,
+        "created_at": to_iso(now_utc()),
+        "provider": provider,
+        "report_date": today,
+        "window_start": to_iso(start),
+        "window_end": to_iso(end),
+        "window_label": window_label,
+        "raw_posts": raw_posts,
+        "collection_status": collection_status,
+    }
+
+
+def write_collection_checkpoint(
+    provider: str,
+    raw_posts: list[dict[str, Any]],
+    collection_status: dict[str, Any],
+    start: Any,
+    end: Any,
+    today: str,
+    window_label: str,
+) -> None:
+    payload = checkpoint_payload(provider, raw_posts, collection_status, start, end, today, window_label)
+    write_json(str(CHECKPOINT_PATH), payload)
+    write_json(str(ROOT / "data" / "checkpoints" / "daily" / f"{today}.json"), payload)
+
+
+def read_collection_checkpoint() -> dict[str, Any]:
+    if not CHECKPOINT_PATH.exists():
+        raise SystemExit(f"No local daily checkpoint found at {CHECKPOINT_PATH}. Run a normal local daily job first.")
+    checkpoint = read_json(str(CHECKPOINT_PATH))
+    if not checkpoint.get("raw_posts"):
+        raise SystemExit(f"Local daily checkpoint has no raw posts: {CHECKPOINT_PATH}")
+    return checkpoint
+
+
 def main() -> None:
+    args = parse_args()
     keyword_config = read_json(str(ROOT / "config" / "keywords.json"))
     scoring_config = read_json(str(ROOT / "config" / "scoring.json"))
     source_config = read_json(str(ROOT / "config" / "sources.json"))
-    provider = selected_provider(source_config)
-    x_source = get_x_source(provider)
-    translation_service = build_translation_service(provider)
-    runtime_limits = apply_runtime_limits(x_source, source_config)
-    if hasattr(x_source, "all_posts"):
-        raw_posts = x_source.all_posts()
-        collection_status = {
-            "status": "sample",
-            "warnings": [],
-            "limits": runtime_limits,
-            "api_requests_used": 0,
-            "max_api_requests": runtime_limits["max_api_requests"],
-            "request_budget_exhausted": False,
-        }
+    start, end = beijing_daily_window(now_utc())
+    today = end.astimezone(BEIJING).strftime("%Y-%m-%d")
+    window_label = f"{beijing_label(start)} - {beijing_label(end)}"
+
+    if args.resume_from_checkpoint:
+        checkpoint = read_collection_checkpoint()
+        provider = checkpoint["provider"]
+        raw_posts = checkpoint["raw_posts"]
+        collection_status = checkpoint["collection_status"]
+        today = checkpoint["report_date"]
+        window_label = checkpoint["window_label"]
+        start = from_iso(checkpoint["window_start"])
+        end = from_iso(checkpoint["window_end"])
     else:
-        raw_posts, collection_status = collect_real_posts(x_source, keyword_config, source_config)
+        provider = selected_provider(source_config)
+        x_source = get_x_source(provider)
+        runtime_limits = apply_runtime_limits(x_source, source_config)
+        if hasattr(x_source, "all_posts"):
+            raw_posts = x_source.all_posts()
+            collection_status = {
+                "status": "sample",
+                "warnings": [],
+                "limits": runtime_limits,
+                "api_requests_used": 0,
+                "max_api_requests": runtime_limits["max_api_requests"],
+                "request_budget_exhausted": False,
+            }
+        else:
+            raw_posts, collection_status = collect_real_posts(x_source, keyword_config, source_config, start, end)
+            write_collection_checkpoint(provider, raw_posts, collection_status, start, end, today, window_label)
+
+    translation_service = build_translation_service(provider)
     normalized = normalize_posts(raw_posts, keyword_config)
     translation_status = apply_translations(normalized, translation_service)
     collection_status["translation"] = translation_status
@@ -172,10 +249,6 @@ def main() -> None:
     joybuy_clusters = score_clusters(joybuy_clusters, scoring_config)
     joybuy_clusters = attach_evidence_chains(joybuy_clusters)
     joybuy_clusters = update_fermentation(joybuy_clusters)
-
-    start, end = beijing_daily_window(now_utc())
-    today = end.astimezone(BEIJING).strftime("%Y-%m-%d")
-    window_label = f"{beijing_label(start)} - {beijing_label(end)}"
 
     write_jsonl(str(ROOT / "data" / "raw" / "x" / f"{provider}-posts.jsonl"), raw_posts)
     write_jsonl(str(ROOT / "data" / "processed" / "normalized-posts.jsonl"), normalized)

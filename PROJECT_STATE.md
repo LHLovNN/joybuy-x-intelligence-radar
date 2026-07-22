@@ -26,6 +26,7 @@ Build the Joybuy X Intelligence Radar MVP:
 - Local real-browser screenshot QA should be run with `npm run qa:local-browser`. It first tries full Playwright QA, then falls back to system Chrome/Firefox headless screenshots. GitHub Actions is only the publish fallback quality gate, not the replacement for local QA.
 - GitHub Actions publish workflow must run browser screenshot QA before deploying Pages and upload screenshots as workflow artifacts.
 - If the X provider budget is exhausted or the request cap is reached, the local daily run should publish a partial report and expose collection warnings in `run-status.json` and the Actions summary.
+- The local daily run must save a non-Git collection checkpoint immediately after X collection succeeds. If translation or dashboard generation fails after collection, use `npm run local:daily:resume` to continue from checkpoint without calling X again.
 - Each successful Mac daily run commits `public/dashboard-data/*.json`, `public/dashboard-data/daily/*.json` and `public/dashboard-data-bundle.js` back to Git before GitHub deploys Pages, so the dashboard can browse historical daily reports without pulling history from Pages.
 - The first implementation uses deterministic sample data until API keys are available.
 - Joybuy is a canonical brand entity:
@@ -113,7 +114,7 @@ Build the Joybuy X Intelligence Radar MVP:
 - Completed local real Chrome screenshot QA through the Codex Chrome plugin and a user-started `127.0.0.1:4173` preview server. Desktop pages, mobile breakpoints, detail-page language toggle and console errors were checked without calling external collection APIs.
 - Added multilingual translation for X posts: sample mode uses a deterministic local sample dictionary, while local trusted real-provider runs can use the company JoyBuilder Responses API (`JDCLOUD_GPT_API_KEY`, `GPT-5.5`). User-run real smoke test succeeded with one French Joybuy sentence returning Chinese translation. The local daily runner now prioritizes successful Chinese translation through smaller default batches, a 90-second timeout, one retry, max-character batching and split recovery after batch timeouts. Original-text fallback remains the final safety net and does not block daily publishing, including real `socket.timeout` failures; the dashboard run summary reports translation provider, missing count and original-text fallback count.
 - Re-architected automation so GitHub no longer runs daily collection or fermentation refresh. The new model is Mac local launchd at 08:00 BJT for collection/translation/generation/push, with GitHub Actions reduced to a secret-free static Pages publish workflow.
-- Added macOS automation scripts under `scripts/macos/`: Keychain secret setup, local daily runner, launchd install/uninstall and status/log inspection. The local runner uses Keychain, `caffeinate`, source-change guards, real-provider checks, security/data verification and public-dashboard-only Git staging.
+- Added macOS automation scripts under `scripts/macos/`: Keychain secret setup, local daily runner, checkpoint resume, launchd install/uninstall and status/log inspection. The local runner uses Keychain, `caffeinate`, source-change guards, real-provider checks, security/data verification and public-dashboard-only Git staging.
 
 ## In Progress
 
