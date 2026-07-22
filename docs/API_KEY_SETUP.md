@@ -1,13 +1,18 @@
 # API Key Setup Guide
 
-The current MVP runs with deterministic sample data. To connect real data, add provider keys as GitHub repository secrets.
+The current MVP runs with deterministic sample data for local preview. The
+production-like daily job runs on the user's Mac, so provider keys are stored in
+macOS Keychain or another approved local/company-trusted secret store. GitHub
+Actions only publishes committed static dashboard files and does not need
+provider secrets.
 
 ## Recommended MVP Order
 
 1. Select one X data provider for a 3-5 day bake-off.
-2. Add Tavily for external verification.
-3. Add Perplexity for high-risk analysis and executive summaries.
-4. Keep optional fallback providers disabled until needed.
+2. Configure the company JoyBuilder key locally for Chinese translation.
+3. Add Tavily for external verification.
+4. Add Perplexity for high-risk analysis and executive summaries.
+5. Keep optional fallback providers disabled until needed.
 
 ## X Data Provider
 
@@ -36,9 +41,8 @@ Setup steps:
 2. Create an account.
 3. Open the dashboard or API key section.
 4. Create or copy an API key.
-5. Add it to GitHub Secrets as `TWITTERAPI_IO_KEY`.
-6. Optional: set `X_SOURCE_PROVIDER=twitterapi_io`. The workflow auto-selects
-   TwitterAPI.io when `TWITTERAPI_IO_KEY` exists.
+5. Store it in macOS Keychain through `npm run local:secrets`.
+6. Optional for manual terminal runs: set `X_SOURCE_PROVIDER=twitterapi_io`.
 
 Local first test:
 
@@ -54,20 +58,20 @@ export X_BAKEOFF_POST_LIMIT=20
 python3 scripts/bakeoff_twitterapi_io.py
 ```
 
-Manual daily test after the bake-off:
+Manual local daily test after the bake-off:
 
 ```bash
 export X_SOURCE_PROVIDER=twitterapi_io
-export X_JOYBUY_DAILY_LIMIT=100
-export X_TEMU_DAILY_LIMIT=40
-python3 scripts/run_daily.py
+export X_JOYBUY_DAILY_LIMIT=45
+export X_TEMU_DAILY_LIMIT=15
+npm run local:daily
 ```
 
 Notes:
 
 - Suitable as the first low-cost MVP candidate.
-- Keep the key in local environment variables or GitHub Secrets only. Do not
-  paste it into source files or commit it.
+- Keep the key in macOS Keychain or a local one-off environment variable only.
+  Do not paste it into source files or commit it.
 - Public pricing currently advertises pay-per-use tweet access from about `$0.15 / 1K tweets`.
 - Before production use, run a 3-5 day bake-off with Joybuy and Temu queries to verify returned fields, duplicate rate and daily cost.
 
@@ -86,7 +90,7 @@ Setup steps:
 1. Open `https://www.xpoz.ai/`.
 2. Create an account.
 3. Get an API key from the Xpoz token/API key page.
-4. Add it to GitHub Secrets as `XPOZ_API_KEY`.
+4. Store it in macOS Keychain if Xpoz becomes the selected local provider.
 5. Set `X_SOURCE_PROVIDER=xpoz` if selected as primary.
 
 Notes:
@@ -112,7 +116,7 @@ Setup steps:
 3. Choose a specific X/Twitter Actor.
 4. Confirm the Actor supports API usage under your plan.
 5. Create an Apify API token.
-6. Add it to GitHub Secrets as `APIFY_TOKEN`.
+6. Store it in macOS Keychain if Apify becomes the selected local provider.
 
 Notes:
 
@@ -134,7 +138,7 @@ Setup steps:
 1. Open `https://aisa.one/`.
 2. Create or access an AIsa account.
 3. Create an API key.
-4. Add it to GitHub Secrets as `AISA_API_KEY`.
+4. Store it in macOS Keychain if AIsa becomes the selected local provider.
 5. Test the X-related skill against Joybuy and Temu queries.
 
 Notes:
@@ -142,7 +146,7 @@ Notes:
 - Useful as a skill/API fallback.
 - Confirm field coverage before relying on it for dashboard metrics.
 
-GitHub Secrets:
+Local secret names:
 
 ```text
 TWITTERAPI_IO_KEY=...
@@ -151,8 +155,8 @@ APIFY_TOKEN=...
 AISA_API_KEY=...
 ```
 
-`X_SOURCE_PROVIDER=twitterapi_io` is optional for TwitterAPI.io. Add it only
-when you want to force a specific provider explicitly.
+`X_SOURCE_PROVIDER=twitterapi_io` is optional for TwitterAPI.io. Set it only
+when you want to force a specific provider explicitly in a manual terminal run.
 
 Risk notes:
 
@@ -160,6 +164,45 @@ Risk notes:
 - Apify free plan does not guarantee that every X actor supports API usage.
 - Provider pricing and X access rules can change quickly.
 - Start with a monthly cost cap.
+
+## Company JoyBuilder Translation
+
+Real X posts may be English, German, French, Dutch, Spanish or other languages.
+MVP production runs try to translate every non-Chinese post into Chinese before
+the dashboard is published. If translation is unavailable, the report still
+publishes and the affected posts show their original text as fallback.
+
+Security decision:
+
+```text
+Do not add JDCLOUD_GPT_API_KEY to GitHub repository Secrets during the MVP.
+```
+
+Default runtime configuration:
+
+```text
+TRANSLATION_PROVIDER=joybuilder
+JDBUILDER_TRANSLATION_MODEL=GPT-5.5
+JDBUILDER_RESPONSES_URL=http://ai-api.jdcloud.com/v1/responses
+```
+
+Setup steps:
+
+1. Use the same company API key pattern as the company image plugin.
+2. Store `JDCLOUD_GPT_API_KEY` in macOS Keychain through `npm run local:secrets`, or use another company-trusted local secret store.
+3. Do not paste the key into source files, Markdown, JSON or screenshots.
+4. Keep the model value as `GPT-5.5` unless the JoyBuilder documentation changes.
+5. Run `python3 scripts/smoke_translation_joybuilder.py` from a normal terminal to verify the company service.
+
+Safety policy:
+
+- GitHub Actions only publishes committed static dashboard files, so it does
+  not call the company GPT service and does not require the company key.
+- If `JDCLOUD_GPT_API_KEY` is missing or the translation service fails,
+  real-provider daily runs continue and affected non-Chinese posts use original
+  text as fallback. The run summary records how many posts used fallback text.
+- Sample-mode runs use a local deterministic sample dictionary and do not call
+  the company API.
 
 ## Tavily
 
@@ -172,7 +215,7 @@ https://www.tavily.com/
 https://docs.tavily.com/documentation/api-credits
 ```
 
-GitHub Secret:
+Local secret:
 
 ```text
 TAVILY_API_KEY=...
@@ -184,7 +227,7 @@ Setup steps:
 2. Create an account.
 3. Open the API key page in the Tavily dashboard.
 4. Copy the key.
-5. Add it to GitHub Secrets as `TAVILY_API_KEY`.
+5. Store it in macOS Keychain if Tavily is enabled.
 
 Usage policy:
 
@@ -202,7 +245,7 @@ https://docs.perplexity.ai/
 https://docs.perplexity.ai/docs/getting-started/pricing
 ```
 
-GitHub Secret:
+Local secret:
 
 ```text
 PERPLEXITY_API_KEY=...
@@ -213,7 +256,7 @@ Setup steps:
 1. Open `https://docs.perplexity.ai/`.
 2. Follow the dashboard/API setup flow.
 3. Create or copy an API key.
-4. Add it to GitHub Secrets as `PERPLEXITY_API_KEY`.
+4. Store it in macOS Keychain if Perplexity is enabled.
 5. Keep daily call limits low during MVP.
 
 Usage policy:
@@ -231,7 +274,7 @@ Website:
 https://platform.openai.com/
 ```
 
-GitHub Secret:
+Local secret:
 
 ```text
 OPENAI_API_KEY=...
@@ -242,18 +285,18 @@ Setup steps:
 1. Open `https://platform.openai.com/`.
 2. Create or select the organization/project.
 3. Create an API key.
-4. Add it to GitHub Secrets as `OPENAI_API_KEY`.
+4. Store it in macOS Keychain if OpenAI is enabled.
 
-## GitHub Secrets Steps
+## macOS Keychain Steps
 
-1. Open the GitHub repository.
-2. Go to `Settings`.
-3. Go to `Secrets and variables`.
-4. Open `Actions`.
-5. Click `New repository secret`.
-6. Add the key name exactly as listed above.
-7. Paste the API key value.
-8. Save.
+Use these steps for the Mac-local automation. Do not add provider keys or
+`JDCLOUD_GPT_API_KEY` to GitHub repository Secrets during the MVP.
+
+1. Open a normal local terminal in the repo root.
+2. Run `npm run local:secrets`.
+3. Paste `TWITTERAPI_IO_KEY` when prompted.
+4. Paste `JDCLOUD_GPT_API_KEY` when prompted.
+5. The script writes both values to macOS Keychain and does not print them.
 
 ## GitHub Pages Steps
 
@@ -261,8 +304,9 @@ Setup steps:
 2. Go to `Settings`.
 3. Go to `Pages`.
 4. Set source to `GitHub Actions`.
-5. Run the `Daily report` workflow manually once.
-6. Open the Pages URL from the workflow output.
+5. Push committed `public/**` dashboard files.
+6. The `Publish dashboard` workflow deploys the Pages site.
+7. Open the Pages URL from the workflow output.
 
 ## MVP Cost Guidance
 
@@ -278,4 +322,4 @@ Suggested rollout:
 2. Run real data source bake-off for 3-5 days.
 3. Compare cost, field quality, duplicate rate and result quality.
 4. Select primary provider.
-5. Start daily report automation.
+5. Start Mac local daily automation at 08:00.

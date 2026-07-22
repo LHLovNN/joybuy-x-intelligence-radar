@@ -9,6 +9,12 @@
     "check": "python3 scripts/check_dashboard_data.py",
     "verify:data": "python3 scripts/verify_data.py",
     "verify:browser": "node scripts/verify_dashboard.cjs",
+    "qa:local-browser": "bash scripts/local_browser_qa.sh",
+    "local:secrets": "bash scripts/macos/set_local_secrets.sh",
+    "local:daily": "bash scripts/macos/run_local_daily.sh",
+    "local:daily:install": "bash scripts/macos/install_daily_launchd.sh",
+    "local:daily:uninstall": "bash scripts/macos/uninstall_daily_launchd.sh",
+    "local:daily:status": "bash scripts/macos/daily_status.sh",
     "serve": "python3 -m http.server 4173 --directory public"
   }
 }

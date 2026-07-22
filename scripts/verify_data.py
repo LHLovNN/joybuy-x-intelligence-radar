@@ -45,7 +45,8 @@ def main() -> None:
         archive_path = DATA / "daily" / f"{item['date']}.json"
         assert_true(archive_path.exists(), f"missing daily archive file for {item['date']}")
     assert_true(latest["metrics"]["effective_intelligence"] == len(clusters), "effective intelligence metric mismatch")
-    assert_true(source["status"] == "normal", "source status should be normal for sample data")
+    expected_source_status = "sample" if is_sample else "normal"
+    assert_true(source["status"] == expected_source_status, f"source status should be {expected_source_status}")
     assert_true(source["raw_posts_collected"] >= source["effective_posts"], "raw posts should be >= effective posts")
 
     tracked = [cluster for cluster in clusters if cluster.get("tracking_eligible")]

@@ -41,12 +41,20 @@ def post_card(post: dict[str, Any], label: str) -> dict[str, Any]:
         "post_id": post["post_id"],
         "label": label,
         "url": post["url"],
+        "author_name": post["author"].get("name") or post["author"].get("handle"),
         "author_handle": post["author"]["handle"],
+        "author_avatar_url": post["author"].get("avatar_url"),
         "author_followers": post["author"]["followers"],
         "author_verified": post["author"].get("verified", False),
         "created_at": post["created_at"],
+        "language": post.get("language", "und"),
         "text": post["clean_text"],
+        "translation_zh": post.get("translation_zh") or post["summary_zh"],
+        "translation_status": post.get("translation_status", "unknown"),
+        "translation_provider": post.get("translation_provider", "none"),
         "summary_zh": post["summary_zh"],
+        "media": post.get("media", []),
+        "links": post.get("links", []),
         "metrics": post["metrics"],
         "matched_brand_terms": post.get("matched_brand_terms", []),
         "brand_context_evidence": post.get("brand_context_evidence", []),
@@ -99,4 +107,3 @@ def attach_evidence_chains(clusters: list[dict[str, Any]]) -> list[dict[str, Any
     for cluster in clusters:
         cluster["evidence_chain"] = build_evidence_chain(cluster)
     return clusters
-

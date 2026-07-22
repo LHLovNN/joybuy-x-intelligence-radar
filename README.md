@@ -36,26 +36,29 @@ before committing.
 
 ## Current MVP Status
 
-This repo uses deterministic sample data by default so the dashboard can be reviewed without API keys. TwitterAPI.io can be enabled manually through environment variables for real X data testing.
+This repo uses deterministic sample data by default so the dashboard can be
+reviewed without API keys. The production-like MVP path runs on the user's Mac:
+the Mac collects X data, calls local company JoyBuilder translation, generates
+public dashboard JSON, commits it, and pushes it to GitHub.
 
-GitHub Actions status:
+Automation status:
 
-- `Daily report` runs daily at UTC 00:23, which is Beijing time 08:23. This avoids GitHub Actions top-of-hour scheduling delays while staying in the morning report window.
-- Weekend guardrail caps are 60 total X posts per day: up to 45 Joybuy/JD/京东 posts, up to 15 Temu posts and up to 6 X API requests per run.
-- Each successful daily run commits the public dashboard JSON archive back to Git, then deploys GitHub Pages. This keeps historical daily reports browsable without pulling old data from Pages.
-- `Deploy dashboard` is manual-only and deploys the already committed `public/` dashboard without calling any X provider or API Secret.
-- `Fermentation refresh` is manual-only for now. Its scheduled triggers are intentionally disabled until real historical metric refresh is ready and the API budget is approved.
-- If the X API budget is exhausted or the request cap is reached, the daily workflow publishes a partial report with collection warnings instead of failing the whole dashboard deployment.
-- The dashboard information architecture follows a clearer intelligence-product hierarchy: `今日精选`, `全部情报`, `日报中心`, `发酵追踪`, and `设置`. `日报中心` contains both Joybuy Radar and the Temu competitor baseline, with signals shown on a publish-time vertical timeline.
+- The Mac local automation runs daily at Beijing time 08:00 through launchd.
+- GitHub Actions no longer collects X data, calls translation services, or holds company GPT keys.
+- GitHub Actions only publishes already committed static dashboard files to GitHub Pages.
+- Daily guardrail caps are 60 total X posts per day: up to 45 Joybuy/JD/京东 posts, up to 15 Temu posts and up to 6 X API requests per run.
+- Each successful Mac run commits the public dashboard JSON archive back to Git, then the GitHub publish workflow deploys Pages. This keeps historical daily reports browsable without pulling old data from Pages.
+- If the X API budget is exhausted or the request cap is reached, the daily run publishes a partial report with collection warnings instead of failing the whole dashboard deployment.
+- The dashboard information architecture follows a clearer intelligence-product hierarchy: `舆情焦点`, `全部舆情`, `舆情日报`, `发酵追踪`, and `设置`. `舆情日报` contains both Joybuy Radar and the Temu competitor baseline, with signals shown on a publish-time vertical timeline.
 
 Current seeded public archive:
 
 - `2026-07-17`: summary-only placeholder for the first manual run before history storage existed.
 - `2026-07-18`: summary-only archive from the scheduled Daily report run.
 - `2026-07-19`: summary-only archive from the scheduled Daily report run.
-- Future scheduled runs will add full daily archive files under `public/dashboard-data/daily/`.
+- Future Mac scheduled runs will add full daily archive files under `public/dashboard-data/daily/`.
 
-Provider secrets:
+Local provider secrets:
 
 - `TWITTERAPI_IO_KEY`
 - `XPOZ_API_KEY`
@@ -64,6 +67,9 @@ Provider secrets:
 - `TAVILY_API_KEY`
 - `PERPLEXITY_API_KEY`
 - `OPENAI_API_KEY`
+
+Company JoyBuilder translation uses `JDCLOUD_GPT_API_KEY`, but this key is
+local-only for the MVP and must not be added to GitHub repository Secrets.
 
 ## Architecture
 
@@ -124,7 +130,7 @@ export X_BAKEOFF_POST_LIMIT=20
 python3 scripts/bakeoff_twitterapi_io.py
 ```
 
-After the bake-off, run a capped daily test:
+After the bake-off, run a capped local daily test:
 
 ```bash
 export X_SOURCE_PROVIDER=twitterapi_io
@@ -132,40 +138,96 @@ export X_DAILY_LIMIT=60
 export X_JOYBUY_DAILY_LIMIT=45
 export X_TEMU_DAILY_LIMIT=15
 export X_MAX_API_REQUESTS=6
-python3 scripts/run_daily.py
+npm run local:daily
 ```
 
-In GitHub Actions, setting `TWITTERAPI_IO_KEY` is enough to select
-TwitterAPI.io automatically. `X_SOURCE_PROVIDER` remains available as an
-optional override.
+Local trusted runs can translate every non-Chinese post into Chinese through the
+company JoyBuilder Responses API:
 
-Optional browser verification, when Playwright browsers are installed:
+```text
+JDCLOUD_GPT_API_KEY
+TRANSLATION_PROVIDER=joybuilder
+JDBUILDER_TRANSLATION_MODEL=GPT-5.5
+```
+
+`JDCLOUD_GPT_API_KEY` must be stored only as a local environment variable or
+another company-trusted secret store. It must not be added to GitHub repository
+Secrets during the MVP.
+
+## Mac Local Automation
+
+Store local secrets in macOS Keychain:
 
 ```bash
-NODE_PATH=/Users/liuhe89/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules node scripts/verify_dashboard.cjs
+npm run local:secrets
 ```
+
+Run one manual local daily job:
+
+```bash
+npm run local:daily
+```
+
+Install the 08:00 launchd schedule:
+
+```bash
+npm run local:daily:install
+```
+
+Check local automation status and logs:
+
+```bash
+npm run local:daily:status
+```
+
+Uninstall the launchd schedule:
+
+```bash
+npm run local:daily:uninstall
+```
+
+Lock screen is fine. Sleep is not: keep the Mac awake, online and able to reach
+TwitterAPI.io, GitHub and the company JoyBuilder endpoint at 08:00.
+
+Local real-browser screenshot QA:
+
+```bash
+npm run qa:local-browser
+```
+
+This first tries the full Playwright browser QA. If Playwright is not available,
+it falls back to local Google Chrome or Firefox headless screenshots and writes
+images to `data/logs/screenshots-local/`.
+Run this from a normal local terminal. Some Codex sandbox sessions cannot launch
+system browsers or bind local preview ports, even when Chrome or Firefox is
+installed.
+
+For full local Playwright interaction QA:
+
+```bash
+npm install --no-save --no-package-lock playwright
+npx playwright install chromium
+node scripts/verify_dashboard.cjs
+```
+
+In GitHub Actions, browser screenshot QA is part of the publish path only. The
+workflow installs Playwright Chromium on the runner, runs
+`scripts/verify_dashboard.cjs`, and uploads screenshots from
+`data/logs/screenshots` as an artifact.
 
 ## Deployment
 
-The repository includes GitHub Actions workflows:
+The repository includes one GitHub Actions workflow:
 
-- `.github/workflows/daily-report.yml`: daily automatic report and GitHub Pages publish.
-- `.github/workflows/deploy-dashboard.yml`: manual deploy-only workflow for already committed dashboard data. Use this when the UI or archived JSON has changed but no new X collection should run.
-- `.github/workflows/fermentation-refresh.yml`: manual fermentation refresh only during the MVP bake-off.
+- `.github/workflows/publish-dashboard.yml`: publishes already committed static dashboard data to GitHub Pages. It runs on `public/**` pushes and can also be triggered manually.
 
-Set GitHub Pages source to `GitHub Actions`, then run the daily workflow manually once.
-The workflows print a metrics-only report summary after generation so scheduled
-runs can be reviewed without exposing post text in logs.
-The daily workflow also writes the generated dashboard archive back to the repo
-using `GITHUB_TOKEN`; only `public/dashboard-data/*.json`,
-`public/dashboard-data/daily/*.json` and `public/dashboard-data-bundle.js` are
-staged by that step.
-The deploy-only workflow does not receive provider secrets and does not run
-`scripts/run_daily.py`.
+Set GitHub Pages source to `GitHub Actions`. The publish workflow does not
+receive provider secrets and does not run `scripts/run_daily.py`. It only runs
+security/data checks, browser screenshot QA, and Pages deployment.
 
 ## Next Step
 
-Review the `日报中心` historical view, then continue the real-data quality
+Review the `舆情日报` historical view, then continue the real-data quality
 bake-off once source credits or fallback source coverage are confirmed.
 
 See:

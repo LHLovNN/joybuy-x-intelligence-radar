@@ -54,6 +54,12 @@ def main() -> None:
             f"{collection_status.get('api_requests_used', 'n/a')}/"
             f"{collection_status.get('max_api_requests', 'n/a')}"
         )
+    translation = collection_status.get("translation") or run_status.get("translation_status") or source.get("translation") or {}
+    if translation:
+        provider = translation.get("provider") or ", ".join(translation.get("providers", [])) or "unknown"
+        print(f"- Translation provider: {provider}")
+        print(f"- Translation missing: {translation.get('missing_count', 0)}")
+        print(f"- Translation fallback original: {translation.get('fallback_original_count', translation.get('missing_count', 0))}")
     print(f"- Raw posts collected: {source.get('raw_posts_collected', 0)}")
     print(f"- Effective posts: {source.get('effective_posts', 0)}")
     print(f"- Joybuy candidates/effective: {breakdown.get('joybuy_candidates', 0)}/{breakdown.get('joybuy_effective', 0)}")

@@ -1,15 +1,18 @@
 const fs = require("fs");
 const path = require("path");
-const { chromium } = require("playwright");
+let chromium;
+try {
+  ({ chromium } = require("playwright"));
+} catch (error) {
+  console.error("Playwright is not installed. Install it or provide the bundled runtime before running browser verification.");
+  process.exit(1);
+}
 
 const root = path.resolve(__dirname, "..");
 const publicDir = path.join(root, "public");
 const outDir = path.join(root, "data", "logs", "screenshots");
 const localBrowserCandidates = [
   process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-  "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
-  "/Applications/Chromium.app/Contents/MacOS/Chromium",
 ].filter(Boolean);
 
 function localBrowserExecutable() {
@@ -24,8 +27,17 @@ function readJson(relativePath) {
   return JSON.parse(readText(relativePath));
 }
 
+function readDataBundle() {
+  const text = readText("dashboard-data-bundle.js").trim();
+  const prefix = "window.__DASHBOARD_DATA__ = ";
+  if (!text.startsWith(prefix)) return {};
+  return JSON.parse(text.slice(prefix.length).replace(/;$/, ""));
+}
+
 function buildDataMap() {
+  const bundled = readDataBundle();
   const map = {
+    ...bundled,
     "dashboard-data/latest.json": readJson("dashboard-data/latest.json"),
     "dashboard-data/daily/latest.json": readJson("dashboard-data/daily/latest.json"),
     "dashboard-data/daily/index.json": readJson("dashboard-data/daily/index.json"),
@@ -33,6 +45,9 @@ function buildDataMap() {
     "dashboard-data/competitor.json": readJson("dashboard-data/competitor.json"),
     "dashboard-data/source-status.json": readJson("dashboard-data/source-status.json"),
   };
+  for (const [key, payload] of Object.entries(bundled.clusters || {})) {
+    map[key] = payload;
+  }
   const dailyDir = path.join(publicDir, "dashboard-data", "daily");
   for (const file of fs.readdirSync(dailyDir)) {
     if (file.endsWith(".json") && file !== "latest.json" && file !== "index.json") {
@@ -66,9 +81,9 @@ function shellHtml() {
           </div>
         </div>
         <nav class="nav-list">
-          <a href="#/" data-route="overview">今日精选</a>
-          <a href="#/all" data-route="all">全部情报</a>
-          <a href="#/daily" data-route="daily">日报中心</a>
+          <a href="#/" data-route="overview">舆情焦点</a>
+          <a href="#/all" data-route="all">全部舆情</a>
+          <a href="#/daily" data-route="daily">舆情日报</a>
           <a href="#/fermentation" data-route="fermentation">发酵追踪</a>
           <a href="#/settings" data-route="settings">设置</a>
         </nav>
@@ -76,8 +91,8 @@ function shellHtml() {
       <main class="main-panel">
         <header class="topbar">
           <div>
-            <p class="eyebrow">X PUBLIC INTELLIGENCE</p>
-            <h1 id="page-title">今日精选</h1>
+            <p class="eyebrow">JOYBUY 舆情中心</p>
+            <h1 id="page-title">舆情焦点</h1>
           </div>
           <div class="topbar-meta">
             <span id="generated-at">Loading</span>
@@ -117,30 +132,44 @@ async function main() {
   });
 
   await page.setContent(shellHtml(), { waitUntil: "domcontentloaded" });
-  await page.waitForSelector(".metric-grid", { timeout: 5000 });
+  await page.waitForSelector(".page-hero", { timeout: 5000 });
+  await page.waitForSelector(".featured-date-group", { timeout: 5000 });
   await page.screenshot({ path: path.join(outDir, "overview.png"), fullPage: true });
 
   await page.click('a[href="#/daily"]');
-  await page.waitForSelector(".publish-timeline", { timeout: 5000 });
+  await page.waitForSelector(".daily-masthead", { timeout: 5000 });
   await page.waitForSelector(".daily-history-item", { timeout: 5000 });
+  await page.waitForSelector(".daily-section", { timeout: 5000 });
+  await page.waitForSelector(".daily-story-card", { timeout: 5000 });
   await page.screenshot({ path: path.join(outDir, "daily.png"), fullPage: true });
 
   await page.click('a[href="#/all"]');
-  await page.waitForSelector("#all-brand-filter", { timeout: 5000 });
-  await page.selectOption("#all-brand-filter", "joybuy");
+  await page.waitForSelector(".all-feed", { timeout: 5000 });
+  await page.waitForSelector('[data-all-source-filter="joybuy"]', { timeout: 5000 });
+  await page.click('[data-all-source-filter="joybuy"]');
+  await page.waitForSelector(".all-date-group", { timeout: 5000 });
+  await page.screenshot({ path: path.join(outDir, "all.png"), fullPage: true });
 
   await page.click('a[href="#/fermentation"]');
-  await page.waitForSelector(".section", { timeout: 5000 });
+  await page.waitForSelector(".tracking-layout", { timeout: 5000 });
+  await page.waitForSelector(".tracking-card, .empty", { timeout: 5000 });
+  await page.screenshot({ path: path.join(outDir, "fermentation.png"), fullPage: true });
+
+  await page.click('a[href="#/settings"]');
+  await page.waitForSelector(".settings-layout", { timeout: 5000 });
+  await page.waitForSelector(".settings-card", { timeout: 5000 });
+  await page.screenshot({ path: path.join(outDir, "settings.png"), fullPage: true });
 
   await page.click('a[href="#/daily"]');
-  await page.waitForSelector(".publish-timeline", { timeout: 5000 });
-  const detailLink = await page.$('.publish-timeline a[href^="#/intel/"]');
+  await page.waitForSelector(".daily-story-card", { timeout: 5000 });
+  const detailLink = await page.$('.daily-story-card a[href^="#/intel/"]');
   if (detailLink) {
     const detailHref = await detailLink.evaluate((node) => node.getAttribute("href"));
-    await page.click(`.publish-timeline a[href="${detailHref}"]`);
-    await page.waitForSelector(".evidence-tabs", { timeout: 5000 });
-    await page.click('[data-evidence="popular"]');
-    await page.waitForSelector("#evidence-list", { timeout: 5000 });
+    await page.click(`.daily-story-card a[href="${detailHref}"]`);
+    await page.waitForSelector(".read-detail", { timeout: 5000 });
+    await page.waitForSelector(".related-source-chip", { timeout: 5000 });
+    await page.click('[data-detail-lang="original"]');
+    await page.waitForSelector(".score-contribution-list", { timeout: 5000 });
     await page.screenshot({ path: path.join(outDir, "detail.png"), fullPage: true });
   }
 

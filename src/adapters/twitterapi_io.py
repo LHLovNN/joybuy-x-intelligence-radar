@@ -212,6 +212,16 @@ class TwitterApiIoAdapter(XSourceBase):
             "author_id": self._string_value(author, "id", "user_id", "userId", "rest_id"),
             "author_name": self._string_value(author, "name", "display_name", "displayName") or author_handle,
             "author_handle": author_handle,
+            "author_avatar_url": self._string_value(
+                author,
+                "profile_image_url",
+                "profile_image_url_https",
+                "profilePicture",
+                "profilePictureUrl",
+                "profileImageUrl",
+                "avatar",
+                "avatar_url",
+            ),
             "author_followers": self._int_value(author, "followers", "followers_count", "followersCount"),
             "author_verified": self._bool_value(author, "verified", "isVerified", "isBlueVerified"),
             "created_at": self._normalized_time(

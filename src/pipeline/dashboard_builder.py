@@ -9,6 +9,9 @@ from src.utils.io import write_json
 from src.utils.time import BEIJING, beijing_label, now_utc, to_iso
 
 
+FEATURED_IPS_THRESHOLD = 70
+
+
 def build_dashboard_data(
     joybuy_clusters: list[dict[str, Any]],
     normalized_posts: list[dict[str, Any]],
@@ -29,6 +32,9 @@ def build_dashboard_data(
     positive = [cluster for cluster in joybuy_clusters if cluster["score"]["sentiment"] == "positive"]
     joybuy_posts = [post for post in normalized_posts if post.get("brand") == "joybuy"]
     joybuy_effective_posts = [post for post in joybuy_posts if post.get("is_relevant")]
+    source = source_status(normalized_posts, provider_hint)
+    featured_items = build_featured_items(joybuy_clusters, competitor)
+    hot_topics = build_hot_topics(joybuy_clusters, featured_items)
 
     overview = {
         "title": "Joybuy X Intelligence Radar",
@@ -53,8 +59,10 @@ def build_dashboard_data(
         "negative_top": [cluster_summary(cluster) for cluster in negative[:10]],
         "opportunity_top": [cluster_summary(cluster) for cluster in positive[:10]],
         "fermentation_snapshot": [cluster_summary(cluster) for cluster in fermentation_items[:8]],
+        "featured_items": featured_items,
+        "hot_topics": hot_topics,
         "competitor": competitor,
-        "source_status": source_status(normalized_posts, provider_hint),
+        "source_status": source,
         "routes": {
             "daily": "dashboard-data/daily/latest.json",
             "fermentation": "dashboard-data/fermentation.json",
@@ -73,6 +81,8 @@ def build_dashboard_data(
         "collection_status": collection_status or {},
         "executive_summary": overview["executive_summary"],
         "competitor": competitor,
+        "featured_items": featured_items,
+        "hot_topics": hot_topics,
         "summary_only": False,
         "clusters": [cluster_summary(cluster, include_posts=False) for cluster in joybuy_clusters],
     }
@@ -100,6 +110,7 @@ def build_dashboard_data(
     for cluster in joybuy_clusters:
         detail = cluster_detail(cluster)
         write_json(str(target / "clusters" / f"{cluster['cluster_id']}.json"), detail)
+        data_bundle["clusters"][f"dashboard-data/clusters/{cluster['cluster_id']}.json"] = detail
     write_data_bundle(target.parent / "dashboard-data-bundle.js", data_bundle)
     return overview
 
@@ -202,6 +213,227 @@ def build_executive_summary(clusters: list[dict[str, Any]], competitor: dict[str
     }
 
 
+def build_featured_items(joybuy_clusters: list[dict[str, Any]], competitor: dict[str, Any]) -> list[dict[str, Any]]:
+    items = [featured_item_for_cluster(cluster) for cluster in joybuy_clusters if is_featured_cluster(cluster)]
+    items = [item for item in items if item]
+    items.extend(featured_item_for_competitor_post(post) for post in competitor.get("top_posts", []) if is_featured_competitor_post(post))
+    return sorted([item for item in items if item], key=featured_sort_key, reverse=True)[:18]
+
+
+def is_featured_cluster(cluster: dict[str, Any]) -> bool:
+    score = cluster.get("score", {})
+    return (
+        score.get("ips", 0) >= FEATURED_IPS_THRESHOLD
+        or score.get("level") in {"urgent", "high"}
+        or score.get("future_potential", 0) >= 75
+        or score.get("current_impact", 0) >= 70
+        or cluster.get("metrics", {}).get("max_author_followers", 0) >= 20_000
+    )
+
+
+def is_featured_competitor_post(post: dict[str, Any]) -> bool:
+    metrics = post.get("metrics", {})
+    interactions = public_interactions(metrics)
+    return post.get("sentiment") == "negative" and interactions >= 30
+
+
+def featured_item_for_cluster(cluster: dict[str, Any]) -> dict[str, Any] | None:
+    post = representative_post(cluster)
+    if not post:
+        return None
+    score = cluster.get("score", {})
+    return {
+        "id": f"featured-{cluster['cluster_id']}",
+        "brand": cluster.get("brand", "joybuy"),
+        "cluster_id": cluster["cluster_id"],
+        "source_type": "X 舆情",
+        "source_name": source_name_for_post(post, "Joybuy / JD"),
+        "author_name": post.get("author", {}).get("name") or post.get("author_name") or post.get("author_handle"),
+        "author_handle": post.get("author", {}).get("handle") or post.get("author_handle"),
+        "author_avatar_url": post.get("author", {}).get("avatar_url") or post.get("author_avatar_url"),
+        "author_followers": post.get("author", {}).get("followers", post.get("author_followers", 0)),
+        "author_verified": post.get("author", {}).get("verified", post.get("author_verified", False)),
+        "post_url": post.get("url", ""),
+        "created_at": post.get("created_at") or cluster.get("first_seen_at"),
+        "language": post.get("language", "und"),
+        "title": cluster["title"],
+        "display_title": cluster.get("summary_zh") or cluster["title"],
+        "original_text": post.get("clean_text") or post.get("text") or cluster.get("summary", ""),
+        "translation_zh": post.get("translation_zh") or post.get("summary_zh") or cluster.get("summary_zh", ""),
+        "translation_status": post.get("translation_status", "unknown"),
+        "translation_provider": post.get("translation_provider", "none"),
+        "summary_zh": cluster.get("summary_zh", ""),
+        "media": media_items(post),
+        "score": score,
+        "score_value": score.get("ips", 0),
+        "score_label": "IPS",
+        "tags": featured_tags(cluster),
+        "metrics": cluster.get("metrics", {}),
+        "post_metrics": post.get("metrics", {}),
+        "source_count": cluster.get("post_count", 1),
+        "related_sources": max(0, cluster.get("post_count", 1) - 1),
+        "selected_reason": selected_reason_for_cluster(cluster),
+        "recommended_action": score.get("recommended_action", "持续监测"),
+        "href": f"#/intel/{cluster['cluster_id']}",
+        "external_href": post.get("url", ""),
+        "sentiment": score.get("sentiment", "neutral"),
+        "level": score.get("level", "low"),
+    }
+
+
+def featured_item_for_competitor_post(post: dict[str, Any]) -> dict[str, Any] | None:
+    interactions = public_interactions(post.get("metrics", {}))
+    score_value = min(100, 55 + round(interactions / 8))
+    return {
+        "id": f"featured-temu-{post.get('post_id', '')}",
+        "brand": "temu",
+        "cluster_id": "",
+        "source_type": "竞品异常",
+        "source_name": source_name_for_post(post, "Temu 竞品"),
+        "author_name": post.get("author_name") or post.get("author_handle"),
+        "author_handle": post.get("author_handle"),
+        "author_avatar_url": post.get("author_avatar_url"),
+        "post_url": post.get("url", ""),
+        "created_at": post.get("created_at"),
+        "language": post.get("language", "und"),
+        "title": "Temu 负向竞品讨论出现较高互动",
+        "display_title": "Temu 负向竞品讨论出现较高互动",
+        "original_text": post.get("text", ""),
+        "translation_zh": post.get("translation_zh") or post.get("summary_zh", ""),
+        "translation_status": post.get("translation_status", "unknown"),
+        "translation_provider": post.get("translation_provider", "none"),
+        "summary_zh": post.get("summary_zh", ""),
+        "media": media_items(post),
+        "score": {"ips": score_value, "level": "medium", "sentiment": post.get("sentiment", "neutral")},
+        "score_value": score_value,
+        "score_label": "CSI",
+        "tags": ["竞品", post.get("sentiment", "neutral"), *post.get("matched_terms", [])],
+        "metrics": post.get("metrics", {}),
+        "post_metrics": post.get("metrics", {}),
+        "source_count": 1,
+        "related_sources": 0,
+        "selected_reason": "竞品负向讨论具备一定互动量，可作为 Joybuy 当日风险语境和对比样本。",
+        "recommended_action": "纳入竞品基线观察",
+        "href": "",
+        "external_href": post.get("url", ""),
+        "sentiment": post.get("sentiment", "neutral"),
+        "level": "medium",
+    }
+
+
+def representative_post(cluster: dict[str, Any]) -> dict[str, Any] | None:
+    posts = cluster.get("posts", [])
+    if not posts:
+        return None
+    return sorted(posts, key=lambda post: public_interactions(post.get("metrics", {})), reverse=True)[0]
+
+
+def public_interactions(metrics: dict[str, Any]) -> int:
+    return (
+        int(metrics.get("likes") or metrics.get("total_likes") or 0)
+        + int(metrics.get("reposts") or metrics.get("total_reposts") or 0)
+        + int(metrics.get("replies") or metrics.get("total_replies") or 0)
+        + int(metrics.get("quotes") or metrics.get("total_quotes") or 0)
+    )
+
+
+def source_name_for_post(post: dict[str, Any], fallback: str) -> str:
+    handle = post.get("author", {}).get("handle") or post.get("author_handle")
+    if handle:
+        return f"{fallback} · @{handle}"
+    return fallback
+
+
+def featured_tags(cluster: dict[str, Any]) -> list[str]:
+    score = cluster.get("score", {})
+    tags = [cluster.get("topic", "general"), *cluster.get("risk_types", []), *cluster.get("opportunity_types", [])]
+    if score.get("future_potential", 0) >= 75:
+        tags.append("高潜传播")
+    if cluster.get("metrics", {}).get("max_author_followers", 0) >= 20_000:
+        tags.append("高影响力账号")
+    if score.get("recommended_action") in {"人工核查", "PR 准备回应", "高层同步"}:
+        tags.append("需处置")
+    return dedupe_strings([tag for tag in tags if tag])
+
+
+def selected_reason_for_cluster(cluster: dict[str, Any]) -> str:
+    score = cluster.get("score", {})
+    base = score.get("explanation") or "该舆情达到焦点阈值，建议结合原帖证据持续观察。"
+    source_count = cluster.get("post_count", 0)
+    if source_count > 1:
+        base += f" 当前关联到 {source_count} 条相关原帖。"
+    if cluster.get("metrics", {}).get("max_author_followers", 0) >= 20_000:
+        base += " 其中包含高影响力账号信号。"
+    return base
+
+
+def media_items(post: dict[str, Any]) -> list[dict[str, str]]:
+    items = []
+    for item in post.get("media", []) or []:
+        if isinstance(item, str):
+            items.append({"url": item, "type": "image"})
+        elif isinstance(item, dict):
+            url = (
+                item.get("media_url_https")
+                or item.get("media_url")
+                or item.get("preview_image_url")
+                or item.get("thumbnail_url")
+                or item.get("url")
+            )
+            if url:
+                items.append({"url": url, "type": str(item.get("type") or "image")})
+    return items[:4]
+
+
+def dedupe_strings(values: list[str]) -> list[str]:
+    seen = set()
+    result = []
+    for value in values:
+        if value not in seen:
+            seen.add(value)
+            result.append(value)
+    return result
+
+
+def featured_sort_key(item: dict[str, Any]) -> tuple[int, int, str]:
+    brand_priority = 1 if item.get("brand") != "temu" else 0
+    return (brand_priority, int(item.get("score_value") or 0), str(item.get("created_at") or ""))
+
+
+def build_hot_topics(joybuy_clusters: list[dict[str, Any]], featured_items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    topics = []
+    for rank, item in enumerate(featured_items[:5], start=1):
+        topics.append(
+            {
+                "rank": rank,
+                "title": item.get("display_title") or item.get("title", "Intelligence signal"),
+                "cluster_id": item.get("cluster_id", ""),
+                "score_value": item.get("score_value"),
+                "level": item.get("level"),
+                "source_count": item.get("source_count", 1),
+                "count_label": f"{item.get('source_count', 1)} 条相关原帖" if item.get("source_count", 1) > 1 else item.get("source_type", "1 条原帖"),
+                "reason": item.get("selected_reason", ""),
+            }
+        )
+    if topics:
+        return topics
+    for rank, cluster in enumerate(joybuy_clusters[:3], start=1):
+        score = cluster.get("score", {})
+        topics.append(
+            {
+                "rank": rank,
+                "title": cluster.get("summary_zh") or cluster.get("title", "Joybuy intelligence signal"),
+                "cluster_id": cluster.get("cluster_id", ""),
+                "score_value": score.get("ips"),
+                "level": score.get("level"),
+                "source_count": cluster.get("post_count", 0),
+                "count_label": f"{cluster.get('post_count', 0)} 条相关原帖",
+                "reason": score.get("explanation", ""),
+            }
+        )
+    return topics
+
+
 def cluster_summary(cluster: dict[str, Any], include_posts: bool = False) -> dict[str, Any]:
     data = {
         "cluster_id": cluster["cluster_id"],
@@ -239,13 +471,14 @@ def source_status(posts: list[dict[str, Any]], provider_hint: str | None = None)
     if not providers and provider_hint:
         providers = [provider_hint]
     is_sample = providers == ["sample"]
+    translation = translation_status(posts)
     joybuy_posts = [post for post in posts if post.get("brand") == "joybuy"]
     temu_posts = [post for post in posts if post.get("brand") == "temu"]
     estimated_cost = 0
     if "twitterapi_io" in providers:
         estimated_cost = round(len(posts) * 0.00015, 4)
     return {
-        "status": "normal",
+        "status": "sample" if is_sample else "normal",
         "providers": providers,
         "raw_posts_collected": len(posts),
         "effective_posts": sum(1 for post in posts if post.get("is_relevant")),
@@ -256,11 +489,29 @@ def source_status(posts: list[dict[str, Any]], provider_hint: str | None = None)
             "temu_effective": sum(1 for post in temu_posts if post.get("is_relevant")),
         },
         "estimated_cost_usd": estimated_cost,
-        "notes": source_notes(is_sample),
+        "translation": translation,
+        "notes": source_notes(is_sample, translation),
     }
 
 
-def source_notes(is_sample: bool) -> list[str]:
+def translation_status(posts: list[dict[str, Any]]) -> dict[str, Any]:
+    counts: dict[str, int] = {}
+    providers = set()
+    for post in posts:
+        status = str(post.get("translation_status") or "unknown")
+        counts[status] = counts.get(status, 0) + 1
+        provider = post.get("translation_provider")
+        if provider:
+            providers.add(str(provider))
+    return {
+        "providers": sorted(providers),
+        "counts": counts,
+        "missing_count": counts.get("missing", 0) + counts.get("error", 0),
+        "fallback_original_count": counts.get("missing", 0) + counts.get("error", 0),
+    }
+
+
+def source_notes(is_sample: bool, translation: dict[str, Any]) -> list[str]:
     base = [
         "Bookmarks are collected only when the data source provides them.",
         "Quote counts are treated as public propagation signals.",
@@ -269,8 +520,15 @@ def source_notes(is_sample: bool) -> list[str]:
         return [
             "Sample provider is active. Set X_SOURCE_PROVIDER=twitterapi_io to use real X data.",
             *base,
+            "Sample translations are generated from the local sample dictionary.",
         ]
+    translation_note = (
+        f"Chinese translation unavailable for {translation['missing_count']} posts; original text is shown as fallback."
+        if translation.get("missing_count")
+        else f"Chinese translation coverage is complete. Provider: {', '.join(translation.get('providers', [])) or 'none'}."
+    )
     return [
         "Real X data provider is active. Review daily cost and duplicate rate during bake-off.",
         *base,
+        translation_note,
     ]

@@ -15,7 +15,7 @@ SKIP_DIRS = {
     "__pycache__",
     "node_modules",
     "data",
-    "public/dashboard-data",
+    "public/dashboard-data/clusters",
 }
 
 ALLOWLIST_PATTERNS = [
@@ -27,6 +27,7 @@ ALLOWLIST_PATTERNS = [
     "TAVILY_API_KEY",
     "PERPLEXITY_API_KEY",
     "OPENAI_API_KEY",
+    "JDCLOUD_GPT_API_KEY",
     "${{ secrets.",
     "X-API-Key",
 ]
@@ -80,7 +81,7 @@ def main() -> None:
             print(f"- {finding}")
         sys.exit(1)
 
-    print("Security check passed: no obvious secrets found in tracked source paths.")
+    print("Security check passed: no obvious secrets found in committed source or public dashboard paths.")
 
 
 if __name__ == "__main__":

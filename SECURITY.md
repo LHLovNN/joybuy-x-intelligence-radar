@@ -3,45 +3,48 @@
 ## Red Lines
 
 - Never commit API keys, tokens, cookies, account credentials, private config or local environment files.
-- Keep provider keys only in local environment variables or GitHub Secrets.
-- Treat generated real-provider data as run output, not source code.
+- Keep provider keys only in local environment variables or approved secret stores.
+- Keep company GPT keys local-only or in a company-trusted secret store. Do not add company GPT keys to GitHub repository Secrets during the MVP.
+- Treat raw provider output and local logs as run artifacts, not source code.
+- Public dashboard JSON under `public/dashboard-data/` is product content and may be committed for historical daily browsing, but sample-mode dashboard JSON must not be published as if it were real X data.
 - Before publishing or pushing, run the security check script.
 
 ## Local Secrets
 
-Use environment variables only:
+Use macOS Keychain for the local daily automation:
 
 ```bash
-export TWITTERAPI_IO_KEY="..."
-export X_SOURCE_PROVIDER=twitterapi_io
+npm run local:secrets
 ```
 
-Do not put those values into Python, JavaScript, Markdown, JSON, shell scripts or screenshots.
+The script stores these Keychain services without printing values:
+
+```text
+joybuy-radar.TWITTERAPI_IO_KEY
+joybuy-radar.JDCLOUD_GPT_API_KEY
+```
+
+Environment variables are acceptable for one-off local smoke tests, but do not
+put secret values into Python, JavaScript, Markdown, JSON, shell scripts,
+screenshots or committed logs.
+
+For local company JoyBuilder translation:
+
+```bash
+export JDCLOUD_GPT_API_KEY="..."
+export TRANSLATION_PROVIDER=joybuilder
+```
+
+Do not add `JDCLOUD_GPT_API_KEY` to GitHub repository Secrets for this MVP.
 
 ## GitHub Secrets
 
-For deployment, add keys under:
+The MVP GitHub workflow only publishes already committed static dashboard files.
+It does not collect X data, does not call translation services and does not need
+provider secrets.
 
-```text
-GitHub repository -> Settings -> Secrets and variables -> Actions
-```
-
-Required first secret:
-
-```text
-TWITTERAPI_IO_KEY
-```
-
-Optional future secrets:
-
-```text
-TAVILY_API_KEY
-PERPLEXITY_API_KEY
-OPENAI_API_KEY
-XPOZ_API_KEY
-APIFY_TOKEN
-AISA_API_KEY
-```
+Do not add `TWITTERAPI_IO_KEY`, `JDCLOUD_GPT_API_KEY` or other provider keys to
+GitHub repository Secrets for the current Mac-local automation architecture.
 
 ## Generated Data
 
@@ -52,8 +55,18 @@ data/raw/
 data/processed/
 data/logs/
 data/clusters/
-public/dashboard-data/
+public/dashboard-data/clusters/
+```
+
+The following public dashboard paths are intentionally committed when they contain
+approved public product data:
+
+```text
+public/dashboard-data/*.json
+public/dashboard-data/daily/*.json
 public/dashboard-data-bundle.js
 ```
 
-GitHub Actions regenerates dashboard data during deployment.
+Before committing these files, confirm the collection status. If the provider is
+`sample`, either keep the files local for preview only or label the release as a
+sample-data preview.

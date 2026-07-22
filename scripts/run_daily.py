@@ -19,6 +19,10 @@ from src.pipeline.fermentation import update_fermentation
 from src.pipeline.normalizer import normalize_posts
 from src.pipeline.query_builder import build_x_search_queries
 from src.pipeline.scoring import score_clusters
+from src.pipeline.translation import (
+    apply_translations,
+    build_translation_service,
+)
 from src.utils.io import read_json, write_json, write_jsonl
 from src.utils.time import BEIJING, beijing_daily_window, beijing_label, now_utc, to_iso
 
@@ -141,6 +145,7 @@ def main() -> None:
     source_config = read_json(str(ROOT / "config" / "sources.json"))
     provider = selected_provider(source_config)
     x_source = get_x_source(provider)
+    translation_service = build_translation_service(provider)
     runtime_limits = apply_runtime_limits(x_source, source_config)
     if hasattr(x_source, "all_posts"):
         raw_posts = x_source.all_posts()
@@ -155,6 +160,14 @@ def main() -> None:
     else:
         raw_posts, collection_status = collect_real_posts(x_source, keyword_config, source_config)
     normalized = normalize_posts(raw_posts, keyword_config)
+    translation_status = apply_translations(normalized, translation_service)
+    collection_status["translation"] = translation_status
+    if translation_status.get("missing_count"):
+        message = (
+            f"Chinese translation unavailable for {translation_status['missing_count']} "
+            "non-Chinese posts; original text was used as fallback."
+        )
+        collection_status.setdefault("warnings", []).append(message)
     joybuy_clusters = cluster_posts(normalized, "joybuy")
     joybuy_clusters = score_clusters(joybuy_clusters, scoring_config)
     joybuy_clusters = attach_evidence_chains(joybuy_clusters)
@@ -188,6 +201,7 @@ def main() -> None:
         "normalized_posts": len(normalized),
         "joybuy_clusters": len(joybuy_clusters),
         "collection_status": collection_status,
+        "translation_status": translation_status,
         "dashboard_metrics": overview["metrics"],
     }
     write_json(str(ROOT / "public" / "dashboard-data" / "run-status.json"), run_log)
@@ -196,6 +210,7 @@ def main() -> None:
     print(f"Joybuy clusters: {len(joybuy_clusters)}")
     print(f"Raw posts: {len(raw_posts)}")
     print(f"Collection status: {collection_status['status']}")
+    print(f"Translation: {translation_status['provider']} | missing {translation_status.get('missing_count', 0)}")
     if collection_status.get("warnings"):
         print(f"Collection warnings: {len(collection_status['warnings'])}")
 

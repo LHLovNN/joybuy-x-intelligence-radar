@@ -70,6 +70,9 @@ def normalize_posts(posts: list[dict[str, Any]], keyword_config: dict[str, Any])
             {
                 **post,
                 "clean_text": clean_text,
+                "translation_zh": "",
+                "translation_status": "pending",
+                "translation_provider": "none",
                 "summary_zh": summarize_to_zh(clean_text),
                 "brand": brand_key,
                 "canonical_brand_entity": brand_config.get("canonical_entity", brand_key),
@@ -101,6 +104,7 @@ def normalize_posts(posts: list[dict[str, Any]], keyword_config: dict[str, Any])
                     "id": post.get("author_id"),
                     "handle": post.get("author_handle"),
                     "name": post.get("author_name"),
+                    "avatar_url": post.get("author_avatar_url"),
                     "followers": post.get("author_followers", 0),
                     "verified": post.get("author_verified", False),
                 },

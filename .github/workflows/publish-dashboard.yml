@@ -1,0 +1,75 @@
+name: Publish dashboard
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "public/**"
+      - "scripts/check_dashboard_data.py"
+      - "scripts/verify_data.py"
+      - "scripts/security_check.py"
+      - "scripts/report_run_summary.py"
+      - "scripts/verify_dashboard.cjs"
+      - ".github/workflows/publish-dashboard.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Check committed dashboard
+        run: |
+          python3 scripts/security_check.py
+          python3 scripts/check_dashboard_data.py
+          python3 scripts/verify_data.py
+          python3 scripts/report_run_summary.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright browser
+        run: |
+          npm install --no-save --no-package-lock playwright
+          npx playwright install --with-deps chromium
+
+      - name: Browser screenshot QA
+        run: node scripts/verify_dashboard.cjs
+
+      - name: Upload browser QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish-dashboard-browser-qa-screenshots
+          path: data/logs/screenshots
+          if-no-files-found: ignore
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
