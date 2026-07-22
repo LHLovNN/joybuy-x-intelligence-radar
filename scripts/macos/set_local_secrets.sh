@@ -6,7 +6,14 @@ KEYCHAIN_ACCOUNT="${JOYBUY_RADAR_KEYCHAIN_ACCOUNT:-${USER:-$(id -un)}}"
 store_secret() {
   local name="$1"
   local service="joybuy-radar.$name"
-  local value="${!name:-}"
+  local value=""
+
+  if [[ "${JOYBUY_RADAR_USE_ENV_SECRETS:-}" == "1" ]]; then
+    value="${!name:-}"
+    if [[ -n "$value" ]]; then
+      printf 'Using %s from current terminal environment (value hidden).\n' "$name"
+    fi
+  fi
 
   if [[ -z "$value" ]]; then
     printf 'Paste %s (input hidden; leave blank to skip): ' "$name"

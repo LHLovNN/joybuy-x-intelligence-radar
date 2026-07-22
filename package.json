@@ -11,6 +11,8 @@
     "verify:browser": "node scripts/verify_dashboard.cjs",
     "qa:local-browser": "bash scripts/local_browser_qa.sh",
     "local:secrets": "bash scripts/macos/set_local_secrets.sh",
+    "local:secrets:check": "bash scripts/macos/check_local_secrets.sh",
+    "local:translation:check": "bash scripts/macos/check_joybuilder_translation.sh",
     "local:daily": "bash scripts/macos/run_local_daily.sh",
     "local:daily:install": "bash scripts/macos/install_daily_launchd.sh",
     "local:daily:uninstall": "bash scripts/macos/uninstall_daily_launchd.sh",
