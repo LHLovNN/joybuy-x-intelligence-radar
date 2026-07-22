@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import socket
 import sys
 from pathlib import Path
 
@@ -26,6 +27,14 @@ class FailingTranslationService(TranslationService):
 
     def translate_batch(self, items: list[dict[str, str]]) -> dict[str, str]:
         raise RuntimeError("simulated translation outage")
+
+
+class TimeoutTranslationService(TranslationService):
+    provider_name = "timeout_test_provider"
+    configured = True
+
+    def translate_batch(self, items: list[dict[str, str]]) -> dict[str, str]:
+        raise socket.timeout("simulated timeout")
 
 
 def test_sample_dictionary_translation() -> None:
@@ -106,6 +115,22 @@ def test_translation_failure_falls_back_to_original() -> None:
     assert "simulated translation outage" in posts[0]["translation_error"]
 
 
+def test_translation_timeout_falls_back_to_original() -> None:
+    posts = [
+        {
+            "post_id": "timeout-1",
+            "language": "en",
+            "clean_text": "Joybuy refund is still pending.",
+        }
+    ]
+    report = apply_translations(posts, TimeoutTranslationService())
+    assert report["missing_count"] == 1
+    assert report["fallback_original_count"] == 1
+    assert posts[0]["translation_status"] == "error"
+    assert posts[0]["translation_zh"] == posts[0]["clean_text"]
+    assert "simulated timeout" in posts[0]["translation_error"]
+
+
 def test_missing_translation_config_falls_back_to_original() -> None:
     posts = [
         {
@@ -140,6 +165,7 @@ if __name__ == "__main__":
     test_joybuilder_response_text_parsing()
     test_joybuilder_request_body_uses_responses_input()
     test_translation_failure_falls_back_to_original()
+    test_translation_timeout_falls_back_to_original()
     test_missing_translation_config_falls_back_to_original()
     test_default_real_provider_without_company_key_uses_noop_translation()
     print("Translation tests passed.")

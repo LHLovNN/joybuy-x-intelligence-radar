@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import socket
 import urllib.error
 import urllib.request
 from typing import Any
@@ -57,7 +58,7 @@ class JoyBuilderTranslationService(TranslationService):
         self.api_key = api_key
         self.model = model or os.getenv("JDBUILDER_TRANSLATION_MODEL") or "GPT-5.5"
         self.endpoint = endpoint or os.getenv("JDBUILDER_RESPONSES_URL") or "http://ai-api.jdcloud.com/v1/responses"
-        self.timeout_seconds = timeout_seconds
+        self.timeout_seconds = int(os.getenv("JDBUILDER_TRANSLATION_TIMEOUT_SECONDS") or timeout_seconds)
         self.batch_size = batch_size
 
     def translate_batch(self, items: list[dict[str, str]]) -> dict[str, str]:
@@ -109,6 +110,8 @@ class JoyBuilderTranslationService(TranslationService):
             raise RuntimeError(f"JoyBuilder translation request failed with HTTP {error.code}: {body[:300]}") from error
         except urllib.error.URLError as error:
             raise RuntimeError(f"JoyBuilder translation request failed: {error}") from error
+        except (socket.timeout, TimeoutError) as error:
+            raise RuntimeError(f"JoyBuilder translation request timed out after {self.timeout_seconds}s") from error
 
         text = response_output_text(payload)
         try:
@@ -168,8 +171,8 @@ def apply_translations(posts: list[dict[str, Any]], service: TranslationService)
     if pending and service.configured:
         try:
             translations = service.translate_batch(pending)
-        except RuntimeError as error:
-            error_message = str(error)
+        except Exception as error:
+            error_message = f"{error.__class__.__name__}: {error}"
 
     for item in pending:
         post = posts[int(item["id"])]
