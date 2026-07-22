@@ -3,18 +3,29 @@
   "providers": [
     "twitterapi_io"
   ],
-  "raw_posts_collected": 19,
-  "effective_posts": 18,
+  "raw_posts_collected": 20,
+  "effective_posts": 17,
   "brand_breakdown": {
-    "joybuy_candidates": 4,
-    "joybuy_effective": 4,
+    "joybuy_candidates": 5,
+    "joybuy_effective": 5,
     "temu_candidates": 15,
-    "temu_effective": 14
+    "temu_effective": 12
   },
-  "estimated_cost_usd": 0.0028,
+  "estimated_cost_usd": 0.003,
+  "translation": {
+    "providers": [
+      "joybuilder"
+    ],
+    "counts": {
+      "translated": 20
+    },
+    "missing_count": 0,
+    "fallback_original_count": 0
+  },
   "notes": [
     "Real X data provider is active. Review daily cost and duplicate rate during bake-off.",
     "Bookmarks are collected only when the data source provides them.",
-    "Quote counts are treated as public propagation signals."
+    "Quote counts are treated as public propagation signals.",
+    "Chinese translation coverage is complete. Provider: joybuilder."
   ]
 }

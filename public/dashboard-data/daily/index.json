@@ -1,7 +1,24 @@
 {
-  "latest_date": "2026-07-21",
-  "generated_at": "2026-07-21T03:51:48Z",
+  "latest_date": "2026-07-22",
+  "generated_at": "2026-07-22T07:32:58Z",
   "items": [
+    {
+      "date": "2026-07-22",
+      "generated_at_label": "2026-07-22 15:32 BJT",
+      "window_label": "2026-07-21 08:00 BJT - 2026-07-22 08:00 BJT",
+      "title": "General Joybuy/JD overseas shopping discussion",
+      "cluster_count": 2,
+      "joybuy_effective": 5,
+      "temu_effective": 12,
+      "high_risk": 0,
+      "needs_review": 0,
+      "collection_status": "complete",
+      "api_requests_used": 4,
+      "max_api_requests": 6,
+      "ips": 61,
+      "level": "medium",
+      "summary_only": false
+    },
     {
       "date": "2026-07-21",
       "generated_at_label": "2026-07-21 11:51 BJT",
