@@ -1,4 +1,4 @@
-name: Publish dashboard
+name: Publish static site
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ on:
       - "scripts/security_check.py"
       - "scripts/report_run_summary.py"
       - "scripts/verify_dashboard.cjs"
-      - ".github/workflows/publish-dashboard.yml"
+      - ".github/workflows/publish-static-site.yml"
 
 permissions:
   contents: read
@@ -35,7 +35,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Check committed dashboard
+      - name: Check committed static data
         run: |
           python3 scripts/security_check.py
           python3 scripts/check_dashboard_data.py
@@ -52,14 +52,14 @@ jobs:
           npm install --no-save --no-package-lock playwright
           npx playwright install --with-deps chromium
 
-      - name: Browser screenshot QA
+      - name: Browser QA
         run: node scripts/verify_dashboard.cjs
 
-      - name: Upload browser QA screenshots
+      - name: Upload browser QA artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: publish-dashboard-browser-qa-screenshots
+          name: static-site-browser-qa
           path: data/logs/screenshots
           if-no-files-found: ignore
 

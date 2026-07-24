@@ -9,6 +9,7 @@ sys.path.insert(0, str(ROOT))
 from src.adapters.twitterapi_io import TwitterApiIoAdapter
 from src.pipeline.normalizer import normalize_posts
 from src.pipeline.query_builder import build_x_search_queries
+from src.utils.config import load_project_json
 from src.utils.io import read_json, write_json
 from src.utils.time import beijing_daily_window, now_utc, to_iso
 
@@ -22,7 +23,7 @@ def limit() -> int:
 
 
 def main() -> None:
-    keyword_config = read_json(str(ROOT / "config" / "keywords.json"))
+    keyword_config = load_project_json("keywords.local.json")
     adapter = TwitterApiIoAdapter(api_key=os.getenv("TWITTERAPI_IO_KEY"))
     start, end = beijing_daily_window(now_utc())
     per_brand_limit = limit()

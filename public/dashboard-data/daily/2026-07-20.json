@@ -6,53 +6,39 @@
   "metrics": {
     "effective_intelligence": 1,
     "high_risk": 0,
-    "fermenting": 0,
     "needs_review": 0,
-    "joybuy_volume": 3,
-    "joybuy_candidate_volume": 4,
-    "temu_volume": 13,
+    "primary_volume": 3,
+    "primary_candidate_volume": 4,
+    "competitor_volume": 13,
     "negative_share": 0
   },
   "source_status": {
     "status": "normal",
-    "providers": [
-      "twitterapi_io"
-    ],
     "raw_posts_collected": 19,
     "effective_posts": 16,
     "brand_breakdown": {
-      "joybuy_candidates": 4,
-      "joybuy_effective": 3,
-      "temu_candidates": 15,
-      "temu_effective": 13
+      "primary_candidates": 4,
+      "primary_effective": 3,
+      "competitor_candidates": 15,
+      "competitor_effective": 13
     },
-    "estimated_cost_usd": 0.0028,
     "notes": [
-      "Real X data provider is active. Review daily cost and duplicate rate during bake-off.",
+      "Public social data collection is active. Review duplicate rate and relevance regularly.",
       "Bookmarks are collected only when the data source provides them.",
       "Quote counts are treated as public propagation signals."
     ]
   },
   "collection_status": {
     "status": "complete",
-    "warnings": [],
-    "limits": {
-      "max_posts": 60,
-      "max_joybuy_posts": 45,
-      "max_temu_posts": 15,
-      "max_api_requests": 6
-    },
-    "api_requests_used": 5,
-    "max_api_requests": 6,
-    "request_budget_exhausted": false
+    "warnings": []
   },
   "executive_summary": {
-    "headline": "Today's highest-priority Joybuy signal is: General Joybuy/JD overseas shopping discussion.",
+    "headline": "今日最高优先级主品牌舆情为: General 主品牌 overseas shopping discussion.",
     "risk": "Overall risk is medium with IPS 58.",
-    "action": "Recommended action: 观察. Temu baseline shows overlap around refund and delivery."
+    "action": "建议动作: 观察. 样例竞品 基线讨论涉及 refund and delivery."
   },
   "competitor": {
-    "brand": "temu",
+    "brand": "competitor",
     "volume": 13,
     "sentiment": {
       "negative": 4,
@@ -74,7 +60,7 @@
         "post_id": "2078990545112928464",
         "url": "https://x.com/Tripple_JC/status/2078990545112928464",
         "text": "@RealAlexJones @RealAlexJones thats the same shit NYC \nhad in the fuckin 80s bitch\n\nshut your unpatriotic ass up\nyou stoke fear in your fellow citizens \nin order to drive your own profits\n\nyoure fuckin false prophet\n\nyou sell 200 dollar temu slippers \nto grandma you fearbate all fuckin day long\n\nYOU CAN TELL A MANS CHARACTER \n BY WHAT HE TRIES TO SELL YOU",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "Tripple_JC",
         "created_at": "2026-07-19T23:49:06Z",
         "metrics": {
@@ -92,7 +78,7 @@
         "post_id": "2078988694476763361",
         "url": "https://x.com/MMargo_tt/status/2078988694476763361",
         "text": "@matinialdo Messi i Scaloni powinni dostać jakiś order od Argentyny za to, że osiągnęli wyniki tak bardzo ponad stan patrząc na stan i możliwości ich kadry. Przecież teraz jak i 4 lata temu nie mieli kadry nawet na top 5 Mundialu, a zdobyli mistrzostwo i wicemistrzostwo świata. Są wielcy.",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "MMargo_tt",
         "created_at": "2026-07-19T23:41:45Z",
         "metrics": {
@@ -110,7 +96,7 @@
         "post_id": "2078991065101574519",
         "url": "https://x.com/Solape_e/status/2078991065101574519",
         "text": "Temu warriors,please help me o are they saying i should place an order for just one and get the free gifts??(English hard abeg 😭) btw this offer only pop up at night.",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "Solape_e",
         "created_at": "2026-07-19T23:51:10Z",
         "metrics": {
@@ -128,7 +114,7 @@
         "post_id": "2078986278066884616",
         "url": "https://x.com/thegr8vhiz/status/2078986278066884616",
         "text": "@chrisnuzi He go don order podcast mic from Temu down.",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "thegr8vhiz",
         "created_at": "2026-07-19T23:32:09Z",
         "metrics": {
@@ -146,7 +132,7 @@
         "post_id": "2078986968822636561",
         "url": "https://x.com/GideonAdebayo01/status/2078986968822636561",
         "text": "Organic Koh. Mechanic ni. \n\nTemu did a very huge PR. Almost every app. Have their ads on it.",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "GideonAdebayo01",
         "created_at": "2026-07-19T23:34:53Z",
         "metrics": {
@@ -164,7 +150,7 @@
         "post_id": "2078984172899619014",
         "url": "https://x.com/firstclasstwat/status/2078984172899619014",
         "text": "When you order Wolverine off Temu.",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "firstclasstwat",
         "created_at": "2026-07-19T23:23:47Z",
         "metrics": {
@@ -222,7 +208,7 @@
         "post_id": "2078988417304518791",
         "url": "https://x.com/ThreatHunter76/status/2078988417304518791",
         "text": "@debola_00 you can order me too from Temu 😂",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "ThreatHunter76",
         "created_at": "2026-07-19T23:40:39Z",
         "metrics": {
@@ -262,10 +248,10 @@
   "summary_only": false,
   "clusters": [
     {
-      "cluster_id": "joybuy-cluster-001",
-      "title": "General Joybuy/JD overseas shopping discussion",
-      "summary": "3 related posts discuss Joybuy/JD overseas shopping context.",
-      "summary_zh": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "cluster_id": "primary-signal-001",
+      "title": "General 主品牌 overseas shopping discussion",
+      "summary": "3 related posts discuss 主品牌 overseas shopping context.",
+      "summary_zh": "相关讨论涉及 主品牌 海外购物的一般体验和认知问题。",
       "topic": "general",
       "risk_types": [
         "brand_trust"
@@ -302,25 +288,8 @@
         ],
         "opportunity_labels": [],
         "special_flags": [],
-        "explanation": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 58。"
+        "explanation": "该情报与 主品牌 海外购物相关，当前综合优先级为 58。"
       },
-      "fermentation": {
-        "status": "不追踪",
-        "tracking_days": 0,
-        "first_seen_at": "2026-07-19T07:27:13Z",
-        "last_checked_at": "2026-07-20T03:25:27Z",
-        "growth": {
-          "public_interactions_24h": 2,
-          "quotes_24h": 1,
-          "new_related_posts_24h": 6
-        },
-        "signals": [
-          "相似内容数量增加"
-        ],
-        "risk_change": "flat"
-      },
-      "tracking_eligible": false,
-      "tracking_reason": [],
       "evidence_counts": {
         "origin": 1,
         "stakeholders": 0,

@@ -1,11 +1,10 @@
 {
-  "title": "Joybuy X Intelligence Radar",
+  "title": "Brand X Intelligence Radar",
   "timezone": "Asia/Shanghai",
   "daily_report_time": "08:00",
   "top_intelligence_limit": 20,
   "top_negative_limit": 10,
   "top_opportunity_limit": 10,
-  "fermentation_limit": 30,
+  "follow_up_limit": 30,
   "competitor_top_posts_limit": 20
 }
-

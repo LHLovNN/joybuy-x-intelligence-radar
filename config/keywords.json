@@ -1,47 +1,50 @@
 {
   "timezone": "Asia/Shanghai",
   "brands": {
-    "joybuy": {
-      "display_name": "Joybuy",
-      "canonical_entity": "joybuy",
+    "primary": {
+      "display_name": "Sample Primary Brand",
+      "canonical_entity": "primary_brand",
       "deep_analysis": true,
       "brand_terms": [
-        "joybuy",
-        "jd",
-        "jd.com",
-        "京东",
-        "jingdong",
-        "joybuy uk",
-        "joybuy netherlands",
-        "joybuy nl",
-        "joybuy france",
-        "joybuy fr",
-        "joybuy luxembourg",
-        "joybuy lu",
-        "joybuy germany",
-        "joybuy de",
-        "joybuy belgium",
-        "joybuy be",
-        "joybuy europe"
+        "brandx",
+        "brand x",
+        "brandx shop",
+        "brandx app"
       ],
       "site_terms": [
-        "uk",
-        "netherlands",
-        "nl",
-        "france",
-        "fr",
-        "luxembourg",
-        "lu",
-        "germany",
-        "de",
-        "belgium",
-        "be",
-        "europe"
+        "region-a",
+        "region-b",
+        "region-c"
       ],
-      "context_required_terms": ["jd", "京东", "jingdong"],
+      "query_groups": [
+        {
+          "terms": [
+            "brandx",
+            "brand x",
+            "brandx shop",
+            "brandx app"
+          ]
+        },
+        {
+          "terms": [
+            "sample retail",
+            "sample ecommerce"
+          ],
+          "context_terms": [
+            "order",
+            "delivery",
+            "refund",
+            "customer service",
+            "shipping"
+          ]
+        }
+      ],
+      "context_required_terms": [
+        "brand x"
+      ],
       "relevance_context_terms": [
-        "joybuy",
-        "jd.com",
+        "brandx",
+        "brand x",
         "ecommerce",
         "order",
         "delivery",
@@ -55,39 +58,13 @@
         "seller",
         "warehouse",
         "overseas",
-        "europe",
-        "uk",
-        "netherlands",
-        "france",
-        "luxembourg",
-        "germany",
-        "belgium",
         "retailer",
-        "acquisition",
-        "takeover",
-        "regulator",
         "regulatory",
-        "investigation",
-        "european commission",
-        "foreign subsidies",
-        "ceconomy",
-        "海外",
-        "欧洲",
-        "英国",
-        "荷兰",
-        "法国",
-        "卢森堡",
-        "德国",
-        "比利时",
-        "物流",
-        "退款",
-        "退货",
-        "客服",
-        "包裹"
+        "acquisition"
       ],
       "context_required_strong_terms": [
-        "joybuy",
-        "jd.com",
+        "brandx",
+        "brand x",
         "ecommerce",
         "shopping",
         "order",
@@ -101,46 +78,16 @@
         "seller",
         "warehouse",
         "overseas",
-        "europe",
-        "uk",
-        "netherlands",
-        "france",
-        "luxembourg",
-        "germany",
-        "belgium",
         "retailer",
-        "acquisition",
-        "takeover",
-        "regulator",
         "regulatory",
-        "investigation",
-        "european commission",
-        "foreign subsidies",
-        "ceconomy",
-        "海外",
-        "欧洲",
-        "英国",
-        "荷兰",
-        "法国",
-        "卢森堡",
-        "德国",
-        "比利时",
-        "购物",
-        "订单",
-        "购买",
-        "买",
-        "物流",
-        "退款",
-        "退货",
-        "客服",
-        "包裹"
+        "acquisition"
       ],
-      "ambiguous_terms": ["jd", "be", "de", "fr"],
+      "ambiguous_terms": [
+        "bx"
+      ],
       "context_terms_for_ambiguous": [
-        "joybuy",
-        "jd.com",
-        "京东",
-        "jingdong",
+        "brandx",
+        "brand x",
         "ecommerce",
         "shopping",
         "order",
@@ -154,62 +101,18 @@
         "seller"
       ],
       "query_negative_terms": [
-        "京东e卡",
-        "京东E卡",
-        "e卡",
-        "E卡",
-        "Q币",
-        "话费",
-        "电费",
-        "抖币",
-        "油卡",
-        "低价充值",
-        "代充",
-        "代付",
-        "盗号",
-        "开房记录",
-        "花呗代还",
-        "查聊天记录",
-        "jd vance",
-        "j.d. vance",
-        "vance",
-        "joe rogan",
-        "biden",
-        "trump",
-        "vice president",
         "politics",
-        "iran",
-        "iranians",
-        "terrorists"
+        "spam",
+        "giveaway"
       ],
       "spam_terms": [
-        "京东e卡",
-        "京东E卡",
-        "Q币",
-        "话费",
-        "电费",
-        "抖币",
-        "油卡",
-        "低价充值",
-        "代充",
-        "代付",
-        "盗号",
-        "开房记录",
-        "花呗代还",
-        "查聊天记录"
+        "gift card recharge",
+        "account theft",
+        "cheap recharge"
       ],
       "irrelevant_terms": [
-        "jd vance",
-        "j.d. vance",
-        "joe rogan",
-        "biden",
-        "trump",
-        "vice president",
         "politics",
-        "iran",
-        "iranians",
-        "terrorists",
-        "turkey closed its border"
+        "unrelated public figure"
       ],
       "risk_terms": [
         "refund",
@@ -231,12 +134,6 @@
         "regulator",
         "regulatory",
         "investigation",
-        "foreign subsidies",
-        "subsidy",
-        "charge sheet",
-        "european commission",
-        "ceconomy",
-        "takeover",
         "acquisition",
         "antitrust"
       ],
@@ -250,37 +147,55 @@
         "arrived early"
       ]
     },
-    "temu": {
-      "display_name": "Temu",
-      "canonical_entity": "temu",
+    "competitor": {
+      "display_name": "Sample Competitor",
+      "canonical_entity": "sample_competitor",
       "deep_analysis": false,
-      "brand_terms": ["temu"],
+      "brand_terms": [
+        "competitorx",
+        "competitor x"
+      ],
+      "query_groups": [
+        {
+          "terms": [
+            "competitorx",
+            "competitor x"
+          ]
+        }
+      ],
       "requires_any_context": true,
-      "context_required_terms": ["temu"],
+      "context_required_terms": [
+        "competitorx"
+      ],
       "context_required_strong_terms": [
+        "competitorx",
+        "competitor x",
         "order",
         "delivery",
         "shipping",
         "refund",
         "return",
-        "haul",
-        "package",
-        "parcel",
-        "tracking",
-        "customer service",
-        "scam",
         "app",
-        "seller",
-        "product",
-        "privacy",
-        "install",
-        "buy",
-        "bought",
-        "purchase",
-        "cart",
-        "price",
-        "items",
-        "ordered"
+        "coupon",
+        "discount",
+        "deal",
+        "customer service",
+        "warehouse"
+      ],
+      "relevance_context_terms": [
+        "competitorx",
+        "competitor x",
+        "order",
+        "delivery",
+        "shipping",
+        "refund",
+        "return",
+        "app",
+        "coupon",
+        "discount",
+        "deal",
+        "customer service",
+        "warehouse"
       ],
       "query_context_terms": [
         "order",
@@ -288,89 +203,40 @@
         "shipping",
         "refund",
         "return",
-        "haul",
-        "package",
-        "parcel",
-        "tracking",
-        "customer service",
-        "scam",
-        "fake",
         "app",
-        "seller",
-        "product"
-      ],
-      "relevance_context_terms": [
-        "order",
-        "delivery",
-        "shipping",
-        "refund",
-        "return",
-        "haul",
-        "package",
-        "parcel",
-        "tracking",
-        "customer service",
-        "scam",
-        "fake",
-        "app",
-        "seller",
-        "product"
+        "coupon",
+        "discount",
+        "deal",
+        "customer service"
       ],
       "query_negative_terms": [
-        "coupon code",
-        "promo codes",
-        "promocode",
-        "promocodes",
-        "voucher",
-        "code promo",
-        "code de réduction",
-        "code de remise",
-        "first order today",
-        "new existing",
-        "returning customers",
-        "$100 coupon",
-        "coupon bundle",
-        "aff95074",
-        "lat temu",
-        "sto lat temu",
-        "temu journalist",
-        "temu instagram"
+        "spam",
+        "unrelated"
       ],
       "spam_terms": [
-        "coupon code",
-        "promo codes",
-        "promocode",
-        "promocodes",
-        "voucher",
-        "code promo",
-        "code de réduction",
-        "code de remise",
-        "first order today",
-        "new existing",
-        "returning customers",
-        "$100 coupon",
-        "coupon bundle",
-        "aff95074"
+        "coupon spam",
+        "bot giveaway"
       ],
       "irrelevant_terms": [
-        "lat temu",
-        "sto lat temu",
-        "temu journalist",
-        "temu instagram",
-        "temu instagram reels",
-        "low grade like temu",
-        "like temu"
+        "unrelated idiom"
       ],
       "risk_terms": [
         "refund",
         "delivery",
         "scam",
         "fake",
-        "return",
-        "customer service",
-        "privacy",
-        "tracking",
-        "missing order"
+        "damaged",
+        "slow",
+        "missing",
+        "customer service"
+      ],
+      "opportunity_terms": [
+        "quick",
+        "solved",
+        "good",
+        "fast",
+        "arrived",
+        "discount"
       ]
     }
   }

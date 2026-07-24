@@ -12,6 +12,60 @@ from src.utils.time import BEIJING, beijing_label, now_utc, to_iso
 
 FEATURED_IPS_THRESHOLD = 55
 
+PUBLIC_KEY_REPLACEMENTS = {
+    "joybuy_volume": "primary_volume",
+    "joybuy_candidate_volume": "primary_candidate_volume",
+    "temu_volume": "competitor_volume",
+    "joybuy_candidates": "primary_candidates",
+    "joybuy_effective": "primary_effective",
+    "temu_candidates": "competitor_candidates",
+    "temu_effective": "competitor_effective",
+    "joybuy_clusters": "primary_signals",
+}
+
+PUBLIC_DROP_KEYS = {
+    "provider",
+    "providers",
+    "source_provider",
+    "translation_provider",
+    "query",
+    "api_requests_used",
+    "max_api_requests",
+    "estimated_cost_usd",
+    "limits",
+    "search_modes",
+    "request_budget_exhausted",
+    "missing_examples",
+    "error",
+    "fermenting",
+    "fermentation",
+    "fermentation_snapshot",
+    "tracking_eligible",
+    "tracking_reason",
+    "archive_note",
+}
+
+SOURCE_TEXT_KEYS = {
+    "text",
+    "clean_text",
+    "original_text",
+    "translation_zh",
+    "links",
+    "url",
+    "post_url",
+    "external_href",
+    "expanded_url",
+    "media_url",
+    "media_url_https",
+    "preview_image_url",
+    "author_name",
+    "author_handle",
+    "author_bio",
+    "author_location",
+    "author_avatar_url",
+    "avatar_url",
+}
+
 
 def build_dashboard_data(
     joybuy_clusters: list[dict[str, Any]],
@@ -34,6 +88,7 @@ def build_dashboard_data(
     joybuy_posts = [post for post in normalized_posts if post.get("brand") == "joybuy"]
     joybuy_effective_posts = [post for post in joybuy_posts if post.get("is_relevant")]
     source = source_status(normalized_posts, provider_hint)
+    public_collection_status = public_collection_status_payload(collection_status or {})
     featured_items = build_featured_items(joybuy_clusters, competitor)
     hot_topics = build_hot_topics(joybuy_clusters, featured_items)
 
@@ -50,9 +105,9 @@ def build_dashboard_data(
             "high_risk": len(high_risk),
             "fermenting": sum(1 for item in fermentation_items if item["fermentation"]["status"] in {"升温中", "发酵中"}),
             "needs_review": sum(1 for item in joybuy_clusters if item["score"]["recommended_action"] in {"人工核查", "PR 准备回应", "高层同步"}),
-            "joybuy_volume": len(joybuy_effective_posts),
-            "joybuy_candidate_volume": len(joybuy_posts),
-            "temu_volume": competitor["volume"],
+            "primary_volume": len(joybuy_effective_posts),
+            "primary_candidate_volume": len(joybuy_posts),
+            "competitor_volume": competitor["volume"],
             "negative_share": round(len(negative) / max(1, len(joybuy_clusters)) * 100),
         },
         "executive_summary": build_executive_summary(joybuy_clusters, competitor),
@@ -79,7 +134,7 @@ def build_dashboard_data(
         "window_label": window_label,
         "metrics": overview["metrics"],
         "source_status": overview["source_status"],
-        "collection_status": collection_status or {},
+        "collection_status": public_collection_status,
         "executive_summary": overview["executive_summary"],
         "competitor": competitor,
         "featured_items": featured_items,
@@ -92,28 +147,83 @@ def build_dashboard_data(
         "items": [cluster_summary(cluster, include_posts=False) for cluster in fermentation_items],
     }
 
-    write_json(str(target / "latest.json"), overview)
-    write_json(str(target / "daily" / "latest.json"), daily)
-    write_daily_history(target, daily)
-    write_json(str(target / "fermentation.json"), fermentation)
-    write_json(str(target / "competitor.json"), competitor)
-    write_json(str(target / "source-status.json"), overview["source_status"])
+    public_overview = public_dashboard_payload(overview)
+    public_daily = public_dashboard_payload(daily)
+    public_fermentation = {"generated_at": overview["generated_at"], "items": []}
+    public_competitor = public_dashboard_payload(competitor)
+    public_source = public_dashboard_payload(overview["source_status"])
+
+    write_json(str(target / "latest.json"), public_overview)
+    write_json(str(target / "daily" / "latest.json"), public_daily)
+    write_daily_history(target, public_daily)
+    write_json(str(target / "fermentation.json"), public_fermentation)
+    write_json(str(target / "competitor.json"), public_competitor)
+    write_json(str(target / "source-status.json"), public_source)
     data_bundle = {
-        "dashboard-data/latest.json": overview,
-        "dashboard-data/daily/latest.json": daily,
-        "dashboard-data/fermentation.json": fermentation,
-        "dashboard-data/competitor.json": competitor,
-        "dashboard-data/source-status.json": overview["source_status"],
+        "dashboard-data/latest.json": public_overview,
+        "dashboard-data/daily/latest.json": public_daily,
+        "dashboard-data/fermentation.json": public_fermentation,
+        "dashboard-data/competitor.json": public_competitor,
+        "dashboard-data/source-status.json": public_source,
         "clusters": {},
     }
     for path, payload in daily_history_files(target).items():
         data_bundle[path] = payload
-    for cluster in joybuy_clusters:
-        detail = cluster_detail(cluster)
-        write_json(str(target / "clusters" / f"{cluster['cluster_id']}.json"), detail)
-        data_bundle["clusters"][f"dashboard-data/clusters/{cluster['cluster_id']}.json"] = detail
     write_data_bundle(target.parent / "dashboard-data-bundle.js", data_bundle)
-    return overview
+    return public_overview
+
+
+def public_dashboard_payload(value: Any, parent_key: str = "") -> Any:
+    if isinstance(value, dict):
+        result: dict[str, Any] = {}
+        for key, item in value.items():
+            if key in PUBLIC_DROP_KEYS:
+                continue
+            public_key = PUBLIC_KEY_REPLACEMENTS.get(key, key)
+            result[public_key] = public_dashboard_payload(item, public_key)
+        return result
+    if isinstance(value, list):
+        return [public_dashboard_payload(item, parent_key) for item in value]
+    if isinstance(value, str):
+        return public_string(value, parent_key)
+    return value
+
+
+def public_string(value: str, key: str = "") -> str:
+    if key in SOURCE_TEXT_KEYS:
+        return value
+    if value == "joybuy":
+        return "primary"
+    if value == "temu":
+        return "competitor"
+    replacements = {
+        "featured-joybuy-": "featured-primary-",
+        "featured-temu-": "featured-competitor-",
+        "joybuy-cluster-": "primary-signal-",
+        "fallback-temu-": "fallback-competitor-",
+        "all-temu-": "all-competitor-",
+        "Joybuy / JD": "主品牌",
+        "Joybuy/JD": "主品牌",
+        "Joybuy": "主品牌",
+        "JD.com": "主品牌",
+        "Jingdong": "主品牌",
+        "京东": "主品牌",
+        "Temu": "样例竞品",
+        "X 上": "公开社媒上",
+        "X 原帖": "公开原帖",
+        "X 舆情": "公开舆情",
+        "during bake-off": "regularly",
+        "Review duplicate rate and relevance during bake-off.": "Review duplicate rate and relevance regularly.",
+        "No meaningful 主品牌 signal detected today.": "今日暂未发现有效主品牌舆情。",
+        "Today's highest-priority 主品牌 signal is": "今日最高优先级主品牌舆情为",
+        "Continue monitoring.": "继续监测。",
+        "Recommended action": "建议动作",
+        "baseline shows overlap around": "基线讨论涉及",
+    }
+    result = value
+    for before, after in replacements.items():
+        result = result.replace(before, after)
+    return result
 
 
 def write_daily_history(target: Path, current_daily: dict[str, Any]) -> None:
@@ -121,8 +231,8 @@ def write_daily_history(target: Path, current_daily: dict[str, Any]) -> None:
     daily_dir.mkdir(parents=True, exist_ok=True)
     records: dict[str, dict[str, Any]] = {}
     for record in load_existing_daily_records(daily_dir):
-        records[record["date"]] = record
-    records[current_daily["date"]] = current_daily
+        records[record["date"]] = public_dashboard_payload(record)
+    records[current_daily["date"]] = public_dashboard_payload(current_daily)
 
     for record in records.values():
         write_json(str(daily_dir / f"{record['date']}.json"), record)
@@ -174,15 +284,19 @@ def daily_index_item(record: dict[str, Any]) -> dict[str, Any]:
         "date": record.get("date"),
         "generated_at_label": record.get("generated_at_label"),
         "window_label": record.get("window_label"),
-        "title": top_cluster.get("title") or summary.get("headline") or "No meaningful Joybuy signal detected",
+        "title": top_cluster.get("title") or summary.get("headline") or "今日暂未发现有效主品牌舆情",
         "cluster_count": len(clusters) if clusters else metrics.get("effective_intelligence", 0),
-        "joybuy_effective": source_status.get("brand_breakdown", {}).get("joybuy_effective", metrics.get("joybuy_volume", 0)),
-        "temu_effective": source_status.get("brand_breakdown", {}).get("temu_effective", metrics.get("temu_volume", 0)),
+        "primary_effective": source_status.get("brand_breakdown", {}).get(
+            "primary_effective",
+            source_status.get("brand_breakdown", {}).get("joybuy_effective", metrics.get("primary_volume", metrics.get("joybuy_volume", 0))),
+        ),
+        "competitor_effective": source_status.get("brand_breakdown", {}).get(
+            "competitor_effective",
+            source_status.get("brand_breakdown", {}).get("temu_effective", metrics.get("competitor_volume", metrics.get("temu_volume", 0))),
+        ),
         "high_risk": metrics.get("high_risk", 0),
         "needs_review": metrics.get("needs_review", 0),
         "collection_status": collection.get("status", "unknown"),
-        "api_requests_used": collection.get("api_requests_used"),
-        "max_api_requests": collection.get("max_api_requests"),
         "ips": score.get("ips"),
         "level": score.get("level"),
         "summary_only": bool(record.get("summary_only")),
@@ -202,15 +316,15 @@ def build_executive_summary(clusters: list[dict[str, Any]], competitor: dict[str
     top = clusters[0] if clusters else None
     if not top:
         return {
-            "headline": "No meaningful Joybuy signal detected today.",
+            "headline": "今日暂未发现有效主品牌舆情。",
             "risk": "Low",
-            "action": "Continue monitoring.",
+            "action": "继续监测。",
         }
     shared = "refund and delivery" if any(term["term"] in {"refund", "delivery"} for term in competitor["top_terms"]) else "general shopping experience"
     return {
-        "headline": f"Today's highest-priority Joybuy signal is: {top['title']}.",
+        "headline": f"今日最高优先级主品牌舆情为：{top['title']}。",
         "risk": f"Overall risk is {top['score']['level']} with IPS {top['score']['ips']}.",
-        "action": f"Recommended action: {top['score']['recommended_action']}. Temu baseline shows overlap around {shared}.",
+        "action": f"建议动作：{top['score']['recommended_action']}。样例竞品基线讨论涉及 {shared}。",
     }
 
 
@@ -282,8 +396,8 @@ def featured_item_for_cluster(cluster: dict[str, Any]) -> dict[str, Any] | None:
         "id": f"featured-{cluster['cluster_id']}",
         "brand": cluster.get("brand", "joybuy"),
         "cluster_id": cluster["cluster_id"],
-        "source_type": "X 舆情",
-        "source_name": source_name_for_post(post, "Joybuy / JD"),
+        "source_type": "公开舆情",
+        "source_name": source_name_for_post(post, "主品牌"),
         "author_name": post.get("author", {}).get("name") or post.get("author_name") or post.get("author_handle"),
         "author_handle": post.get("author", {}).get("handle") or post.get("author_handle"),
         "author_avatar_url": post.get("author", {}).get("avatar_url") or post.get("author_avatar_url"),
@@ -305,7 +419,6 @@ def featured_item_for_cluster(cluster: dict[str, Any]) -> dict[str, Any] | None:
         "original_text": post.get("text") or post.get("clean_text") or cluster.get("summary", ""),
         "translation_zh": post.get("translation_zh") or post.get("clean_text") or post.get("text") or cluster.get("summary_zh", ""),
         "translation_status": post.get("translation_status", "unknown"),
-        "translation_provider": post.get("translation_provider", "none"),
         "summary_zh": cluster.get("summary_zh", ""),
         "links": post.get("links", []),
         "media": media_items(post),
@@ -335,7 +448,7 @@ def featured_item_for_competitor_post(post: dict[str, Any]) -> dict[str, Any] | 
         "brand": "temu",
         "cluster_id": "",
         "source_type": "竞品异常",
-        "source_name": source_name_for_post(post, "Temu 竞品"),
+        "source_name": source_name_for_post(post, "样例竞品"),
         "author_name": post.get("author_name") or post.get("author_handle"),
         "author_handle": post.get("author_handle"),
         "author_avatar_url": post.get("author_avatar_url"),
@@ -357,7 +470,6 @@ def featured_item_for_competitor_post(post: dict[str, Any]) -> dict[str, Any] | 
         "original_text": post.get("text", ""),
         "translation_zh": post.get("translation_zh") or post.get("clean_text") or post.get("text") or "",
         "translation_status": post.get("translation_status", "unknown"),
-        "translation_provider": post.get("translation_provider", "none"),
         "summary_zh": post.get("summary_zh", ""),
         "links": post.get("links", []),
         "media": media_items(post),
@@ -489,7 +601,7 @@ def has_term(text: str, terms: list[str]) -> bool:
 
 
 def signal_context(text: str, brand: str, topic: str = "") -> dict[str, Any]:
-    brand_label = "竞品侧" if brand == "temu" else "Joybuy/JD"
+    brand_label = "竞品侧" if brand == "temu" else "主品牌"
     if topic == "refund" or has_term(text, ["refund", "退款", "退货", "售后", "chargeback"]):
         return {
             "name": "退款/售后体验",
@@ -502,14 +614,14 @@ def signal_context(text: str, brand: str, topic: str = "") -> dict[str, Any]:
         return {
             "name": "履约与物流心智",
             "angle": "原帖围绕发货、仓库、配送或包裹进度展开",
-            "implication": "可作为 Temu 履约卖点/槽点的竞品参照。" if brand == "temu" else "需要判断这是正向履约口碑还是潜在配送投诉。",
+            "implication": "可作为样例竞品履约卖点/槽点的竞品参照。" if brand == "temu" else "需要判断这是正向履约口碑还是潜在配送投诉。",
             "useful": True,
         }
     if topic == "price_opportunity" or has_term(text, ["coupon", "discount", "promo", "deal", "save", "ultra-low", "优惠", "折扣", "券", "低价", "省钱", "促销"]):
         return {
             "name": "价格促销与导购",
             "angle": "内容强调优惠、低价、券包或导购入口",
-            "implication": "有助于观察 Temu 拉新促销话术及垃圾推广占比。" if brand == "temu" else "可评估是否存在可借势传播的价格/活动卖点。",
+            "implication": "有助于观察样例竞品拉新促销话术及垃圾推广占比。" if brand == "temu" else "可评估是否存在可借势传播的价格/活动卖点。",
             "useful": True,
         }
     if topic == "regulatory" or has_term(text, ["regulator", "regulatory", "investigation", "foreign subsidies", "subsidy", "charge sheet", "european commission", "ceconomy", "takeover", "acquisition", "antitrust", "欧盟", "监管", "收购", "并购", "补贴", "反垄断"]):
@@ -530,7 +642,7 @@ def signal_context(text: str, brand: str, topic: str = "") -> dict[str, Any]:
     if brand == "temu" and has_term(text, ["cheap", "low quality", "knockoff", "lazy", "temu version", "temu-looking", "temu looking", "敷衍", "低质", "山寨", "乱七八糟"]):
         return {
             "name": "竞品低价/低质心智",
-            "angle": "原帖把 Temu 作为低价、低质或山寨感的表达符号",
+            "angle": "原帖把样例竞品作为低价、低质或山寨感的表达符号",
             "implication": "这类内容可作为竞品品牌心智参照，但只有出现较高传播时才需要进入焦点。",
             "useful": True,
             "sensitive": True,
@@ -539,7 +651,7 @@ def signal_context(text: str, brand: str, topic: str = "") -> dict[str, Any]:
         return {
             "name": "购买意向与日常购物",
             "angle": "用户表达下单、加购或尝试购买意向",
-            "implication": "可作为竞品自然需求与用户使用场景样本，需结合互动与浏览判断是否异常。" if brand == "temu" else "可用于判断 Joybuy/JD 是否被真实用户纳入购买选择。",
+            "implication": "可作为竞品自然需求与用户使用场景样本，需结合互动与浏览判断是否异常。" if brand == "temu" else "可用于判断主品牌是否被真实用户纳入购买选择。",
             "useful": True,
         }
     if has_term(text, ["scam", "fake", "damaged", "stupid", "lazy", "nonsense", "蠢", "假", "坏了", "差", "敷衍", "乱七八糟"]):
@@ -605,10 +717,10 @@ def competitor_focus_title(post: dict[str, Any]) -> str:
     text = source_text_for_reason(post)
     signal = signal_context(text, "temu")
     if signal.get("sensitive"):
-        return f"Temu {signal['name']}出现传播信号"
+        return f"样例竞品{signal['name']}出现传播信号"
     if signal.get("useful"):
-        return f"Temu {signal['name']}进入竞品观察"
-    return "Temu 竞品异常讨论"
+        return f"样例竞品{signal['name']}进入竞品观察"
+    return "样例竞品异常讨论"
 
 
 def source_name_for_post(post: dict[str, Any], fallback: str) -> str:
@@ -821,7 +933,6 @@ def lead_post_summary(post: dict[str, Any]) -> dict[str, Any]:
         "links": post.get("links", []),
         "translation_zh": post.get("translation_zh") or post.get("clean_text") or post.get("text") or "",
         "translation_status": post.get("translation_status", "unknown"),
-        "translation_provider": post.get("translation_provider", "none"),
         "summary_zh": post.get("summary_zh", ""),
         "metrics": post.get("metrics", {}),
         "media": media_items(post),
@@ -844,21 +955,16 @@ def source_status(posts: list[dict[str, Any]], provider_hint: str | None = None)
     translation = translation_status(posts)
     joybuy_posts = [post for post in posts if post.get("brand") == "joybuy"]
     temu_posts = [post for post in posts if post.get("brand") == "temu"]
-    estimated_cost = 0
-    if "twitterapi_io" in providers:
-        estimated_cost = round(len(posts) * 0.00015, 4)
     return {
         "status": "sample" if is_sample else "normal",
-        "providers": providers,
         "raw_posts_collected": len(posts),
         "effective_posts": sum(1 for post in posts if post.get("is_relevant")),
         "brand_breakdown": {
-            "joybuy_candidates": len(joybuy_posts),
-            "joybuy_effective": sum(1 for post in joybuy_posts if post.get("is_relevant")),
-            "temu_candidates": len(temu_posts),
-            "temu_effective": sum(1 for post in temu_posts if post.get("is_relevant")),
+            "primary_candidates": len(joybuy_posts),
+            "primary_effective": sum(1 for post in joybuy_posts if post.get("is_relevant")),
+            "competitor_candidates": len(temu_posts),
+            "competitor_effective": sum(1 for post in temu_posts if post.get("is_relevant")),
         },
-        "estimated_cost_usd": estimated_cost,
         "translation": translation,
         "notes": source_notes(is_sample, translation),
     }
@@ -866,15 +972,10 @@ def source_status(posts: list[dict[str, Any]], provider_hint: str | None = None)
 
 def translation_status(posts: list[dict[str, Any]]) -> dict[str, Any]:
     counts: dict[str, int] = {}
-    providers = set()
     for post in posts:
         status = str(post.get("translation_status") or "unknown")
         counts[status] = counts.get(status, 0) + 1
-        provider = post.get("translation_provider")
-        if provider:
-            providers.add(str(provider))
     return {
-        "providers": sorted(providers),
         "counts": counts,
         "missing_count": counts.get("missing", 0) + counts.get("error", 0),
         "fallback_original_count": counts.get("missing", 0) + counts.get("error", 0),
@@ -888,17 +989,46 @@ def source_notes(is_sample: bool, translation: dict[str, Any]) -> list[str]:
     ]
     if is_sample:
         return [
-            "Sample provider is active. Set X_SOURCE_PROVIDER=twitterapi_io to use real X data.",
+            "Sample data mode is active for structure and interaction preview.",
             *base,
             "Sample translations are generated from the local sample dictionary.",
         ]
     translation_note = (
         f"Chinese translation unavailable for {translation['missing_count']} posts; original text is shown as fallback."
         if translation.get("missing_count")
-        else f"Chinese translation coverage is complete. Provider: {', '.join(translation.get('providers', [])) or 'none'}."
+        else "Chinese translation coverage is complete."
     )
     return [
-        "Real X data provider is active. Review daily cost and duplicate rate during bake-off.",
+        "Public social data collection is active. Review duplicate rate and relevance regularly.",
         *base,
         translation_note,
     ]
+
+
+def public_collection_status_payload(collection_status: dict[str, Any]) -> dict[str, Any]:
+    translation = collection_status.get("translation") or {}
+    public_payload = {
+        "status": collection_status.get("status", "unknown"),
+        "warnings": public_warnings(collection_status.get("warnings", [])),
+    }
+    if translation:
+        public_payload["translation"] = {
+            "configured": bool(translation.get("configured", False)),
+            "counts": translation.get("counts", {}),
+            "missing_count": translation.get("missing_count", 0),
+            "fallback_original_count": translation.get("fallback_original_count", translation.get("missing_count", 0)),
+        }
+    return public_payload
+
+
+def public_warnings(warnings: list[Any]) -> list[str]:
+    results = []
+    for warning in warnings:
+        text = str(warning)
+        if "translation" in text.lower():
+            results.append("Chinese translation is unavailable for some posts; original text is shown as fallback.")
+        elif "budget" in text.lower() or "request" in text.lower() or "provider" in text.lower():
+            results.append("Collection stopped early after reaching a protective runtime threshold.")
+        else:
+            results.append("Collection completed with a non-critical warning.")
+    return results[:3]

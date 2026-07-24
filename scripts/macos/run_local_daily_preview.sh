@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 LOCK_DIR="${TMPDIR:-/tmp}/joybuy-radar-daily-preview.lock"
 KEYCHAIN_ACCOUNT="${JOYBUY_RADAR_KEYCHAIN_ACCOUNT:-${USER:-$(id -un)}}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
-RESUME_FROM_CHECKPOINT="${JOYBUY_RADAR_RESUME_FROM_CHECKPOINT:-0}"
+RESUME_FROM_CHECKPOINT="${BRAND_RADAR_RESUME_FROM_CHECKPOINT:-0}"
 
 log() {
   printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S %Z')" "$*"
@@ -51,11 +51,10 @@ if not source_path.exists():
     raise SystemExit("source-status.json is missing")
 
 source = json.loads(source_path.read_text(encoding="utf-8"))
-providers = set(source.get("providers", []))
-if not providers or providers == {"sample"}:
+if source.get("status") == "sample":
     raise SystemExit("Local daily preview produced sample data; refusing to treat it as real data.")
-if "twitterapi_io" not in providers:
-    raise SystemExit(f"Expected twitterapi_io provider, got: {', '.join(sorted(providers)) or 'none'}")
+if source.get("raw_posts_collected", 0) <= 0:
+    raise SystemExit("Local daily preview produced no public source records; refusing to treat it as real data.")
 PY
 }
 

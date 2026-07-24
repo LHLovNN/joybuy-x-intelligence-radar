@@ -41,35 +41,29 @@ def main() -> None:
     metrics = latest.get("metrics", {})
     breakdown = source.get("brand_breakdown", {})
     signals = daily.get("clusters", [])
-    providers = source.get("providers") or [run_status.get("provider", "unknown")]
+    primary_candidates = breakdown.get("primary_candidates", breakdown.get("joybuy_candidates", 0))
+    primary_effective = breakdown.get("primary_effective", breakdown.get("joybuy_effective", 0))
+    competitor_candidates = breakdown.get("competitor_candidates", breakdown.get("temu_candidates", 0))
+    competitor_effective = breakdown.get("competitor_effective", breakdown.get("temu_effective", 0))
+    competitor_volume = metrics.get("competitor_volume", metrics.get("temu_volume", competitor.get("volume", 0)))
 
     print("Daily report summary")
     print(f"- Generated: {latest.get('generated_at_label', latest.get('generated_at', 'unknown'))}")
-    print(f"- Providers: {', '.join(providers)}")
+    print(f"- Data mode: {source.get('status', 'unknown')}")
     print(f"- Collection status: {collection_status.get('status', 'unknown')}")
-    if collection_status:
-        print(
-            "- API requests used/cap: "
-            f"{collection_status.get('api_requests_used', 'n/a')}/"
-            f"{collection_status.get('max_api_requests', 'n/a')}"
-        )
     translation = collection_status.get("translation") or run_status.get("translation_status") or source.get("translation") or {}
     if translation:
-        provider = translation.get("provider") or ", ".join(translation.get("providers", [])) or "unknown"
-        print(f"- Translation provider: {provider}")
         print(f"- Translation missing: {translation.get('missing_count', 0)}")
         print(f"- Translation fallback original: {translation.get('fallback_original_count', translation.get('missing_count', 0))}")
     print(f"- Raw posts collected: {source.get('raw_posts_collected', 0)}")
     print(f"- Effective posts: {source.get('effective_posts', 0)}")
-    print(f"- Joybuy candidates/effective: {breakdown.get('joybuy_candidates', 0)}/{breakdown.get('joybuy_effective', 0)}")
-    print(f"- Temu candidates/effective: {breakdown.get('temu_candidates', 0)}/{breakdown.get('temu_effective', 0)}")
-    print(f"- Joybuy signals: {len(signals)}")
+    print(f"- Primary candidates/effective: {primary_candidates}/{primary_effective}")
+    print(f"- Competitor candidates/effective: {competitor_candidates}/{competitor_effective}")
+    print(f"- Primary signals: {len(signals)}")
     print(f"- High risk signals: {metrics.get('high_risk', 0)}")
     print(f"- Needs review: {metrics.get('needs_review', 0)}")
-    print(f"- Fermenting: {metrics.get('fermenting', 0)}")
     print(f"- Top signal: {format_top_signal(signals)}")
-    print(f"- Temu baseline volume: {competitor.get('volume', 0)}")
-    print(f"- Estimated source cost USD: {source.get('estimated_cost_usd', 0)}")
+    print(f"- Competitor baseline volume: {competitor_volume}")
     print(f"- Daily archive days: {len(daily_index.get('items', []))}")
     for warning in collection_status.get("warnings", [])[:3]:
         print(f"- Collection warning: {warning}")

@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT))
 from src.adapters.x_source_base import ProviderBudgetExceeded
 from src.adapters.provider_factory import get_x_source
 from src.pipeline.clusterer import cluster_posts
-from src.pipeline.dashboard_builder import build_dashboard_data
+from src.pipeline.dashboard_builder import build_dashboard_data, public_collection_status_payload
 from src.pipeline.evidence_chain import attach_evidence_chains
 from src.pipeline.fermentation import update_fermentation
 from src.pipeline.normalizer import normalize_posts
@@ -24,6 +24,7 @@ from src.pipeline.translation import (
     apply_translations,
     build_translation_service,
 )
+from src.utils.config import load_project_json
 from src.utils.io import read_json, write_json, write_jsonl
 from src.utils.time import BEIJING, beijing_daily_window, beijing_label, from_iso, now_utc, to_iso
 
@@ -47,7 +48,8 @@ def selected_provider(source_config: dict[str, Any]) -> str:
         return explicit
     if os.getenv("TWITTERAPI_IO_KEY"):
         return "twitterapi_io"
-    return source_config["x_sources"]["primary"]
+    sources = source_config.get("social_sources") or source_config.get("x_sources") or {"primary": "sample"}
+    return sources["primary"]
 
 
 def limit_from_env(name: str, fallback: int) -> int:
@@ -73,9 +75,17 @@ def optional_limit_from_env(name: str, fallback: int | None) -> int | None:
     return value
 
 
+def limit_setting(limits: dict[str, Any], generic_name: str, legacy_name: str, fallback: int | None = None) -> int | None:
+    return limits.get(generic_name, limits.get(legacy_name, fallback))
+
+
 def apply_runtime_limits(x_source: Any, source_config: dict[str, Any]) -> dict[str, Any]:
     limits = source_config["limits"]
-    max_api_requests = optional_limit_from_env("X_MAX_API_REQUESTS", limits.get("max_x_api_requests_per_run"))
+    configured_limit = limit_setting(limits, "max_source_requests_per_run", "max_x_api_requests_per_run")
+    max_api_requests = optional_limit_from_env(
+        "BRAND_RADAR_MAX_SOURCE_REQUESTS",
+        optional_limit_from_env("X_MAX_API_REQUESTS", configured_limit),
+    )
     if hasattr(x_source, "max_requests_per_run"):
         x_source.max_requests_per_run = max_api_requests
     return {
@@ -92,7 +102,7 @@ def source_request_stats(x_source: Any) -> dict[str, Any]:
 
 
 def configured_search_modes(source_config: dict[str, Any]) -> list[dict[str, Any]]:
-    raw_modes = source_config.get("x_search_modes") or [{"query_type": "Latest", "ratio": 1}]
+    raw_modes = source_config.get("social_search_modes") or source_config.get("x_search_modes") or [{"query_type": "Latest", "ratio": 1}]
     modes: list[dict[str, Any]] = []
     for mode in raw_modes:
         if isinstance(mode, str):
@@ -153,8 +163,14 @@ def collect_real_posts(
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     limits = source_config["limits"]
     brand_limits = {
-        "joybuy": limit_from_env("X_JOYBUY_DAILY_LIMIT", limits["max_joybuy_posts_per_day"]),
-        "temu": limit_from_env("X_TEMU_DAILY_LIMIT", limits["max_temu_posts_per_day"]),
+        "joybuy": limit_from_env(
+            "BRAND_RADAR_PRIMARY_DAILY_LIMIT",
+            limit_from_env("X_JOYBUY_DAILY_LIMIT", int(limit_setting(limits, "max_primary_posts_per_day", "max_joybuy_posts_per_day", 120) or 120)),
+        ),
+        "temu": limit_from_env(
+            "BRAND_RADAR_COMPETITOR_DAILY_LIMIT",
+            limit_from_env("X_TEMU_DAILY_LIMIT", int(limit_setting(limits, "max_competitor_posts_per_day", "max_temu_posts_per_day", 60) or 60)),
+        ),
     }
     raw_posts: list[dict[str, Any]] = []
     seen: dict[str, dict[str, Any]] = {}
@@ -212,8 +228,8 @@ def collect_real_posts(
         "warnings": warnings,
         "limits": {
             "max_posts": max_total,
-            "max_joybuy_posts": brand_limits["joybuy"],
-            "max_temu_posts": brand_limits["temu"],
+            "max_primary_posts": brand_limits["joybuy"],
+            "max_competitor_posts": brand_limits["temu"],
             "max_api_requests": request_stats["max_api_requests"],
         },
         "search_modes": search_modes,
@@ -268,9 +284,9 @@ def read_collection_checkpoint() -> dict[str, Any]:
 
 def main() -> None:
     args = parse_args()
-    keyword_config = read_json(str(ROOT / "config" / "keywords.json"))
-    scoring_config = read_json(str(ROOT / "config" / "scoring.json"))
-    source_config = read_json(str(ROOT / "config" / "sources.json"))
+    keyword_config = load_project_json("keywords.local.json")
+    scoring_config = load_project_json("scoring.json")
+    source_config = load_project_json("sources.local.json")
     start, end = beijing_daily_window(now_utc())
     today = end.astimezone(BEIJING).strftime("%Y-%m-%d")
     window_label = f"{beijing_label(start)} - {beijing_label(end)}"
@@ -344,13 +360,25 @@ def main() -> None:
         "translation_status": translation_status,
         "dashboard_metrics": overview["metrics"],
     }
-    write_json(str(ROOT / "public" / "dashboard-data" / "run-status.json"), run_log)
+    public_run_log = {
+        "status": run_log["status"],
+        "generated_at": run_log["generated_at"],
+        "window_start": run_log["window_start"],
+        "window_end": run_log["window_end"],
+        "window_label": run_log["window_label"],
+        "raw_posts": run_log["raw_posts"],
+        "normalized_posts": run_log["normalized_posts"],
+        "primary_signals": run_log["joybuy_clusters"],
+        "collection_status": public_collection_status_payload(collection_status),
+        "dashboard_metrics": overview["metrics"],
+    }
+    write_json(str(ROOT / "public" / "dashboard-data" / "run-status.json"), public_run_log)
     write_json(str(ROOT / "data" / "logs" / f"daily-{today}.json"), run_log)
     print(f"Generated dashboard data: {overview['generated_at_label']}")
-    print(f"Joybuy signals: {len(joybuy_clusters)}")
+    print(f"Primary signals: {len(joybuy_clusters)}")
     print(f"Raw posts: {len(raw_posts)}")
     print(f"Collection status: {collection_status['status']}")
-    print(f"Translation: {translation_status['provider']} | missing {translation_status.get('missing_count', 0)}")
+    print(f"Translation missing: {translation_status.get('missing_count', 0)}")
     if collection_status.get("warnings"):
         print(f"Collection warnings: {len(collection_status['warnings'])}")
 

@@ -2,64 +2,35 @@
 
 ## Red Lines
 
-- Never commit API keys, tokens, cookies, account credentials, private config or local environment files.
-- Keep provider keys only in local environment variables or approved secret stores.
-- Keep company GPT keys local-only or in a company-trusted secret store. Do not add company GPT keys to GitHub repository Secrets during the MVP.
-- Treat raw provider output and local logs as run artifacts, not source code.
-- Public dashboard JSON under `public/dashboard-data/` is product content and may be committed for historical daily browsing, but sample-mode dashboard JSON must not be published as if it were real X data.
-- Before publishing or pushing, run the security check script.
+- Never commit API keys, tokens, cookies, account credentials, private config or
+  local environment files.
+- Keep real connector credentials and language-service credentials in an
+  approved secret manager outside the public repository.
+- Treat raw connector output, private runtime logs, checkpoints and local notes
+  as private artifacts.
+- Before publishing, run the security check and review public dashboard JSON for
+  accidental operational disclosure.
 
-## Local Secrets
+## Public Repository Boundary
 
-Use macOS Keychain for the local daily automation:
+The repository may contain:
 
-```bash
-npm run local:secrets
-```
+- Static dashboard code.
+- Sample configuration.
+- Public dashboard archives after review.
+- Generic setup and verification instructions.
 
-The script stores these Keychain services without printing values:
+The repository must not contain:
 
-```text
-joybuy-radar.TWITTERAPI_IO_KEY
-joybuy-radar.JDCLOUD_GPT_API_KEY
-```
-
-Environment variables are acceptable for one-off local smoke tests, but do not
-put secret values into Python, JavaScript, Markdown, JSON, shell scripts,
-screenshots or committed logs.
-
-For local company JoyBuilder translation:
-
-```bash
-export JDCLOUD_GPT_API_KEY="..."
-export TRANSLATION_PROVIDER=joybuilder
-```
-
-Do not add `JDCLOUD_GPT_API_KEY` to GitHub repository Secrets for this MVP.
-
-## GitHub Secrets
-
-The MVP GitHub workflow only publishes already committed static dashboard files.
-It does not collect X data, does not call translation services and does not need
-provider secrets.
-
-Do not add `TWITTERAPI_IO_KEY`, `JDCLOUD_GPT_API_KEY` or other provider keys to
-GitHub repository Secrets for the current Mac-local automation architecture.
+- Secret values or private environment files.
+- Real monitoring keyword dictionaries.
+- Internal connector/provider names in public docs or UI copy.
+- Private deployment, budget, quota or request-cap details.
+- Raw connector payloads or private run logs.
 
 ## Generated Data
 
-The following paths are ignored by Git:
-
-```text
-data/raw/
-data/processed/
-data/logs/
-data/clusters/
-public/dashboard-data/clusters/
-```
-
-The following public dashboard paths are intentionally committed when they contain
-approved public product data:
+The following public dashboard paths may be committed when reviewed:
 
 ```text
 public/dashboard-data/*.json
@@ -67,6 +38,15 @@ public/dashboard-data/daily/*.json
 public/dashboard-data-bundle.js
 ```
 
-Before committing these files, confirm the collection status. If the provider is
-`sample`, either keep the files local for preview only or label the release as a
-sample-data preview.
+The following paths are private runtime artifacts and remain ignored:
+
+```text
+config/private/
+data/raw/
+data/processed/
+data/logs/
+data/clusters/
+data/checkpoints/
+data/local-notes/
+public/dashboard-data/clusters/
+```

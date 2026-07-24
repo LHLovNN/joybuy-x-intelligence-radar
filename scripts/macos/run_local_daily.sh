@@ -6,7 +6,7 @@ LOG_DIR="$ROOT/data/logs/macos"
 LOCK_DIR="${TMPDIR:-/tmp}/joybuy-radar-daily.lock"
 KEYCHAIN_ACCOUNT="${JOYBUY_RADAR_KEYCHAIN_ACCOUNT:-${USER:-$(id -un)}}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
-RESUME_FROM_CHECKPOINT="${JOYBUY_RADAR_RESUME_FROM_CHECKPOINT:-0}"
+RESUME_FROM_CHECKPOINT="${BRAND_RADAR_RESUME_FROM_CHECKPOINT:-0}"
 
 mkdir -p "$LOG_DIR"
 
@@ -75,11 +75,10 @@ if not source_path.exists():
     raise SystemExit("source-status.json is missing")
 
 source = json.loads(source_path.read_text(encoding="utf-8"))
-providers = set(source.get("providers", []))
-if not providers or providers == {"sample"}:
+if source.get("status") == "sample":
     raise SystemExit("Local daily produced sample data; refusing to publish.")
-if "twitterapi_io" not in providers:
-    raise SystemExit(f"Expected twitterapi_io provider, got: {', '.join(sorted(providers)) or 'none'}")
+if source.get("raw_posts_collected", 0) <= 0:
+    raise SystemExit("Local daily produced no public source records; refusing to publish.")
 PY
 }
 

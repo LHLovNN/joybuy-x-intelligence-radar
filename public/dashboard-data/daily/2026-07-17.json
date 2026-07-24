@@ -4,31 +4,25 @@
   "generated_at_label": "2026-07-17 13:55 BJT",
   "window_label": "Manual run before history archive was added",
   "summary_only": true,
-  "archive_note": "Backfilled placeholder for the first manual GitHub Actions run. Detailed summary was not archived at that time.",
   "metrics": {
     "effective_intelligence": 0,
     "high_risk": 0,
-    "fermenting": 0,
     "needs_review": 0,
-    "joybuy_volume": 0,
-    "joybuy_candidate_volume": 0,
-    "temu_volume": 0,
+    "primary_volume": 0,
+    "primary_candidate_volume": 0,
+    "competitor_volume": 0,
     "negative_share": 0
   },
   "source_status": {
     "status": "normal",
-    "providers": [
-      "twitterapi_io"
-    ],
     "raw_posts_collected": 0,
     "effective_posts": 0,
     "brand_breakdown": {
-      "joybuy_candidates": 0,
-      "joybuy_effective": 0,
-      "temu_candidates": 0,
-      "temu_effective": 0
+      "primary_candidates": 0,
+      "primary_effective": 0,
+      "competitor_candidates": 0,
+      "competitor_effective": 0
     },
-    "estimated_cost_usd": 0.0,
     "notes": [
       "Backfilled summary-only archive."
     ]
@@ -36,11 +30,8 @@
   "collection_status": {
     "status": "archived-summary",
     "warnings": [
-      "Detailed run summary was not available before history storage was added."
-    ],
-    "api_requests_used": null,
-    "max_api_requests": null,
-    "request_budget_exhausted": false
+      "Collection completed with a non-critical warning."
+    ]
   },
   "executive_summary": {
     "headline": "Manual Daily report run succeeded before history archive was added.",
@@ -48,7 +39,7 @@
     "action": "Use 2026-07-18 onward for reliable historical comparisons."
   },
   "competitor": {
-    "brand": "temu",
+    "brand": "competitor",
     "volume": 0,
     "sentiment": {
       "positive": 0,

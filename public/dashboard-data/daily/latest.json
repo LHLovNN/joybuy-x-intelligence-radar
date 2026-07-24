@@ -6,31 +6,23 @@
   "metrics": {
     "effective_intelligence": 5,
     "high_risk": 1,
-    "fermenting": 2,
     "needs_review": 0,
-    "joybuy_volume": 27,
-    "joybuy_candidate_volume": 29,
-    "temu_volume": 33,
+    "primary_volume": 27,
+    "primary_candidate_volume": 29,
+    "competitor_volume": 33,
     "negative_share": 60
   },
   "source_status": {
     "status": "normal",
-    "providers": [
-      "twitterapi_io"
-    ],
     "raw_posts_collected": 69,
     "effective_posts": 60,
     "brand_breakdown": {
-      "joybuy_candidates": 29,
-      "joybuy_effective": 27,
-      "temu_candidates": 40,
-      "temu_effective": 33
+      "primary_candidates": 29,
+      "primary_effective": 27,
+      "competitor_candidates": 40,
+      "competitor_effective": 33
     },
-    "estimated_cost_usd": 0.0103,
     "translation": {
-      "providers": [
-        "joybuilder"
-      ],
       "counts": {
         "translated": 68,
         "source_chinese": 1
@@ -39,54 +31,32 @@
       "fallback_original_count": 0
     },
     "notes": [
-      "Real X data provider is active. Review daily cost and duplicate rate during bake-off.",
+      "Public social data collection is active. Review duplicate rate and relevance regularly.",
       "Bookmarks are collected only when the data source provides them.",
       "Quote counts are treated as public propagation signals.",
-      "Chinese translation coverage is complete. Provider: joybuilder."
+      "Chinese translation coverage is complete."
     ]
   },
   "collection_status": {
     "status": "complete",
     "warnings": [],
-    "limits": {
-      "max_posts": 240,
-      "max_joybuy_posts": 160,
-      "max_temu_posts": 80,
-      "max_api_requests": 12
-    },
-    "search_modes": [
-      {
-        "query_type": "Latest",
-        "ratio": 1.0
-      },
-      {
-        "query_type": "Top",
-        "ratio": 1.0
-      }
-    ],
-    "api_requests_used": 9,
-    "max_api_requests": 12,
-    "request_budget_exhausted": false,
     "translation": {
-      "provider": "joybuilder",
       "configured": true,
       "counts": {
         "translated": 68,
         "source_chinese": 1
       },
       "missing_count": 0,
-      "fallback_original_count": 0,
-      "missing_examples": [],
-      "error": ""
+      "fallback_original_count": 0
     }
   },
   "executive_summary": {
-    "headline": "Today's highest-priority Joybuy signal is: Regulatory and market-access scrutiny around JD.com.",
+    "headline": "今日最高优先级主品牌舆情为: Regulatory and market-access scrutiny around 主品牌.",
     "risk": "Overall risk is high with IPS 85.",
-    "action": "Recommended action: 管理层同步. Temu baseline shows overlap around refund and delivery."
+    "action": "建议动作: 管理层同步. 样例竞品 基线讨论涉及 refund and delivery."
   },
   "competitor": {
-    "brand": "temu",
+    "brand": "competitor",
     "volume": 33,
     "sentiment": {
       "negative": 1,
@@ -120,7 +90,6 @@
         "links": [],
         "translation_zh": "👨‍🍳👨‍⚕️🌍😵‍💫 ΔΓΜΦΒΪΨΡ \n\nTemu 30% 折扣优惠券 + 免费配送 ++\n\n🔎（在 app 的搜索栏中输入）：acw064667\n\n💡Temu 正在推出多项上线促销（就像过去的 Shopee、Amazon、Shein 和 Aliexpress 一样）",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
         "summary_zh": "用户讨论价格、优惠或正向购物体验。",
         "author_name": "τεм̶άℓкиε нσ̵̵вкᶫ",
         "author_handle": "Brho0om888",
@@ -316,8 +285,7 @@
         "links": [],
         "translation_zh": "🦗🪂😴🦏 ΜΗΞΦΔΤΝΩ \\\\\n\\\\\n📢📢💰Temu 折扣券 \\\\\n\\\\\n💸30% + 免费送货 \\\\\n\\\\\n🔍（下载 app，并在 24 小时内在搜索栏输入代码以激活）\\\\\n\\\\\n 👉acw064667\\\\\n\\\\\n 😉比 SHEIN 还便宜\\\\",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "BlackBerryBroadcast",
         "author_handle": "BC_saudi",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/1636855583/Blackberry-Messenger-Logo_normal.jpg",
@@ -512,7 +480,6 @@
         "links": [],
         "translation_zh": "请问之前有人在 Temu 上用过快递配送吗，需要多久？我最多只有 1 个半星期",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
         "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
         "author_name": "Berlisse🤍",
         "author_handle": "BerlofMonaco",
@@ -549,8 +516,7 @@
         "links": [],
         "translation_zh": "Temu 的人真有意思。我的包裹还在运输途中，他们却已经给我发通知让我再买更多东西。请一件一件来好吗 😂",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "Ameerah👑",
         "author_handle": "lilmeerahcute",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/1563400633826258945/K374bdBp_normal.jpg",
@@ -586,8 +552,7 @@
         "links": [],
         "translation_zh": "@instablog9ja 你们还在从 Temu 下单 😂🤣\n\n别担心，Temu 的影响会波及到每个人 😂 你会吃了苦头才明白\n\nJumia 一路到底",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "Tonyblaise",
         "author_handle": "Tonyblaise74",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/2068785768386990080/ODZdcAzm_normal.jpg",
@@ -623,8 +588,7 @@
         "links": [],
         "translation_zh": "我还是去 Temu 上查一下我的订单吧 😭",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "attajira ✨🇵🇸",
         "author_handle": "theyhateamira",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/2078827367728877568/Qamuninb_normal.jpg",
@@ -660,8 +624,7 @@
         "links": [],
         "translation_zh": "@FreedomFriend42 当你从 Temu 订购了世界末日",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "Brian M",
         "author_handle": "icbkr",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/1795027318/shark_head_shot_normal.jpg",
@@ -697,8 +660,7 @@
         "links": [],
         "translation_zh": "@SteakGrillGuru 我觉得头盔是蓝色的、带一只角，而且闪电冲锋标志从头盔上延伸出来，这是个有趣的想法，但除此之外，人们“泄露”出来的球衣看起来就像是 Temu 卖家设计的。我觉得这个方案也许能行，但我完全不相信这些人能做出一套好看的队服",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "Red Helmet Guy",
         "author_handle": "foucha_jr",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/2056736290012348416/X7tNhfmK_normal.jpg",
@@ -734,7 +696,6 @@
         "links": [],
         "translation_zh": "@instablog9ja Temu 的价格优势是真实存在的，但这种比较并不是同类对比。\n\n对于很大一部分尼日利亚买家来说，Jumia 和 Konga 在本地物流和货到付款方面仍然占优。\n\nTemu 在非紧急商品的纯到岸成本上胜出。\n\n长期能生存下来的平台，会是那些弥补自己当前弱项差距的平台，而不是那些只是宣称对方“死了”的平台。",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
         "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
         "author_name": "Jahbreez",
         "author_handle": "JahbreezFX",
@@ -773,8 +734,7 @@
         "links": [],
         "translation_zh": "我今天来这儿就是为了吐槽这些 app，这该死的 twitter 把 tweet 和 retweet 分开，还有这个全是广告的 pinterest，你想看个东西，它就把我带到 temu、带到 shopee，没人受得了了",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "✷ 𝖇𝖆𝖗𝖇𝖆𝖗𝖆 ✷",
         "author_handle": "barbaraheifer",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/2011100049351012352/bhcmcbE3_normal.jpg",
@@ -804,16 +764,16 @@
       }
     ],
     "anomalies": [
-      "Temu fake discount discussion has higher interaction than other competitor topics."
+      "样例竞品 fake discount discussion has higher interaction than other competitor topics."
     ]
   },
   "featured_items": [
     {
-      "id": "featured-joybuy-cluster-001",
-      "brand": "joybuy",
-      "cluster_id": "joybuy-cluster-001",
-      "source_type": "X 舆情",
-      "source_name": "Joybuy / JD · @BluesAvalon",
+      "id": "featured-primary-cluster-001",
+      "brand": "primary",
+      "cluster_id": "primary-signal-001",
+      "source_type": "公开舆情",
+      "source_name": "主品牌 · @BluesAvalon",
       "author_name": "BluesAvalon ☀️🍊",
       "author_handle": "BluesAvalon",
       "author_avatar_url": "https://pbs.twimg.com/profile_images/2074858919458201601/uFRVJMle_normal.jpg",
@@ -835,7 +795,6 @@
       "original_text": "Guys, bakal ada livestream Lyu Sitong di https://t.co/ZosrvnB01o: \n\nLü Shitong will be a guest on the A’morie Beauty and Personal Care Live Stream on July 30th at 8 PM. We welcome everyone to support him!\n\nLive stream link:\n https://t.co/BM2szRVhTT",
       "translation_zh": "大家，JD.com 将会有 Lyu Sitong 的直播\n\nLü Shitong 将于 7 月 30 日晚上 8 点作为嘉宾参加 A’morie 美妆与个人护理直播。欢迎大家支持他！\n\n直播链接：\n t.cn/AX92qlwE",
       "translation_status": "translated",
-      "translation_provider": "joybuilder",
       "summary_zh": "相关讨论集中在客服响应、退货和售后体验。",
       "links": [
         "http://jd.com",
@@ -897,11 +856,11 @@
       "level": "medium"
     },
     {
-      "id": "featured-joybuy-cluster-002",
-      "brand": "joybuy",
-      "cluster_id": "joybuy-cluster-002",
-      "source_type": "X 舆情",
-      "source_name": "Joybuy / JD · @tmngmsyk",
+      "id": "featured-primary-cluster-002",
+      "brand": "primary",
+      "cluster_id": "primary-signal-002",
+      "source_type": "公开舆情",
+      "source_name": "主品牌 · @tmngmsyk",
       "author_name": "oiaaaaui",
       "author_handle": "tmngmsyk",
       "author_avatar_url": "https://pbs.twimg.com/profile_images/1534080441485246465/WuLg92pF_normal.jpg",
@@ -918,13 +877,12 @@
       "conversation_id": "2080342699396260083",
       "created_at": "2026-07-23T17:22:05Z",
       "language": "ja",
-      "title": "General Joybuy/JD overseas shopping discussion",
-      "display_title": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "title": "General 主品牌 overseas shopping discussion",
+      "display_title": "相关讨论涉及 主品牌 海外购物的一般体验和认知问题。",
       "original_text": "Joybuyって言うアジアフードオンラインショッピンして今日配達済みになってるけど、アパート周り色々見たけど無し！どうなってるの？\n問い合わせ先もわかりにくいし、面倒だー\n不在通知入れて、パケットステーションに入れてくれればそれで終わりなのに\n不在通知も無いし。\nめんどうだー\n#DHL\n#Joybuy",
       "translation_zh": "叫 Joybuy 的亚洲食品在线购物，说今天已经送达了，但我在公寓周围到处看了都没有！这是怎么回事？\n咨询联系方式也很难找，真麻烦——\n如果投个未在家通知，然后放进包裹站里，不就结束了吗\n也没有未在家通知。\n真麻烦——\n#DHL\n#Joybuy",
       "translation_status": "translated",
-      "translation_provider": "joybuilder",
-      "summary_zh": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "summary_zh": "相关讨论涉及 主品牌 海外购物的一般体验和认知问题。",
       "links": [],
       "media": [],
       "score": {
@@ -948,7 +906,7 @@
           "potential_viral",
           "high_influence_account"
         ],
-        "explanation": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 75。"
+        "explanation": "该情报与 主品牌 海外购物相关，当前综合优先级为 75。"
       },
       "score_value": 75,
       "score_label": "IPS",
@@ -986,11 +944,11 @@
       "level": "medium"
     },
     {
-      "id": "featured-joybuy-cluster-005",
-      "brand": "joybuy",
-      "cluster_id": "joybuy-cluster-005",
-      "source_type": "X 舆情",
-      "source_name": "Joybuy / JD · @stup360",
+      "id": "featured-primary-cluster-005",
+      "brand": "primary",
+      "cluster_id": "primary-signal-005",
+      "source_type": "公开舆情",
+      "source_name": "主品牌 · @stup360",
       "author_name": "Startup360 | استارتاپ ۳۶۰",
       "author_handle": "stup360",
       "author_avatar_url": "https://pbs.twimg.com/profile_images/923284866174726145/4A8-25Wv_normal.jpg",
@@ -1007,13 +965,12 @@
       "conversation_id": "2080201149357916409",
       "created_at": "2026-07-23T07:59:36Z",
       "language": "fa",
-      "title": "Regulatory and market-access scrutiny around JD.com",
-      "display_title": "相关讨论涉及 JD.com 在海外市场的监管审查、并购交易或市场准入风险。",
+      "title": "Regulatory and market-access scrutiny around 主品牌",
+      "display_title": "相关讨论涉及 主品牌 在海外市场的监管审查、并购交易或市场准入风险。",
       "original_text": "کمیسیون اروپا درباره خرید ۲.۵ میلیارد دلاری Ceconomy توسط https://t.co/gZo8lmWbtJ ابراز نگرانی کرد. اروپا در حال بررسی احتمال استفاده جی‌دی‌دات‌کام از تامین مالی ترجیحی، مشوق‌های مالیاتی و کمک‌های دولت چین است. بیشتربخوانید:\nhttps://t.co/Vg9ou06otU https://t.co/etpMJd0cMk",
       "translation_zh": "欧盟委员会对 JD.com 以 25 亿美元收购 Ceconomy 表示担忧。欧洲正在调查京东是否可能使用优惠融资、税收激励以及中国政府的援助。阅读更多：\nstartup360.ir/jd-com-ceconomy-eu-regulatory-concerns",
       "translation_status": "translated",
-      "translation_provider": "joybuilder",
-      "summary_zh": "相关讨论涉及 JD.com 在海外市场的监管审查、并购交易或市场准入风险。",
+      "summary_zh": "相关讨论涉及 主品牌 在海外市场的监管审查、并购交易或市场准入风险。",
       "links": [
         "http://JD.com",
         "https://startup360.ir/jd-com-ceconomy-eu-regulatory-concerns/"
@@ -1089,11 +1046,11 @@
       "level": "high"
     },
     {
-      "id": "featured-joybuy-cluster-004",
-      "brand": "joybuy",
-      "cluster_id": "joybuy-cluster-004",
-      "source_type": "X 舆情",
-      "source_name": "Joybuy / JD · @shoppinginCN1",
+      "id": "featured-primary-cluster-004",
+      "brand": "primary",
+      "cluster_id": "primary-signal-004",
+      "source_type": "公开舆情",
+      "source_name": "主品牌 · @shoppinginCN1",
       "author_name": "Shopping in China",
       "author_handle": "shoppinginCN1",
       "author_avatar_url": "https://pbs.twimg.com/profile_images/2065003885262196736/zbDMRuMQ_normal.jpg",
@@ -1110,13 +1067,12 @@
       "conversation_id": "2080192730232484109",
       "created_at": "2026-07-23T07:26:09Z",
       "language": "en",
-      "title": "Refund and payment complaints around Joybuy",
-      "display_title": "多条帖子讨论 Joybuy 退款进度、取消订单或支付挂起问题。",
+      "title": "Refund and payment complaints around 主品牌",
+      "display_title": "多条帖子讨论 主品牌 退款进度、取消订单或支付挂起问题。",
       "original_text": "Getting a tax refund is becoming even easier for international shoppers in China. https://t.co/Vm3da2vv5o has upgraded its online departure tax refund service with paperless applications, overseas bank card binding and an \"instant buy-and-refund\" option, covering 800+ product categories.\n\nEligible travelers can complete tax refund applications through the JD app, track progress in real time and receive refunds faster. Qualifying purchases are also eligible for up to a 9% VAT refund.",
       "translation_zh": "在中国，国际购物者办理退税正变得更加容易。JD.com 已升级其线上离境退税服务，提供无纸化申请、绑定海外银行卡以及“即买即退”选项，覆盖 800+ 个商品类别。\n\n符合条件的旅客可以通过 JD app 完成退税申请，实时跟踪进度，并更快收到退款。符合条件的购物还可享受最高 9% 的增值税退税。",
       "translation_status": "translated",
-      "translation_provider": "joybuilder",
-      "summary_zh": "多条帖子讨论 Joybuy 退款进度、取消订单或支付挂起问题。",
+      "summary_zh": "多条帖子讨论 主品牌 退款进度、取消订单或支付挂起问题。",
       "links": [
         "http://JD.com"
       ],
@@ -1179,7 +1135,7 @@
       },
       "source_count": 1,
       "related_sources": 0,
-      "selected_reason": "内容指向退款/售后体验：用户明确提到退款、退货或售后处理；作者具备较高影响力（25476 followers），当前 0 次赞评转引、135 浏览；研判：Joybuy/JD的信任成本会被放大，需关注是否出现更多相似投诉。",
+      "selected_reason": "内容指向退款/售后体验：用户明确提到退款、退货或售后处理；作者具备较高影响力（25476 followers），当前 0 次赞评转引、135 浏览；研判：主品牌的信任成本会被放大，需关注是否出现更多相似投诉。",
       "recommended_action": "观察",
       "href": "",
       "external_href": "https://x.com/shoppinginCN1/status/2080192730232484109",
@@ -1187,11 +1143,11 @@
       "level": "medium"
     },
     {
-      "id": "featured-joybuy-cluster-003",
-      "brand": "joybuy",
-      "cluster_id": "joybuy-cluster-003",
-      "source_type": "X 舆情",
-      "source_name": "Joybuy / JD · @dofornop",
+      "id": "featured-primary-cluster-003",
+      "brand": "primary",
+      "cluster_id": "primary-signal-003",
+      "source_type": "公开舆情",
+      "source_name": "主品牌 · @dofornop",
       "author_name": "Paul do Forno 🛒 🇺🇸🇨🇦🇵🇹",
       "author_handle": "dofornop",
       "author_avatar_url": "https://pbs.twimg.com/profile_images/1827770445967347712/vWjf1wgT_normal.jpg",
@@ -1213,7 +1169,6 @@
       "original_text": "\"Costco Launches Official Store on https://t.co/psZZLTuvYd with Fast Delivery Nationwide in China\"\n\n🤝 https://t.co/psZZLTuvYd becomes Costco's sole official e-commerce platform partner in China, combining Costco's product selection with https://t.co/psZZLTuvYd's nationwide supply chain\n\n🚚 Consumers across China can now order Costco products online with fulfillment as fast as same-day\n\n🛒 The flagship store, in trial since late May, already features about 700 product types spanning snacks, food staples, personal care, beauty, paper products and nutritional supplements\n\n📊 In its first month alone, the storefront drew over 30 million visitors and nearly 200,000 store followers\n\n📈 Kirkland Signature items, including its signature pistachios, sold out repeatedly and required constant restocking\n\n🔗 JD Super notes its 700 million active users align closely with Costco's quality-and-value-focused customer base\n\n#ecommerce #retail \nhttps://t.co/pbgoa50Dxq",
       "translation_zh": "\"Costco 在 JD.com 开设官方店，在中国全国范围内提供快速配送\"\n\n🤝 JD.com 成为 Costco 在中国唯一的官方电商平台合作伙伴，将 Costco 的商品选择与 JD.com 的全国供应链结合起来\n\n🚚 中国各地消费者现在都可以在线订购 Costco 商品，履约最快可当日完成\n\n🛒 这家旗舰店自 5 月下旬起试运营，目前已上架约 700 种商品，涵盖零食、食品主食、个人护理、美妆、纸制品和营养补充剂\n\n📊 仅在开业首月，该店铺就吸引了超过 3000 万名访客，并获得近 200,000 名店铺粉丝\n\n📈 Kirkland Signature 商品，包括其标志性的开心果，多次售罄，并需要持续补货\n\n🔗 JD Super 指出，其 7 亿活跃用户与 Costco 注重品质和价值的客户群高度契合\n\n#ecommerce #retail \nbuff.ly/Q0iAhVM",
       "translation_status": "translated",
-      "translation_provider": "joybuilder",
       "summary_zh": "相关讨论体现价格、优惠或配送体验上的正向机会。",
       "links": [
         "http://JD.com",
@@ -1286,11 +1241,11 @@
       "level": "low"
     },
     {
-      "id": "featured-temu-2080417382170796493",
-      "brand": "temu",
+      "id": "featured-competitor-2080417382170796493",
+      "brand": "competitor",
       "cluster_id": "",
       "source_type": "竞品异常",
-      "source_name": "Temu 竞品 · @BerlofMonaco",
+      "source_name": "样例竞品 · @BerlofMonaco",
       "author_name": "Berlisse🤍",
       "author_handle": "BerlofMonaco",
       "author_avatar_url": "https://pbs.twimg.com/profile_images/1988679950442905600/v9iaGEva_normal.jpg",
@@ -1307,12 +1262,11 @@
       "conversation_id": "2080417382170796493",
       "created_at": "2026-07-23T22:18:50Z",
       "language": "en",
-      "title": "Temu 履约与物流心智进入竞品观察",
-      "display_title": "Temu 履约与物流心智进入竞品观察",
+      "title": "样例竞品 履约与物流心智进入竞品观察",
+      "display_title": "样例竞品 履约与物流心智进入竞品观察",
       "original_text": "Please who has used express shipping on Temu before and how long does it take? I have 1 week and half max",
       "translation_zh": "请问之前有人在 Temu 上用过快递配送吗，需要多久？我最多只有 1 个半星期",
       "translation_status": "translated",
-      "translation_provider": "joybuilder",
       "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
       "links": [],
       "media": [],
@@ -1345,7 +1299,7 @@
       },
       "source_count": 1,
       "related_sources": 0,
-      "selected_reason": "内容指向履约与物流心智：原帖围绕发货、仓库、配送或包裹进度展开；当前 16 次赞评转引、641 浏览；研判：可作为 Temu 履约卖点/槽点的竞品参照。",
+      "selected_reason": "内容指向履约与物流心智：原帖围绕发货、仓库、配送或包裹进度展开；当前 16 次赞评转引、641 浏览；研判：可作为 样例竞品 履约卖点/槽点的竞品参照。",
       "recommended_action": "纳入竞品基线观察",
       "href": "",
       "external_href": "https://x.com/BerlofMonaco/status/2080417382170796493",
@@ -1353,11 +1307,11 @@
       "level": "medium"
     },
     {
-      "id": "featured-temu-2080394613727138009",
-      "brand": "temu",
+      "id": "featured-competitor-2080394613727138009",
+      "brand": "competitor",
       "cluster_id": "",
       "source_type": "竞品异常",
-      "source_name": "Temu 竞品 · @BC_saudi",
+      "source_name": "样例竞品 · @BC_saudi",
       "author_name": "BlackBerryBroadcast",
       "author_handle": "BC_saudi",
       "author_avatar_url": "https://pbs.twimg.com/profile_images/1636855583/Blackberry-Messenger-Logo_normal.jpg",
@@ -1374,13 +1328,12 @@
       "conversation_id": "2080394613727138009",
       "created_at": "2026-07-23T20:48:22Z",
       "language": "pt",
-      "title": "Temu 价格促销与导购进入竞品观察",
-      "display_title": "Temu 价格促销与导购进入竞品观察",
+      "title": "样例竞品 价格促销与导购进入竞品观察",
+      "display_title": "样例竞品 价格促销与导购进入竞品观察",
       "original_text": "🦗🪂😴🦏 ΜΗΞΦΔΤΝΩ \\\\\\\n\\\\\\\n📢📢💰Cupom de Desconto Temu \\\\\\\n\\\\\\\n💸%30 + Frete grátis \\\\\\\n\\\\\\\n🔍(Baixe o app e digite o código na barra de busca em até 24 horas para ativar)\\\\\\\n\\\\\\\n 👉acw064667\\\\\\\n\\\\\\\n 😉Mais barato que a SHEIN\\\\\\",
       "translation_zh": "🦗🪂😴🦏 ΜΗΞΦΔΤΝΩ \\\\\n\\\\\n📢📢💰Temu 折扣券 \\\\\n\\\\\n💸30% + 免费送货 \\\\\n\\\\\n🔍（下载 app，并在 24 小时内在搜索栏输入代码以激活）\\\\\n\\\\\n 👉acw064667\\\\\n\\\\\n 😉比 SHEIN 还便宜\\\\",
       "translation_status": "translated",
-      "translation_provider": "joybuilder",
-      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
       "links": [],
       "media": [
         {
@@ -1455,7 +1408,7 @@
       },
       "source_count": 1,
       "related_sources": 0,
-      "selected_reason": "内容指向价格促销与导购：内容强调优惠、低价、券包或导购入口；转引信号相对突出，当前 17 次赞评转引、28 浏览；研判：有助于观察 Temu 拉新促销话术及垃圾推广占比。",
+      "selected_reason": "内容指向价格促销与导购：内容强调优惠、低价、券包或导购入口；转引信号相对突出，当前 17 次赞评转引、28 浏览；研判：有助于观察 样例竞品 拉新促销话术及垃圾推广占比。",
       "recommended_action": "纳入竞品基线观察",
       "href": "",
       "external_href": "https://x.com/BC_saudi/status/2080394613727138009",
@@ -1467,17 +1420,17 @@
     {
       "rank": 1,
       "title": "相关讨论集中在客服响应、退货和售后体验。",
-      "cluster_id": "joybuy-cluster-001",
+      "cluster_id": "primary-signal-001",
       "score_value": 61,
       "level": "medium",
       "source_count": 1,
-      "count_label": "X 舆情",
+      "count_label": "公开舆情",
       "reason": "内容指向多平台比价/货架露出：原帖把品牌与其他电商平台并列展示；转引信号相对突出，当前 103 次赞评转引、1283 浏览；研判：适合观察品牌在海外用户心智中的货架位置和竞品集合。"
     },
     {
       "rank": 2,
-      "title": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
-      "cluster_id": "joybuy-cluster-002",
+      "title": "相关讨论涉及 主品牌 海外购物的一般体验和认知问题。",
+      "cluster_id": "primary-signal-002",
       "score_value": 75,
       "level": "medium",
       "source_count": 18,
@@ -1486,8 +1439,8 @@
     },
     {
       "rank": 3,
-      "title": "相关讨论涉及 JD.com 在海外市场的监管审查、并购交易或市场准入风险。",
-      "cluster_id": "joybuy-cluster-005",
+      "title": "相关讨论涉及 主品牌 在海外市场的监管审查、并购交易或市场准入风险。",
+      "cluster_id": "primary-signal-005",
       "score_value": 85,
       "level": "high",
       "source_count": 6,
@@ -1496,32 +1449,32 @@
     },
     {
       "rank": 4,
-      "title": "多条帖子讨论 Joybuy 退款进度、取消订单或支付挂起问题。",
-      "cluster_id": "joybuy-cluster-004",
+      "title": "多条帖子讨论 主品牌 退款进度、取消订单或支付挂起问题。",
+      "cluster_id": "primary-signal-004",
       "score_value": 68,
       "level": "medium",
       "source_count": 1,
-      "count_label": "X 舆情",
-      "reason": "内容指向退款/售后体验：用户明确提到退款、退货或售后处理；作者具备较高影响力（25476 followers），当前 0 次赞评转引、135 浏览；研判：Joybuy/JD的信任成本会被放大，需关注是否出现更多相似投诉。"
+      "count_label": "公开舆情",
+      "reason": "内容指向退款/售后体验：用户明确提到退款、退货或售后处理；作者具备较高影响力（25476 followers），当前 0 次赞评转引、135 浏览；研判：主品牌的信任成本会被放大，需关注是否出现更多相似投诉。"
     },
     {
       "rank": 5,
       "title": "相关讨论体现价格、优惠或配送体验上的正向机会。",
-      "cluster_id": "joybuy-cluster-003",
+      "cluster_id": "primary-signal-003",
       "score_value": 51,
       "level": "low",
       "source_count": 1,
-      "count_label": "X 舆情",
+      "count_label": "公开舆情",
       "reason": "内容指向履约与物流心智：原帖围绕发货、仓库、配送或包裹进度展开；当前传播仍弱，34 浏览且暂无赞评转引；研判：需要判断这是正向履约口碑还是潜在配送投诉。"
     }
   ],
   "summary_only": false,
   "clusters": [
     {
-      "cluster_id": "joybuy-cluster-005",
-      "title": "Regulatory and market-access scrutiny around JD.com",
+      "cluster_id": "primary-signal-005",
+      "title": "Regulatory and market-access scrutiny around 主品牌",
       "summary": "6 related posts discuss regulatory review, acquisition scrutiny or market-access risk.",
-      "summary_zh": "相关讨论涉及 JD.com 在海外市场的监管审查、并购交易或市场准入风险。",
+      "summary_zh": "相关讨论涉及 主品牌 在海外市场的监管审查、并购交易或市场准入风险。",
       "lead_post": {
         "post_id": "2080201149357916409",
         "created_at": "2026-07-23T07:59:36Z",
@@ -1560,8 +1513,7 @@
         ],
         "translation_zh": "欧盟委员会对 JD.com 以 25 亿美元收购 Ceconomy 表示担忧。欧洲正在调查京东是否可能使用优惠融资、税收激励以及中国政府的援助。阅读更多：\nstartup360.ir/jd-com-ceconomy-eu-regulatory-concerns",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "metrics": {
           "likes": 1,
           "reposts": 0,
@@ -1625,30 +1577,6 @@
         ],
         "explanation": "监管与并购审查影响海外市场准入和品牌信任，当前影响力 43，可信度 94，建议纳入管理层视野。"
       },
-      "fermentation": {
-        "status": "升温中",
-        "tracking_days": 14,
-        "first_seen_at": "2026-07-23T07:59:36Z",
-        "last_checked_at": "2026-07-24T01:28:20Z",
-        "growth": {
-          "public_interactions_24h": 0,
-          "quotes_24h": 0,
-          "new_related_posts_24h": 12
-        },
-        "signals": [
-          "高影响力账号参与讨论",
-          "相似内容数量增加",
-          "未来发酵潜力较高"
-        ],
-        "risk_change": "up"
-      },
-      "tracking_eligible": true,
-      "tracking_reason": [
-        "high_future_potential",
-        "high_influence_account",
-        "high_risk",
-        "ips_top_candidate"
-      ],
       "evidence_counts": {
         "origin": 1,
         "stakeholders": 0,
@@ -1660,10 +1588,10 @@
       }
     },
     {
-      "cluster_id": "joybuy-cluster-002",
-      "title": "General Joybuy/JD overseas shopping discussion",
-      "summary": "18 related posts discuss Joybuy/JD overseas shopping context.",
-      "summary_zh": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "cluster_id": "primary-signal-002",
+      "title": "General 主品牌 overseas shopping discussion",
+      "summary": "18 related posts discuss 主品牌 overseas shopping context.",
+      "summary_zh": "相关讨论涉及 主品牌 海外购物的一般体验和认知问题。",
       "lead_post": {
         "post_id": "2080342699396260083",
         "created_at": "2026-07-23T17:22:05Z",
@@ -1699,8 +1627,7 @@
         "links": [],
         "translation_zh": "叫 Joybuy 的亚洲食品在线购物，说今天已经送达了，但我在公寓周围到处看了都没有！这是怎么回事？\n咨询联系方式也很难找，真麻烦——\n如果投个未在家通知，然后放进包裹站里，不就结束了吗\n也没有未在家通知。\n真麻烦——\n#DHL\n#Joybuy",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "metrics": {
           "likes": 1,
           "reposts": 0,
@@ -1750,31 +1677,8 @@
           "potential_viral",
           "high_influence_account"
         ],
-        "explanation": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 75。"
+        "explanation": "该情报与 主品牌 海外购物相关，当前综合优先级为 75。"
       },
-      "fermentation": {
-        "status": "升温中",
-        "tracking_days": 10,
-        "first_seen_at": "2026-07-23T00:15:00Z",
-        "last_checked_at": "2026-07-24T01:28:20Z",
-        "growth": {
-          "public_interactions_24h": 41,
-          "quotes_24h": 3,
-          "new_related_posts_24h": 24
-        },
-        "signals": [
-          "高影响力账号参与讨论",
-          "相似内容数量增加",
-          "未来发酵潜力较高"
-        ],
-        "risk_change": "up"
-      },
-      "tracking_eligible": true,
-      "tracking_reason": [
-        "high_future_potential",
-        "high_influence_account",
-        "ips_top_candidate"
-      ],
       "evidence_counts": {
         "origin": 1,
         "stakeholders": 0,
@@ -1786,10 +1690,10 @@
       }
     },
     {
-      "cluster_id": "joybuy-cluster-004",
-      "title": "Refund and payment complaints around Joybuy",
+      "cluster_id": "primary-signal-004",
+      "title": "Refund and payment complaints around 主品牌",
       "summary": "1 related posts discuss refund progress, cancelled orders or payment holds.",
-      "summary_zh": "多条帖子讨论 Joybuy 退款进度、取消订单或支付挂起问题。",
+      "summary_zh": "多条帖子讨论 主品牌 退款进度、取消订单或支付挂起问题。",
       "lead_post": {
         "post_id": "2080192730232484109",
         "created_at": "2026-07-23T07:26:09Z",
@@ -1827,7 +1731,6 @@
         ],
         "translation_zh": "在中国，国际购物者办理退税正变得更加容易。JD.com 已升级其线上离境退税服务，提供无纸化申请、绑定海外银行卡以及“即买即退”选项，覆盖 800+ 个商品类别。\n\n符合条件的旅客可以通过 JD app 完成退税申请，实时跟踪进度，并更快收到退款。符合条件的购物还可享受最高 9% 的增值税退税。",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
         "summary_zh": "用户讨论退款进度、支付或售后处理问题。",
         "metrics": {
           "likes": 0,
@@ -1889,23 +1792,6 @@
         "special_flags": [],
         "explanation": "退款议题直接影响信任与支付体验，当前影响力 34，未来发酵潜力 60，可信度 76。"
       },
-      "fermentation": {
-        "status": "观察中",
-        "tracking_days": 10,
-        "first_seen_at": "2026-07-23T07:26:09Z",
-        "last_checked_at": "2026-07-24T01:28:20Z",
-        "growth": {
-          "public_interactions_24h": 0,
-          "quotes_24h": 0,
-          "new_related_posts_24h": 2
-        },
-        "signals": [],
-        "risk_change": "flat"
-      },
-      "tracking_eligible": true,
-      "tracking_reason": [
-        "refund_issue"
-      ],
       "evidence_counts": {
         "origin": 1,
         "stakeholders": 0,
@@ -1917,7 +1803,7 @@
       }
     },
     {
-      "cluster_id": "joybuy-cluster-001",
+      "cluster_id": "primary-signal-001",
       "title": "Customer service and return response concerns",
       "summary": "1 related posts mention customer service response and returns.",
       "summary_zh": "相关讨论集中在客服响应、退货和售后体验。",
@@ -1959,8 +1845,7 @@
         ],
         "translation_zh": "大家，JD.com 将会有 Lyu Sitong 的直播\n\nLü Shitong 将于 7 月 30 日晚上 8 点作为嘉宾参加 A’morie 美妆与个人护理直播。欢迎大家支持他！\n\n直播链接：\n t.cn/AX92qlwE",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "metrics": {
           "likes": 78,
           "reposts": 24,
@@ -2011,23 +1896,6 @@
         "special_flags": [],
         "explanation": "客服与退货响应涉及售后体验，建议观察是否出现更多相似投诉。综合优先级 61。"
       },
-      "fermentation": {
-        "status": "观察中",
-        "tracking_days": 10,
-        "first_seen_at": "2026-07-23T02:53:13Z",
-        "last_checked_at": "2026-07-24T01:28:20Z",
-        "growth": {
-          "public_interactions_24h": 8,
-          "quotes_24h": 0,
-          "new_related_posts_24h": 2
-        },
-        "signals": [],
-        "risk_change": "flat"
-      },
-      "tracking_eligible": true,
-      "tracking_reason": [
-        "customer_service_issue"
-      ],
       "evidence_counts": {
         "origin": 1,
         "stakeholders": 0,
@@ -2039,7 +1907,7 @@
       }
     },
     {
-      "cluster_id": "joybuy-cluster-003",
+      "cluster_id": "primary-signal-003",
       "title": "Positive price and delivery opportunity signals",
       "summary": "1 related posts mention fast delivery, discounts or positive value signals.",
       "summary_zh": "相关讨论体现价格、优惠或配送体验上的正向机会。",
@@ -2083,7 +1951,6 @@
         ],
         "translation_zh": "\"Costco 在 JD.com 开设官方店，在中国全国范围内提供快速配送\"\n\n🤝 JD.com 成为 Costco 在中国唯一的官方电商平台合作伙伴，将 Costco 的商品选择与 JD.com 的全国供应链结合起来\n\n🚚 中国各地消费者现在都可以在线订购 Costco 商品，履约最快可当日完成\n\n🛒 这家旗舰店自 5 月下旬起试运营，目前已上架约 700 种商品，涵盖零食、食品主食、个人护理、美妆、纸制品和营养补充剂\n\n📊 仅在开业首月，该店铺就吸引了超过 3000 万名访客，并获得近 200,000 名店铺粉丝\n\n📈 Kirkland Signature 商品，包括其标志性的开心果，多次售罄，并需要持续补货\n\n🔗 JD Super 指出，其 7 亿活跃用户与 Costco 注重品质和价值的客户群高度契合\n\n#ecommerce #retail \nbuff.ly/Q0iAhVM",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
         "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
         "metrics": {
           "likes": 0,
@@ -2143,21 +2010,6 @@
         "special_flags": [],
         "explanation": "该情报偏正向机会，体现价格、配送或促销优势，可用于观察传播借势。综合优先级 51。"
       },
-      "fermentation": {
-        "status": "不追踪",
-        "tracking_days": 0,
-        "first_seen_at": "2026-07-23T18:37:51Z",
-        "last_checked_at": "2026-07-24T01:28:20Z",
-        "growth": {
-          "public_interactions_24h": 0,
-          "quotes_24h": 0,
-          "new_related_posts_24h": 2
-        },
-        "signals": [],
-        "risk_change": "flat"
-      },
-      "tracking_eligible": false,
-      "tracking_reason": [],
       "evidence_counts": {
         "origin": 1,
         "stakeholders": 0,

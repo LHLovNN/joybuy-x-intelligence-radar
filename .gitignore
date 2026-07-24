@@ -25,6 +25,8 @@ credentials.*
 secrets.*
 *.secret
 *.token
+config/private/
+data/local-notes/
 
 # Generated data and real-provider run artifacts.
 data/raw/

@@ -6,31 +6,23 @@
   "metrics": {
     "effective_intelligence": 2,
     "high_risk": 0,
-    "fermenting": 0,
     "needs_review": 0,
-    "joybuy_volume": 5,
-    "joybuy_candidate_volume": 5,
-    "temu_volume": 12,
+    "primary_volume": 5,
+    "primary_candidate_volume": 5,
+    "competitor_volume": 12,
     "negative_share": 0
   },
   "source_status": {
     "status": "normal",
-    "providers": [
-      "twitterapi_io"
-    ],
     "raw_posts_collected": 20,
     "effective_posts": 17,
     "brand_breakdown": {
-      "joybuy_candidates": 5,
-      "joybuy_effective": 5,
-      "temu_candidates": 15,
-      "temu_effective": 12
+      "primary_candidates": 5,
+      "primary_effective": 5,
+      "competitor_candidates": 15,
+      "competitor_effective": 12
     },
-    "estimated_cost_usd": 0.003,
     "translation": {
-      "providers": [
-        "joybuilder"
-      ],
       "counts": {
         "translated": 20
       },
@@ -38,43 +30,31 @@
       "fallback_original_count": 0
     },
     "notes": [
-      "Real X data provider is active. Review daily cost and duplicate rate during bake-off.",
+      "Public social data collection is active. Review duplicate rate and relevance regularly.",
       "Bookmarks are collected only when the data source provides them.",
       "Quote counts are treated as public propagation signals.",
-      "Chinese translation coverage is complete. Provider: joybuilder."
+      "Chinese translation coverage is complete."
     ]
   },
   "collection_status": {
     "status": "complete",
     "warnings": [],
-    "limits": {
-      "max_posts": 60,
-      "max_joybuy_posts": 45,
-      "max_temu_posts": 15,
-      "max_api_requests": 6
-    },
-    "api_requests_used": 4,
-    "max_api_requests": 6,
-    "request_budget_exhausted": false,
     "translation": {
-      "provider": "joybuilder",
       "configured": true,
       "counts": {
         "translated": 20
       },
       "missing_count": 0,
-      "fallback_original_count": 0,
-      "missing_examples": [],
-      "error": ""
+      "fallback_original_count": 0
     }
   },
   "executive_summary": {
-    "headline": "Today's highest-priority Joybuy signal is: General Joybuy/JD overseas shopping discussion.",
+    "headline": "今日最高优先级主品牌舆情为: General 主品牌 overseas shopping discussion.",
     "risk": "Overall risk is medium with IPS 61.",
-    "action": "Recommended action: 观察. Temu baseline shows overlap around refund and delivery."
+    "action": "建议动作: 观察. 样例竞品 基线讨论涉及 refund and delivery."
   },
   "competitor": {
-    "brand": "temu",
+    "brand": "competitor",
     "volume": 12,
     "sentiment": {
       "negative": 1,
@@ -94,8 +74,7 @@
         "text": "@Skelegoat486 At least order a polyester jumpsuit off of Temu if you're going to do a lazy cosplay😪",
         "translation_zh": "@Skelegoat486 如果你要敷衍地 cosplay，至少从 Temu 上订一件聚酯连体服吧😪",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "Yeashura",
         "author_handle": "Handbeetle",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/2078609046056103936/ksSih1ho_normal.jpg",
@@ -119,8 +98,7 @@
         "text": "Let me order different nonsense from Temu, nothing my daughter never add for cart",
         "translation_zh": "让我在 Temu 上订些不同的乱七八糟的东西吧，没什么是我女儿不会加进购物车的",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "TRAZE 🐅",
         "author_handle": "MrTraze",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/1851763511958876160/yFrLG-s-_normal.jpg",
@@ -144,8 +122,7 @@
         "text": "me when my temu order says 'ships from local warehouse'",
         "translation_zh": "当我的 temu 订单显示“从本地仓库发货”时的我",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "Gabriel Held Impersonator🍒",
         "author_handle": "cok34ngel_",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/2079713628714840064/zTWl6vlK_normal.jpg",
@@ -169,8 +146,7 @@
         "text": "Can I order the baby from temu? 😭😍",
         "translation_zh": "我能从 Temu 上订这个宝宝吗？😭😍",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "Lady FS",
         "author_handle": "yuj99bxg",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/2062200968029118464/Q2LvR7Hv_normal.jpg",
@@ -194,8 +170,7 @@
         "text": "🔥 ¡Oferta increíble! Reclama tu paquete de cupones RD$5,800 y disfruta de un 30% de descuento buscando ale644609 en la App Temu. ¡Haz clic en  para empezar a ahorrar!\n👉",
         "translation_zh": "🔥 惊人优惠！领取你的 RD$5,800 优惠券包，并在 Temu App 中搜索 ale644609 享受 30% 折扣。点击  开始省钱吧！\n👉",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "irismar.",
         "author_handle": "irismar0130",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/1920791344999440384/Y0sZXjKM_normal.jpg",
@@ -219,7 +194,6 @@
         "text": "Every week my daughter is getting a delivery from Temu or SHEIN 😅",
         "translation_zh": "每周我女儿都会收到来自 Temu 或 SHEIN 的快递 😅",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
         "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
         "author_name": "🖤",
         "author_handle": "__Jameshaa",
@@ -246,8 +220,7 @@
         "text": "⭐️ Tap the exclusive deal link  or search ale733676 in the Temu app to score top-quality items at ultra-low prices. 🛍️ These unbeatable deals are only available here. Shop now and save big! ⭐️\n👉",
         "translation_zh": "⭐️ 点击专属优惠链接，或在 Temu 应用中搜索 ale733676，以超低价格抢购高品质商品。🛍️ 这些无可匹敌的优惠仅在这里提供。立即购物，省下一大笔！⭐️\n👉",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "Que Hitta",
         "author_handle": "quehitta",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/1346360954435596288/pxVmF3x2_normal.jpg",
@@ -271,8 +244,7 @@
         "text": "I want to try temu order too.",
         "translation_zh": "我也想试试在 Temu 下单。",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "Humani ( THE FABRICS SELLER)",
         "author_handle": "Humu01",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/1849481800004894720/oYMF3V13_normal.jpg",
@@ -296,8 +268,7 @@
         "text": "@AntiLeftMemes Can Temu really be this stupid?  Guessing he is a product of affirmative action!",
         "translation_zh": "@AntiLeftMemes Temu 真的能这么蠢吗？估计他是平权行动的产物！",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "Boboso",
         "author_handle": "Bobosofart",
         "author_avatar_url": "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
@@ -321,8 +292,7 @@
         "text": "People way fear me pass na people way get mind order suit for temu . TEMU DELIVERS",
         "translation_zh": "我最怕的就是那些有胆子在 Temu 上订西装的人。TEMU 会送到",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_name": "OBSERVER",
         "author_handle": "spirituality751",
         "author_avatar_url": "https://pbs.twimg.com/profile_images/1818696508193001472/r1AV7SMX_normal.jpg",
@@ -347,18 +317,18 @@
   "hot_topics": [
     {
       "rank": 1,
-      "title": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
-      "cluster_id": "joybuy-cluster-001",
+      "title": "相关讨论涉及 主品牌 海外购物的一般体验和认知问题。",
+      "cluster_id": "primary-signal-001",
       "score_value": 61,
       "level": "medium",
       "source_count": 4,
       "count_label": "4 条同日相似讨论",
-      "reason": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 61。"
+      "reason": "该情报与 主品牌 海外购物相关，当前综合优先级为 61。"
     },
     {
       "rank": 2,
       "title": "相关讨论体现价格、优惠或配送体验上的正向机会。",
-      "cluster_id": "joybuy-cluster-002",
+      "cluster_id": "primary-signal-002",
       "score_value": 51,
       "level": "low",
       "source_count": 1,
@@ -369,10 +339,10 @@
   "summary_only": false,
   "clusters": [
     {
-      "cluster_id": "joybuy-cluster-001",
-      "title": "General Joybuy/JD overseas shopping discussion",
-      "summary": "4 related posts discuss Joybuy/JD overseas shopping context.",
-      "summary_zh": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "cluster_id": "primary-signal-001",
+      "title": "General 主品牌 overseas shopping discussion",
+      "summary": "4 related posts discuss 主品牌 overseas shopping context.",
+      "summary_zh": "相关讨论涉及 主品牌 海外购物的一般体验和认知问题。",
       "lead_post": {
         "post_id": "2079619898234318981",
         "created_at": "2026-07-21T17:29:55Z",
@@ -395,8 +365,7 @@
         "links": [],
         "translation_zh": "周二凌晨 1 点在 JoyBuy 下单\n订单在接下来的一小时内完成备货\n订单在 6 点交给承运商\n订单在 11 点被承运商取走\n12 点到达始发分拣中心\n当然，这是 Express 配送",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "metrics": {
           "likes": 2,
           "reposts": 0,
@@ -443,25 +412,8 @@
         ],
         "opportunity_labels": [],
         "special_flags": [],
-        "explanation": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 61。"
+        "explanation": "该情报与 主品牌 海外购物相关，当前综合优先级为 61。"
       },
-      "fermentation": {
-        "status": "不追踪",
-        "tracking_days": 0,
-        "first_seen_at": "2026-07-21T04:40:29Z",
-        "last_checked_at": "2026-07-22T07:32:58Z",
-        "growth": {
-          "public_interactions_24h": 1,
-          "quotes_24h": 0,
-          "new_related_posts_24h": 8
-        },
-        "signals": [
-          "相似内容数量增加"
-        ],
-        "risk_change": "flat"
-      },
-      "tracking_eligible": false,
-      "tracking_reason": [],
       "evidence_counts": {
         "origin": 1,
         "stakeholders": 0,
@@ -473,7 +425,7 @@
       }
     },
     {
-      "cluster_id": "joybuy-cluster-002",
+      "cluster_id": "primary-signal-002",
       "title": "Positive price and delivery opportunity signals",
       "summary": "1 related posts mention fast delivery, discounts or positive value signals.",
       "summary_zh": "相关讨论体现价格、优惠或配送体验上的正向机会。",
@@ -506,7 +458,6 @@
         ],
         "translation_zh": "Nintendo Switch 2 上的 Splatoon Raiders 后天发售 ⤵️\n\nAmazon：\nFnac：\nJoyBuy：\nCdiscount：\nMicromania：\n\n信息：",
         "translation_status": "translated",
-        "translation_provider": "joybuilder",
         "summary_zh": "用户讨论价格、优惠或正向购物体验。",
         "metrics": {
           "likes": 2,
@@ -558,21 +509,6 @@
         "special_flags": [],
         "explanation": "该情报偏正向机会，体现价格、配送或促销优势，可用于观察传播借势。综合优先级 51。"
       },
-      "fermentation": {
-        "status": "不追踪",
-        "tracking_days": 0,
-        "first_seen_at": "2026-07-21T05:34:43Z",
-        "last_checked_at": "2026-07-22T07:32:58Z",
-        "growth": {
-          "public_interactions_24h": 0,
-          "quotes_24h": 0,
-          "new_related_posts_24h": 2
-        },
-        "signals": [],
-        "risk_change": "flat"
-      },
-      "tracking_eligible": false,
-      "tracking_reason": [],
       "evidence_counts": {
         "origin": 1,
         "stakeholders": 0,

@@ -8,7 +8,7 @@ sys.path.insert(0, str(ROOT))
 
 from src.pipeline.normalizer import normalize_posts
 from src.pipeline.clusterer import cluster_posts
-from src.utils.io import read_json
+from src.utils.config import load_project_json
 
 
 def post(post_id: str, text: str, brand_candidate: str = "joybuy", links: Optional[list[str]] = None) -> dict:
@@ -41,7 +41,7 @@ def post(post_id: str, text: str, brand_candidate: str = "joybuy", links: Option
 
 
 def main() -> None:
-    config = read_json(str(ROOT / "config" / "keywords.json"))
+    config = load_project_json("keywords.local.json")
     rows = normalize_posts(
         [
             post("1", "JD Vance knows nothing about history and politics."),

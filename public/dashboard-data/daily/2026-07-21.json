@@ -6,53 +6,39 @@
   "metrics": {
     "effective_intelligence": 1,
     "high_risk": 0,
-    "fermenting": 0,
     "needs_review": 0,
-    "joybuy_volume": 4,
-    "joybuy_candidate_volume": 4,
-    "temu_volume": 14,
+    "primary_volume": 4,
+    "primary_candidate_volume": 4,
+    "competitor_volume": 14,
     "negative_share": 0
   },
   "source_status": {
     "status": "normal",
-    "providers": [
-      "twitterapi_io"
-    ],
     "raw_posts_collected": 19,
     "effective_posts": 18,
     "brand_breakdown": {
-      "joybuy_candidates": 4,
-      "joybuy_effective": 4,
-      "temu_candidates": 15,
-      "temu_effective": 14
+      "primary_candidates": 4,
+      "primary_effective": 4,
+      "competitor_candidates": 15,
+      "competitor_effective": 14
     },
-    "estimated_cost_usd": 0.0028,
     "notes": [
-      "Real X data provider is active. Review daily cost and duplicate rate during bake-off.",
+      "Public social data collection is active. Review duplicate rate and relevance regularly.",
       "Bookmarks are collected only when the data source provides them.",
       "Quote counts are treated as public propagation signals."
     ]
   },
   "collection_status": {
     "status": "complete",
-    "warnings": [],
-    "limits": {
-      "max_posts": 60,
-      "max_joybuy_posts": 45,
-      "max_temu_posts": 15,
-      "max_api_requests": 6
-    },
-    "api_requests_used": 4,
-    "max_api_requests": 6,
-    "request_budget_exhausted": false
+    "warnings": []
   },
   "executive_summary": {
-    "headline": "Today's highest-priority Joybuy signal is: General Joybuy/JD overseas shopping discussion.",
+    "headline": "今日最高优先级主品牌舆情为: General 主品牌 overseas shopping discussion.",
     "risk": "Overall risk is medium with IPS 63.",
-    "action": "Recommended action: 观察. Temu baseline shows overlap around refund and delivery."
+    "action": "建议动作: 观察. 样例竞品 基线讨论涉及 refund and delivery."
   },
   "competitor": {
-    "brand": "temu",
+    "brand": "competitor",
     "volume": 14,
     "sentiment": {
       "negative": 1,
@@ -70,7 +56,7 @@
         "post_id": "2079332677425979879",
         "url": "https://x.com/nobleOrigin_/status/2079332677425979879",
         "text": "Oya,go and order Kaftan on Temu naw😂😂😂",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "nobleOrigin_",
         "created_at": "2026-07-20T22:28:37Z",
         "metrics": {
@@ -108,7 +94,7 @@
         "post_id": "2079352113197658293",
         "url": "https://x.com/ChadwyckBurrows/status/2079352113197658293",
         "text": "FACTS!!!!!! Cause that slogan is ass and bullshit and the product and numbers and sales and merch explains that it aint where the best wrestle. All dollar store, temu, wish looking based product that is not even competition for anybody. Cause their owner is a creepy, coffee fiended, little mark manchild who can't book for shit and who has paid numbskull critics and reporters who praise and validate and justify the shitty product and has lost all logic and reality like its fan base that call themselves rightfully what they are in the head: SICK",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "ChadwyckBurrows",
         "created_at": "2026-07-20T23:45:50Z",
         "metrics": {
@@ -126,7 +112,7 @@
         "post_id": "2079348600438476844",
         "url": "https://x.com/lil_nitelite/status/2079348600438476844",
         "text": "This is what happens when you order Lex Luthor from Temu... #Tatearrest #Andrewtate #Tate",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "lil_nitelite",
         "created_at": "2026-07-20T23:31:53Z",
         "metrics": {
@@ -144,7 +130,7 @@
         "post_id": "2079342518840213829",
         "url": "https://x.com/Mrkainebinduom/status/2079342518840213829",
         "text": "@skreetzrunner Lmao SEEEEEEEE!!! \n\nI’ve been seeing the temu ‘fits and I’m like eww. But this!!! \n\nI’ve actually ordered things from shein in the past that really didn’t cut it for me but now I solddd. I’m about  to order 2nd frame!",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "Mrkainebinduom",
         "created_at": "2026-07-20T23:07:43Z",
         "metrics": {
@@ -162,7 +148,7 @@
         "post_id": "2079329563780227162",
         "url": "https://x.com/OloriFade1/status/2079329563780227162",
         "text": "@BigMoyorshola Na only me never order from Temu ooo",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "OloriFade1",
         "created_at": "2026-07-20T22:16:14Z",
         "metrics": {
@@ -180,7 +166,7 @@
         "post_id": "2079327613663760477",
         "url": "https://x.com/k_owusuampofo/status/2079327613663760477",
         "text": "With the Temu orders going around, I finally saw a bidet (in use, sort of). Now, why would Tra rags order that for an old head? 😂😂😂",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "k_owusuampofo",
         "created_at": "2026-07-20T22:08:29Z",
         "metrics": {
@@ -198,7 +184,7 @@
         "post_id": "2079325898977755522",
         "url": "https://x.com/Munashalom/status/2079325898977755522",
         "text": "@IgwehUdoka I have never bought anything wrong from Temu \nI check sizes, reviews and everything I can before I order",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "Munashalom",
         "created_at": "2026-07-20T22:01:40Z",
         "metrics": {
@@ -216,7 +202,7 @@
         "post_id": "2079347555846980072",
         "url": "https://x.com/vinnymonaheng23/status/2079347555846980072",
         "text": "@AdvoBarryRoux Nah this ugly girl said she will never return to SA after getting that temu crown in Nigeria live on podcast.",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "vinnymonaheng23",
         "created_at": "2026-07-20T23:27:44Z",
         "metrics": {
@@ -236,7 +222,7 @@
         "post_id": "2079339397296922975",
         "url": "https://x.com/Objctiv_Indulge/status/2079339397296922975",
         "text": "guise, you too can order a personal decapitator at TEMU?? 😬\n\n via @YouTube",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "summary_zh": "用户在 公开社媒上讨论与品牌相关的购物体验。",
         "author_handle": "Objctiv_Indulge",
         "created_at": "2026-07-20T22:55:19Z",
         "metrics": {
@@ -256,10 +242,10 @@
   "summary_only": false,
   "clusters": [
     {
-      "cluster_id": "joybuy-cluster-001",
-      "title": "General Joybuy/JD overseas shopping discussion",
-      "summary": "4 related posts discuss Joybuy/JD overseas shopping context.",
-      "summary_zh": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "cluster_id": "primary-signal-001",
+      "title": "General 主品牌 overseas shopping discussion",
+      "summary": "4 related posts discuss 主品牌 overseas shopping context.",
+      "summary_zh": "相关讨论涉及 主品牌 海外购物的一般体验和认知问题。",
       "topic": "general",
       "risk_types": [
         "brand_trust"
@@ -296,25 +282,8 @@
         ],
         "opportunity_labels": [],
         "special_flags": [],
-        "explanation": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 63。"
+        "explanation": "该情报与 主品牌 海外购物相关，当前综合优先级为 63。"
       },
-      "fermentation": {
-        "status": "不追踪",
-        "tracking_days": 0,
-        "first_seen_at": "2026-07-20T06:38:50Z",
-        "last_checked_at": "2026-07-21T03:51:48Z",
-        "growth": {
-          "public_interactions_24h": 0,
-          "quotes_24h": 0,
-          "new_related_posts_24h": 8
-        },
-        "signals": [
-          "相似内容数量增加"
-        ],
-        "risk_change": "flat"
-      },
-      "tracking_eligible": false,
-      "tracking_reason": [],
       "evidence_counts": {
         "origin": 1,
         "stakeholders": 0,

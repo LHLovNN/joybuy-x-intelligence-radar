@@ -29,16 +29,54 @@ const routeTitles = {
 async function loadJson(path) {
   const key = path.replace(/^\.\//, "");
   if (window.__DASHBOARD_DATA__) {
-    if (window.__DASHBOARD_DATA__[key]) return window.__DASHBOARD_DATA__[key];
+    if (window.__DASHBOARD_DATA__[key]) return normalizeRuntimePayload(window.__DASHBOARD_DATA__[key]);
     if (window.__DASHBOARD_DATA__.clusters && window.__DASHBOARD_DATA__.clusters[key]) {
-      return window.__DASHBOARD_DATA__.clusters[key];
+      return normalizeRuntimePayload(window.__DASHBOARD_DATA__.clusters[key]);
     }
   }
   const response = await fetch(path, { cache: "no-store" });
   if (!response.ok) {
     throw new Error(`Failed to load ${path}`);
   }
-  return response.json();
+  return normalizeRuntimePayload(await response.json());
+}
+
+function normalizeRuntimePayload(value) {
+  if (Array.isArray(value)) {
+    value.forEach(normalizeRuntimePayload);
+    return value;
+  }
+  if (!value || typeof value !== "object") return value;
+
+  if (value.brand === "primary") value.brand = "joybuy";
+  if (value.brand === "competitor") value.brand = "temu";
+
+  if (value.metrics) {
+    aliasNumber(value.metrics, "joybuy_volume", "primary_volume");
+    aliasNumber(value.metrics, "joybuy_candidate_volume", "primary_candidate_volume");
+    aliasNumber(value.metrics, "temu_volume", "competitor_volume");
+  }
+  if (value.dashboard_metrics) {
+    aliasNumber(value.dashboard_metrics, "joybuy_volume", "primary_volume");
+    aliasNumber(value.dashboard_metrics, "joybuy_candidate_volume", "primary_candidate_volume");
+    aliasNumber(value.dashboard_metrics, "temu_volume", "competitor_volume");
+  }
+  if (value.brand_breakdown) {
+    aliasNumber(value.brand_breakdown, "joybuy_candidates", "primary_candidates");
+    aliasNumber(value.brand_breakdown, "joybuy_effective", "primary_effective");
+    aliasNumber(value.brand_breakdown, "temu_candidates", "competitor_candidates");
+    aliasNumber(value.brand_breakdown, "temu_effective", "competitor_effective");
+  }
+  aliasNumber(value, "joybuy_effective", "primary_effective");
+  aliasNumber(value, "temu_effective", "competitor_effective");
+  aliasNumber(value, "joybuy_clusters", "primary_signals");
+
+  Object.values(value).forEach(normalizeRuntimePayload);
+  return value;
+}
+
+function aliasNumber(target, oldKey, newKey) {
+  if (target[oldKey] == null && target[newKey] != null) target[oldKey] = target[newKey];
 }
 
 async function init() {
@@ -131,10 +169,10 @@ function overviewPage() {
     })}
     ${sampleDataNotice(latest)}
     <div class="featured-status-row">
-      <span>Joybuy 焦点 ${escapeHtml(String(latestFeaturedItems.filter((item) => item.brand !== "temu").length))}</span>
+      <span>主品牌焦点 ${escapeHtml(String(latestFeaturedItems.filter((item) => item.brand !== "temu").length))}</span>
       <span>竞品焦点 ${escapeHtml(String(latestFeaturedItems.filter((item) => item.brand === "temu").length))}</span>
-      <span>Joybuy 有效 ${escapeHtml(String(latestMetrics.joybuy_volume || 0))}</span>
-      <span>Temu 基线 ${escapeHtml(String(latestMetrics.temu_volume || 0))}</span>
+      <span>主品牌有效 ${escapeHtml(String(latestMetrics.joybuy_volume || 0))}</span>
+      <span>竞品基线 ${escapeHtml(String(latestMetrics.temu_volume || 0))}</span>
       <span>${escapeHtml(latest.window_label || "Past 24 hours")}</span>
     </div>
     ${featuredFilterBar()}
@@ -311,7 +349,7 @@ function featuredTimelineCard(item) {
           ${reasonLine(item)}
         </section>
         <div class="featured-card-bottom">
-          ${cardFootnote(item.brand === "temu" ? "竞品基线信号" : "Joybuy / JD 相关舆情", item)}
+          ${cardFootnote(item.brand === "temu" ? "竞品基线信号" : "主品牌相关舆情", item)}
           <div class="button-row">
             ${cardExternalAction(item.external_href, item)}
           </div>
@@ -334,7 +372,7 @@ function normalizeFeaturedItem(item) {
     time: item.created_at,
     scoreValue: item.score_value,
     scoreLabel: item.score_label || "IPS",
-    source: item.source_name || item.source_type || "X 舆情",
+    source: item.source_name || item.source_type || "公开舆情",
     summary: firstSourceText(item.translation_zh, item.original_text, item.body_zh, item.text, item.summary),
     reason: item.selected_reason,
   };
@@ -479,8 +517,8 @@ function isGenericInsightText(value) {
   const text = String(value || "").trim();
   if (!text) return true;
   return [
-    "竞品基线内容，用于观察 Temu 当日讨论主题和互动强度。",
-    "用于对照 Joybuy 当日声量和风险语境。",
+    "竞品基线内容，用于观察样例竞品当日讨论主题和互动强度。",
+    "用于对照主品牌当日声量和风险语境。",
     "进入当日情报归档。",
     "该舆情达到焦点阈值，建议结合原帖证据持续观察。",
     "Backfilled from summary metrics only.",
@@ -489,7 +527,7 @@ function isGenericInsightText(value) {
 
 function inferSignalTopic(text, item = {}) {
   const lower = String(text || "").toLowerCase();
-  const brand = item.brand === "temu" ? "竞品侧" : "Joybuy/JD";
+  const brand = item.brand === "temu" ? "竞品侧" : "主品牌";
   const hasAny = (terms) => terms.some((term) => lower.includes(term.toLowerCase()) || String(text).includes(term));
   if (hasAny(["refund", "退款", "退货", "售后", "chargeback"])) {
     return {
@@ -504,7 +542,7 @@ function inferSignalTopic(text, item = {}) {
     return {
       name: "履约与物流心智",
       angle: "原帖围绕发货、仓库、配送或包裹进度展开",
-      implication: item.brand === "temu" ? "可作为 Temu 履约卖点/槽点的竞品参照。" : "需要判断这是正向履约口碑还是潜在配送投诉。",
+      implication: item.brand === "temu" ? "可作为样例竞品履约卖点/槽点的竞品参照。" : "需要判断这是正向履约口碑还是潜在配送投诉。",
       useful: true,
     };
   }
@@ -512,7 +550,7 @@ function inferSignalTopic(text, item = {}) {
     return {
       name: "价格促销与导购",
       angle: "内容强调优惠、低价、券包或导购入口",
-      implication: item.brand === "temu" ? "有助于观察 Temu 拉新促销话术及可能的垃圾推广占比。" : "可评估是否存在可借势传播的价格/活动卖点。",
+      implication: item.brand === "temu" ? "有助于观察样例竞品拉新促销话术及可能的垃圾推广占比。" : "可评估是否存在可借势传播的价格/活动卖点。",
       useful: true,
     };
   }
@@ -536,7 +574,7 @@ function inferSignalTopic(text, item = {}) {
   if (item.brand === "temu" && hasAny(["cheap", "low quality", "knockoff", "lazy", "temu version", "temu-looking", "temu looking", "敷衍", "低质", "山寨", "乱七八糟"])) {
     return {
       name: "竞品低价/低质心智",
-      angle: "原帖把 Temu 作为低价、低质或山寨感的表达符号",
+      angle: "原帖把样例竞品作为低价、低质或山寨感的表达符号",
       implication: "这类内容可作为竞品品牌心智参照，但只有出现较高传播时才需要进入焦点。",
       useful: true,
       sensitive: true,
@@ -546,7 +584,7 @@ function inferSignalTopic(text, item = {}) {
     return {
       name: "购买意向与日常购物",
       angle: "用户表达下单、加购或尝试购买意向",
-      implication: item.brand === "temu" ? "可作为竞品自然需求与用户使用场景样本，需结合互动与浏览判断是否异常。" : "可用于判断 Joybuy/JD 是否被真实用户纳入购买选择。",
+      implication: item.brand === "temu" ? "可作为竞品自然需求与用户使用场景样本，需结合互动与浏览判断是否异常。" : "可用于判断主品牌是否被真实用户纳入购买选择。",
       useful: true,
     };
   }
@@ -634,23 +672,20 @@ function truncateText(value, maxLength) {
 }
 
 function sourceTypeLabel(item) {
-  const raw = String(item.source_type || item.source_name || "X 舆情");
+  const raw = String(item.source_type || item.source_name || "公开舆情");
   if (raw.includes("摘要级归档")) return "历史摘要";
   return raw;
 }
 
 function isSampleMode(daily = state.selectedDaily || state.daily) {
-  const providers = [
-    ...(daily?.source_status?.providers || []),
-    ...(state.sourceStatus?.providers || []),
-    ...(state.overview?.source_status?.providers || []),
-  ];
-  return daily?.collection_status?.status === "sample" || providers.includes("sample");
+  return daily?.collection_status?.status === "sample"
+    || daily?.source_status?.status === "sample"
+    || state.sourceStatus?.status === "sample"
+    || state.overview?.source_status?.status === "sample";
 }
 
 function isDailySample(daily) {
-  const providers = daily?.source_status?.providers || [];
-  return daily?.collection_status?.status === "sample" || providers.includes("sample");
+  return daily?.collection_status?.status === "sample" || daily?.source_status?.status === "sample";
 }
 
 function sampleDataNotice(daily = state.selectedDaily || state.daily) {
@@ -658,7 +693,7 @@ function sampleDataNotice(daily = state.selectedDaily || state.daily) {
   return `
     <section class="sample-data-notice">
       <strong>当前为样例数据预览</strong>
-      <span>这些内容用于验证页面结构和交互，不代表真实 X 舆情；样例内容会以状态标签标识，原帖入口不会跳转至 X。</span>
+      <span>这些内容用于验证页面结构和交互，不代表真实舆情；样例内容会以状态标签标识，原帖入口不会跳转至外部站点。</span>
     </section>
   `;
 }
@@ -706,12 +741,12 @@ function leadPostText(cluster) {
   return sourcePostBody(post, cluster?.summary_zh || cluster?.summary || "");
 }
 
-function leadPostSourceName(post, fallback = "Joybuy / JD") {
+function leadPostSourceName(post, fallback = "主品牌") {
   const handle = post.author_handle || post.author?.handle || "";
   return handle ? `${fallback} · @${handle}` : fallback;
 }
 
-function leadPostAuthorName(post, fallback = "Joybuy / JD") {
+function leadPostAuthorName(post, fallback = "主品牌") {
   return post.author_name || post.author?.name || post.author_handle || post.author?.handle || fallback;
 }
 
@@ -739,9 +774,9 @@ function fallbackFeaturedItems(daily) {
         id: `fallback-${cluster.cluster_id}`,
         brand: "joybuy",
         cluster_id: cluster.cluster_id,
-        source_type: daily.summary_only ? "摘要级归档" : "X 原帖",
-        source_name: leadPostSourceName(post, "Joybuy / JD"),
-        author_name: leadPostAuthorName(post, "Joybuy / JD"),
+        source_type: daily.summary_only ? "摘要级归档" : "公开原帖",
+        source_name: leadPostSourceName(post, "主品牌"),
+        author_name: leadPostAuthorName(post, "主品牌"),
         author_handle: post.author_handle || post.author?.handle || "",
         author_avatar_url: post.author_avatar_url || post.author?.avatar_url || "",
         author_followers: post.author_followers ?? post.author?.followers ?? 0,
@@ -760,7 +795,6 @@ function fallbackFeaturedItems(daily) {
         original_text: post.text || post.clean_text || cluster.summary || "",
         translation_zh: text,
         translation_status: post.translation_status || "unknown",
-        translation_provider: post.translation_provider || "none",
         summary_zh: cluster.summary_zh || "",
         links: post.links || [],
         media: post.media || [],
@@ -789,7 +823,7 @@ function fallbackFeaturedItems(daily) {
         brand: "temu",
         source_type: "竞品基线",
         source_name: event.source,
-        author_name: event.author_name || "Temu Source",
+        author_name: event.author_name || "样例竞品来源",
         author_handle: event.author_handle || "",
         author_avatar_url: event.author_avatar_url || "",
         author_followers: event.author_followers || 0,
@@ -802,7 +836,6 @@ function fallbackFeaturedItems(daily) {
         translation_zh: event.summary,
         summary_zh: "",
         translation_status: event.translation_status || "unknown",
-        translation_provider: event.translation_provider || "none",
         links: event.links || [],
         media: event.media || [],
         score_value: event.scoreValue,
@@ -1090,7 +1123,7 @@ function xVideoEmbedNode(owner = {}, mediaItem = {}) {
       <blockquote class="twitter-tweet" data-dnt="true" data-theme="light" data-conversation="none">
         <a href="${escapeHtml(embedUrl)}">在 X 查看视频</a>
       </blockquote>
-      <a class="x-video-fallback" href="${escapeHtml(openUrl)}" target="_blank" rel="noreferrer">播放器未加载时打开 X 原帖</a>
+      <a class="x-video-fallback" href="${escapeHtml(openUrl)}" target="_blank" rel="noreferrer">播放器未加载时打开原帖</a>
     </div>
   `;
 }
@@ -1400,7 +1433,7 @@ function allIntelligencePage() {
     ${pageHero({
       eyebrow: "舆情雷达",
       title: "全部舆情",
-      subtitle: `${formatDateLong(archive[0]?.date)} · Joybuy / JD 与 Temu 竞品舆情全量信息流`,
+      subtitle: `${formatDateLong(archive[0]?.date)} · 主品牌与样例竞品舆情全量信息流`,
       stats: [
         [metrics.filtered, "当前结果"],
         [metrics.total, "归档总量"],
@@ -1414,8 +1447,8 @@ function allIntelligencePage() {
         <div class="toolbar-label">来源</div>
         <div class="filter-chip-row">
           ${allSourceFilterButton("all", "全部")}
-          ${allSourceFilterButton("joybuy", "Joybuy / JD")}
-          ${allSourceFilterButton("temu", "Temu")}
+          ${allSourceFilterButton("joybuy", "主品牌")}
+          ${allSourceFilterButton("temu", "样例竞品")}
           ${allSourceFilterButton("x", "原帖级")}
           ${allSourceFilterButton("archive", "摘要归档")}
         </div>
@@ -1427,7 +1460,7 @@ function allIntelligencePage() {
             <option value="all" ${state.allTypeFilter === "all" ? "selected" : ""}>全部</option>
             <option value="risk" ${state.allTypeFilter === "risk" ? "selected" : ""}>风险</option>
             <option value="opportunity" ${state.allTypeFilter === "opportunity" ? "selected" : ""}>机会</option>
-            <option value="competitor" ${state.allTypeFilter === "competitor" ? "selected" : ""}>竞品</option>
+            <option value="competitor" ${state.allTypeFilter === "competitor" ? "selected" : ""}>样例竞品</option>
             <option value="summary" ${state.allTypeFilter === "summary" ? "selected" : ""}>摘要归档</option>
           </select>
         </label>
@@ -1442,7 +1475,7 @@ function allIntelligencePage() {
       <div class="section-header">
         <div>
           <h2>信息流</h2>
-          <p class="muted">按日期与发布时间倒序排列。每条舆情保留明确 X 原帖入口。</p>
+          <p class="muted">按日期与发布时间倒序排列。每条舆情保留明确原帖入口。</p>
         </div>
         <span class="tag">${filteredItems.length} 条</span>
       </div>
@@ -1588,11 +1621,11 @@ function sameDisplayText(a, b) {
 function generatedOpinionTitle(item) {
   const topic = opinionTopicLabel(item);
   if (item.type === "summary" || item.channel === "archive") {
-    return item.brand === "temu" ? `Temu ${topic}摘要` : `Joybuy / JD ${topic}摘要`;
+    return item.brand === "temu" ? `样例竞品${topic}摘要` : `主品牌${topic}摘要`;
   }
-  if (item.brand === "temu") return `Temu ${topic}竞品舆情`;
-  if (item.kind === "opportunity") return `Joybuy / JD ${topic}机会信号`;
-  return `Joybuy / JD ${topic}舆情`;
+  if (item.brand === "temu") return `样例竞品${topic}舆情`;
+  if (item.kind === "opportunity") return `主品牌${topic}机会信号`;
+  return `主品牌${topic}舆情`;
 }
 
 function opinionTopicLabel(item) {
@@ -1657,14 +1690,14 @@ function allCompetitorItemsForDaily(daily) {
         type: "summary",
         kind: "competitor",
         badge: "竞品",
-        source_name: "Temu 竞品基线",
-        author_name: "Temu Radar",
+        source_name: "样例竞品基线",
+        author_name: "Competitor Radar",
         author_handle: "",
         source_subline: "摘要级归档",
         timeLabel: "汇总",
-        title: `Temu 当日有效声量 ${daily.competitor.volume}`,
-        body_zh: "该日仅保留 Temu 声量与情绪摘要，原帖级竞品内容从完整日报归档后开始展示。",
-        summary: "Temu competitor baseline summary",
+        title: `样例竞品当日有效声量 ${daily.competitor.volume}`,
+        body_zh: "该日仅保留样例竞品声量与情绪摘要，原帖级竞品内容从完整日报归档后开始展示。",
+        summary: "Competitor baseline summary",
         score_label: "声量",
         score_value: daily.competitor.volume,
         score: {},
@@ -1672,7 +1705,7 @@ function allCompetitorItemsForDaily(daily) {
         post_metrics: {},
         tags: sentimentTags(daily.competitor.sentiment),
         reason: "",
-        source_count_label: "Temu 竞品摘要",
+        source_count_label: "竞品摘要",
         is_sample: isDailySample(daily),
       },
     ];
@@ -1693,9 +1726,9 @@ function allItemFromCluster(cluster, daily) {
     channel: summaryOnly ? "archive" : "x",
     type: summaryOnly ? "summary" : score.sentiment === "positive" ? "opportunity" : "risk",
     kind: score.sentiment === "positive" ? "opportunity" : "risk",
-    badge: summaryOnly ? "摘要" : "Joybuy",
-    source_name: leadPostSourceName(post, "Joybuy / JD"),
-    author_name: leadPostAuthorName(post, "Joybuy / JD"),
+    badge: summaryOnly ? "摘要" : "主品牌",
+    source_name: leadPostSourceName(post, "主品牌"),
+    author_name: leadPostAuthorName(post, "主品牌"),
     author_handle: post.author_handle || post.author?.handle || "",
     author_avatar_url: post.author_avatar_url || post.author?.avatar_url || "",
     author_followers: post.author_followers ?? post.author?.followers ?? 0,
@@ -1704,13 +1737,12 @@ function allItemFromCluster(cluster, daily) {
     author_bio: post.author_bio || post.author_description || post.author?.bio || post.author?.description || "",
     author_location: post.author_location || post.author?.location || "",
     author_joined_at: post.author_joined_at || post.author?.joined_at || "",
-    source_subline: summaryOnly ? "历史摘要" : "X 原帖",
+    source_subline: summaryOnly ? "历史摘要" : "公开原帖",
     time: post.created_at || cluster.first_seen_at || cluster.last_seen_at,
     title: generatedOpinionTitle({ brand: "joybuy", tags, topic: cluster.topic, sentiment: score.sentiment || "neutral", kind: score.sentiment === "positive" ? "opportunity" : "risk" }),
     body_zh: leadPostText(cluster),
     original_text: post.original_text || post.text || post.clean_text || "",
     translation_status: post.translation_status || "unknown",
-    translation_provider: post.translation_provider || "none",
     summary: cluster.summary || "",
     score,
     score_label: "IPS",
@@ -1745,8 +1777,8 @@ function allItemFromCompetitorPost(post, daily) {
     type: "competitor",
     kind: "competitor",
     badge: "竞品",
-    source_name: "Temu 竞品",
-    author_name: post.author_name || "Temu Source",
+    source_name: "样例竞品",
+    author_name: post.author_name || "样例竞品来源",
     author_handle: post.author_handle || "",
     author_avatar_url: post.author_avatar_url || "",
     author_followers: post.author_followers || 0,
@@ -1755,13 +1787,12 @@ function allItemFromCompetitorPost(post, daily) {
     author_bio: post.author_bio || post.author_description || "",
     author_location: post.author_location || "",
     author_joined_at: post.author_joined_at || "",
-    source_subline: "X 原帖",
+    source_subline: "公开原帖",
     time: post.created_at,
     title: "",
     body_zh: sourcePostBody(post, post.summary_zh || ""),
     original_text: post.original_text || post.text || "",
     translation_status: post.translation_status || "unknown",
-    translation_provider: post.translation_provider || "none",
     summary: post.text || "",
     score: { level: "low", sentiment: post.sentiment || "neutral" },
     score_label: "互动",
@@ -1778,7 +1809,7 @@ function allItemFromCompetitorPost(post, daily) {
     href: "",
     external_href: post.url || "",
     source_count: 1,
-    source_count_label: "Temu 竞品原帖",
+    source_count_label: "竞品原帖",
     is_sample: isDailySample(daily),
     level: "low",
     sentiment: post.sentiment || "neutral",
@@ -1817,6 +1848,7 @@ function dailyPage() {
   const metrics = daily.metrics || state.overview.metrics;
   const source = daily.source_status || state.sourceStatus;
   const collection = daily.collection_status || {};
+  const translation = collection.translation || daily.source_status?.translation || {};
   const joybuyEvents = buildJoybuyEvents(daily);
   const competitorEvents = buildCompetitorEvents(daily);
   const storyCount = joybuyEvents.length + competitorEvents.length;
@@ -1829,15 +1861,15 @@ function dailyPage() {
           <div class="daily-kicker">
             <span>VOL.${escapeHtml(String(daily.date || "").replace(/-/g, "."))}</span>
             <span>${escapeHtml(String(storyCount))} STORIES</span>
-            <span>JOYBUY OPINION DAILY</span>
+            <span>BRAND OPINION DAILY</span>
           </div>
-          <h2><span>Joybuy</span> 舆情日报</h2>
+          <h2><span>Brand</span> 舆情日报</h2>
           <p>${escapeHtml(formatDateLong(daily.date))} · 每早八时更新</p>
           <div class="daily-masthead-stats">
-            <span><strong>${escapeHtml(String(metrics.joybuy_volume || 0))}</strong><em>Joybuy 有效</em></span>
-            <span><strong>${escapeHtml(String(metrics.temu_volume || 0))}</strong><em>Temu 基线</em></span>
+            <span><strong>${escapeHtml(String(metrics.joybuy_volume || 0))}</strong><em>主品牌有效</em></span>
+            <span><strong>${escapeHtml(String(metrics.temu_volume || 0))}</strong><em>竞品基线</em></span>
             <span><strong>${escapeHtml(String(metrics.high_risk || 0))}</strong><em>高风险</em></span>
-            <span><strong>${escapeHtml(formatApiUsage(collection))}</strong><em>API 消耗</em></span>
+            <span><strong>${escapeHtml(translationCoverageLabel(translation))}</strong><em>中文处理</em></span>
           </div>
         </header>
         ${sampleDataNotice(daily)}
@@ -1851,12 +1883,12 @@ function dailyPage() {
             </div>
           </div>
           <div class="report-toc">
-            ${reportTocItem("01", "Joybuy / JD 舆情", dailyIssueSummary(daily), joybuyEvents.length)}
-            ${reportTocItem("02", "Temu 竞品雷达", "Temu 当日声量、情绪和高互动内容。", competitorEvents.length)}
+            ${reportTocItem("01", "主品牌舆情", dailyIssueSummary(daily), joybuyEvents.length)}
+            ${reportTocItem("02", "竞品雷达", "样例竞品当日声量、情绪和高互动内容。", competitorEvents.length)}
           </div>
         </nav>
-        ${dailyReportSection("01", "Joybuy / JD 舆情", "Brand Radar", `${brandBreakdown(source, "joybuy_effective", metrics.joybuy_volume)} 条有效内容，${metrics.high_risk || 0} 个高风险。`, "joybuy-radar", joybuyEvents, "该日暂无 Joybuy 有效舆情")}
-        ${dailyReportSection("02", "Temu 竞品雷达", "Competitor", `当前竞品：Temu。${brandBreakdown(source, "temu_effective", metrics.temu_volume)} 条有效内容。`, "competitor-radar", competitorEvents, "该日暂无 Temu 竞品内容", competitorSummary(daily.competitor || state.competitor))}
+        ${dailyReportSection("01", "主品牌舆情", "Brand Radar", `${brandBreakdown(source, "joybuy_effective", metrics.joybuy_volume)} 条有效内容，${metrics.high_risk || 0} 个高风险。`, "joybuy-radar", joybuyEvents, "该日暂无主品牌有效舆情")}
+        ${dailyReportSection("02", "竞品雷达", "Competitor", `样例竞品有效内容 ${brandBreakdown(source, "temu_effective", metrics.temu_volume)} 条。`, "competitor-radar", competitorEvents, "该日暂无竞品内容", competitorSummary(daily.competitor || state.competitor))}
       </article>
     </div>
   `;
@@ -1875,9 +1907,9 @@ function dailyBriefPanel(daily, joybuyEvents, competitorEvents) {
         </div>
       </div>
       <div class="daily-change-grid">
-        ${dailyChangeCard("Joybuy 有效", brief.current.joybuy, brief.previous?.joybuy, "条")}
+        ${dailyChangeCard("主品牌有效", brief.current.joybuy, brief.previous?.joybuy, "条")}
         ${dailyChangeCard("最高 IPS", brief.current.ips, brief.previous?.ips, "分")}
-        ${dailyChangeCard("Temu 基线", brief.current.temu, brief.previous?.temu, "条")}
+        ${dailyChangeCard("竞品基线", brief.current.temu, brief.previous?.temu, "条")}
         ${dailyChangeCard("高风险", brief.current.highRisk, brief.previous?.highRisk, "条", true)}
       </div>
       <div class="daily-action-board">
@@ -1940,9 +1972,9 @@ function dailyBrief(daily, joybuyEvents, competitorEvents) {
 function dailyBriefTitle(current) {
   if (current.highRisk > 0) return "今日存在需优先复盘的风险舆情";
   if (current.needsReview > 0) return "今日舆情整体可控，但存在待复核内容";
-  if (current.joybuy === 0) return "今日暂未发现有效 Joybuy / JD 舆情";
+  if (current.joybuy === 0) return "今日暂未发现有效主品牌舆情";
   if (current.ips >= 70) return "今日舆情平稳，但最高 IPS 需要持续观察";
-  return "今日 Joybuy / JD 舆情整体平稳";
+  return "今日主品牌舆情整体平稳";
 }
 
 function dailyBriefBody(current, previous, daily) {
@@ -1950,7 +1982,7 @@ function dailyBriefBody(current, previous, daily) {
   const joybuyTrend = previous ? `，较昨日${deltaPhrase(current.joybuy, previous.joybuy, "条")}` : "";
   const ipsText = current.ips ? `最高 IPS ${current.ips}` : "暂无 IPS 信号";
   const riskText = current.highRisk > 0 ? `识别到 ${current.highRisk} 条高风险` : "未识别到高风险";
-  return `${windowLabel} 内，Joybuy/JD 有效舆情 ${current.joybuy} 条${joybuyTrend}；${ipsText}，${riskText}。Temu 竞品基线 ${current.temu} 条，用于判断外部平台当日讨论热度。`;
+  return `${windowLabel} 内，主品牌有效舆情 ${current.joybuy} 条${joybuyTrend}；${ipsText}，${riskText}。竞品基线 ${current.temu} 条，用于判断外部讨论热度。`;
 }
 
 function dailyActionAdvice(current) {
@@ -1964,7 +1996,7 @@ function dailyActionAdvice(current) {
     return { label: "重点观察", className: "warn", copy: "暂无明显风险，但最高 IPS 偏高，建议保留到下一日继续看传播变化。" };
   }
   if (current.joybuy === 0) {
-    return { label: "无需动作", className: "good", copy: "当日未发现有效 Joybuy/JD 舆情，可保持自动监测。" };
+    return { label: "无需动作", className: "good", copy: "当日未发现有效主品牌舆情，可保持自动监测。" };
   }
   return { label: "常规观察", className: "good", copy: "未出现高风险信号，建议按日报归档，下一轮继续观察趋势。" };
 }
@@ -1974,7 +2006,7 @@ function dailyReviewAdvice(current, collection) {
     return { label: "检查译文", copy: `有 ${current.translationMissing} 条内容使用原文兜底，建议人工看一眼是否影响判断。` };
   }
   if (collection.request_budget_exhausted) {
-    return { label: "额度受限", copy: "采集触达了请求上限，本日报可能是部分结果，建议谨慎解读声量变化。" };
+    return { label: "采集受限", copy: "采集触达了保护阈值，本日报可能是部分结果，建议谨慎解读声量变化。" };
   }
   if (current.needsReview > 0) {
     return { label: `${current.needsReview} 条待复核`, copy: "优先核对低置信或潜在误匹配内容，避免把噪声带入汇报。" };
@@ -1985,12 +2017,12 @@ function dailyReviewAdvice(current, collection) {
 function dailyCompetitorAdvice(current, previous) {
   const delta = previous ? current.temu - previous.temu : 0;
   if (current.temu >= Math.max(10, current.joybuy * 2)) {
-    return { label: "Temu 偏高", copy: `Temu 当日声量 ${current.temu} 条，高于 Joybuy/JD，可用于观察竞品讨论热度和话题类型。` };
+    return { label: "竞品偏高", copy: `样例竞品当日声量 ${current.temu} 条，高于主品牌，可用于观察竞品讨论热度和话题类型。` };
   }
   if (previous && delta > 0) {
-    return { label: "Temu 上升", copy: `Temu 较昨日增加 ${delta} 条，建议关注是否有可借鉴或需警惕的传播点。` };
+    return { label: "竞品上升", copy: `样例竞品较昨日增加 ${delta} 条，建议关注是否有可借鉴或需警惕的传播点。` };
   }
-  return { label: "常规基线", copy: "Temu 暂未出现异常跃升，作为竞品背景参考即可。" };
+  return { label: "常规基线", copy: "样例竞品暂未出现异常跃升，作为竞品背景参考即可。" };
 }
 
 function dailyChangeCard(label, value, previous, suffix = "", reverseRisk = false) {
@@ -2053,7 +2085,7 @@ function dailyStoryList(events, emptyText) {
 }
 
 function dailyStoryCard(event) {
-  const title = localizedTitle(event.title, event.summary, event.brand === "temu" ? "Temu 竞品原帖" : "Joybuy 舆情信号");
+  const title = localizedTitle(event.title, event.summary, event.brand === "temu" ? "竞品原帖" : "主品牌舆情信号");
   const body = String(event.summary || "").trim() || title;
   const showTitle = Boolean(event.isSummary || (!event.externalHref && title && !sameDisplayText(title, body)));
   const metrics = event.metrics || {};
@@ -2169,8 +2201,8 @@ function dailyHistoryItem(item) {
 
 function dailyHistoryMeta(item) {
   const parts = [
-    `Temu ${item.temu_effective ?? 0}`,
-    item.collection_status || "unknown",
+    `竞品 ${item.temu_effective ?? 0}`,
+    collectionStateLabel(item.collection_status || "unknown"),
   ];
   if (item.summary_only) parts.push("摘要归档");
   return parts.map((part) => escapeHtml(String(part))).join(" · ");
@@ -2180,16 +2212,16 @@ function settingsPage() {
   const source = state.sourceStatus || {};
   const collection = state.daily?.collection_status || {};
   const brand = source.brand_breakdown || {};
-  const providers = source.providers || [];
+  const translation = collection.translation || source.translation || {};
   return `
     ${pageHero({
       eyebrow: "系统状态",
-      subtitle: "数据源、自动化、监控范围与安全预算边界",
+      subtitle: "公开展示仅保留运行状态、数据质量与评分口径",
       stats: [
-        [sourceModeLabel(source.status), "数据模式"],
-        [providers.join(", ") || "未配置", "Provider"],
-        [formatApiUsage(collection), "API 消耗"],
-        [`$${formatCost(source.estimated_cost_usd)}`, "估算成本"],
+        [sourceModeLabel(source.status), "数据状态"],
+        [collectionStateLabel(collection.status || state.overview.health), "采集状态"],
+        [translationCoverageLabel(translation), "中文处理"],
+        [source.effective_posts ?? 0, "有效内容"],
       ],
     })}
     ${sampleDataNotice(state.daily)}
@@ -2199,15 +2231,15 @@ function settingsPage() {
           <div class="settings-card-head">
             <div>
               <h2>采集运行</h2>
-              <p class="muted">最近一次日报任务和自动化节奏。</p>
+              <p class="muted">最近一次数据更新与运行健康度。</p>
             </div>
             <span class="status-pill ${escapeHtml(source.status || "neutral")}">${escapeHtml(sourceModeLabel(source.status))}</span>
           </div>
           <div class="status-table">
             ${statusRow("最近生成", state.overview.generated_at_label || formatDateTime(state.overview.generated_at))}
-            ${statusRow("采集窗口", state.overview.window_label || state.daily.window_label || "Past 24 hours")}
-            ${statusRow("日报自动化", "Mac 本机 · 每日 08:00 BJT 生成，GitHub 仅部署")}
-            ${statusRow("运行状态", collection.status || state.overview.health || "unknown")}
+            ${statusRow("统计窗口", "最近 24 小时")}
+            ${statusRow("更新节奏", "每日自动更新")}
+            ${statusRow("运行状态", collectionStateLabel(collection.status || state.overview.health))}
           </div>
         </section>
         <section class="settings-card">
@@ -2218,10 +2250,10 @@ function settingsPage() {
             </div>
           </div>
           <div class="quality-grid">
-            ${qualityTile("原始采集", source.raw_posts_collected ?? 0, "接口返回内容")}
+            ${qualityTile("原始采集", source.raw_posts_collected ?? 0, "源端返回内容")}
             ${qualityTile("有效内容", source.effective_posts ?? 0, "过滤误匹配后")}
-            ${qualityTile("Joybuy / JD", `${brand.joybuy_candidates ?? 0} → ${brand.joybuy_effective ?? 0}`, "候选到有效")}
-            ${qualityTile("Temu", `${brand.temu_candidates ?? 0} → ${brand.temu_effective ?? 0}`, "竞品基线")}
+            ${qualityTile("主品牌", `${brand.joybuy_candidates ?? 0} → ${brand.joybuy_effective ?? 0}`, "候选到有效")}
+            ${qualityTile("竞品基线", `${brand.temu_candidates ?? 0} → ${brand.temu_effective ?? 0}`, "候选到有效")}
           </div>
         </section>
         <section class="settings-card">
@@ -2239,27 +2271,27 @@ function settingsPage() {
           <div class="settings-card-head">
             <div>
               <h2>监控范围</h2>
-              <p class="muted">MVP 当前配置。</p>
+              <p class="muted">公开页只展示能力范围，不展示具体监控配置。</p>
             </div>
           </div>
           <div class="scope-list">
-            ${scopeRow("平台", "X")}
-            ${scopeRow("品牌词", "Joybuy、JD、京东")}
-            ${scopeRow("站点", "英国、荷兰、法国、卢森堡、德国、比利时")}
-            ${scopeRow("竞品", "Temu")}
+            ${scopeRow("数据范围", "公开社媒内容")}
+            ${scopeRow("主品牌", "主品牌词库")}
+            ${scopeRow("区域策略", "多市场关键词组")}
+            ${scopeRow("竞品", "竞品基线")}
           </div>
         </section>
         <section class="settings-card">
           <div class="settings-card-head">
             <div>
-              <h2>安全与预算</h2>
-              <p class="muted">这里展示的是边界，不展示任何 Key。</p>
+              <h2>安全边界</h2>
+              <p class="muted">公开页只展示原则，不展示密钥、服务商或内部阈值。</p>
             </div>
           </div>
           <div class="rule-list">
-            <span>采集 Key 与公司 GPT Key 均保存在本机 Keychain，不进入 GitHub</span>
-            <span>前端与公开仓库不写入任何密钥</span>
-            <span>单次任务请求上限：${escapeHtml(String(collection.max_api_requests ?? collection.limits?.max_api_requests ?? "未设置"))}</span>
+            <span>敏感凭据仅保存在受控密钥环境，不进入公开仓库或静态页面</span>
+            <span>公开页面只发布可展示的聚合结果，不暴露内部服务商与密钥字段</span>
+            <span>自动任务设有运行保护阈值，具体阈值不在公开页面展示</span>
             ${(source.notes || []).map((note) => `<span>${escapeHtml(settingsNoteText(note))}</span>`).join("")}
           </div>
         </section>
@@ -2270,7 +2302,7 @@ function settingsPage() {
 
 function scoreSystemPanel() {
   const dimensions = [
-    ["品牌相关度", "是否真正与 Joybuy/JD 或指定竞品相关，过滤同名误伤与无关语境。"],
+    ["品牌相关度", "是否真正与主品牌或指定竞品相关，过滤同名误伤与无关语境。"],
     ["风险/机会强度", "判断内容是投诉风险、传播机会，还是普通日常提及。"],
     ["当前传播影响", "基于赞、评、转、引、浏览、作者影响力等公开信号评估。"],
     ["未来传播潜力", "结合敏感主题、二次传播可能性、高影响力账号参与概率判断。"],
@@ -2286,7 +2318,7 @@ function scoreSystemPanel() {
       </div>
       <div class="score-formula">
         <strong>CSI</strong>
-        <span>竞品信号分更偏观察价值，用于判断 Temu 内容是否值得进入焦点。</span>
+        <span>竞品信号分更偏观察价值，用于判断样例竞品内容是否值得进入焦点。</span>
       </div>
       <div class="score-dimension-grid">
         ${dimensions.map(([title, copy]) => `<div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div>`).join("")}
@@ -2305,15 +2337,35 @@ function topicDisplayName(topic) {
     price_opportunity: "价格与配送优势",
     general: "品牌认知",
   };
-  return labels[topic] || String(topic || "Joybuy / JD");
+  return labels[topic] || String(topic || "主品牌");
 }
 
 function sourceModeLabel(status) {
   if (status === "sample") return "样例";
+  if (status === "normal") return "真实";
   if (status === "complete") return "真实";
   if (status === "partial") return "部分";
   if (status === "ok") return "正常";
   return status || "未知";
+}
+
+function collectionStateLabel(status) {
+  if (status === "complete" || status === "normal") return "完整";
+  if (status === "partial") return "部分";
+  if (status === "sample") return "样例";
+  if (status === "archived-summary") return "摘要归档";
+  if (status === "ok") return "正常";
+  return status || "未知";
+}
+
+function translationCoverageLabel(translation = {}) {
+  const missing = Number(translation.missing_count || 0) + Number(translation.fallback_original_count || 0);
+  if (missing > 0) return `兜底 ${missing}`;
+  const counts = translation.counts || {};
+  const translated = Number(counts.translated || 0) + Number(counts.provider_supplied || 0);
+  const source = Number(counts.source_chinese || 0);
+  if (translated || source) return "完整";
+  return "未启用";
 }
 
 function formatCost(value) {
@@ -2345,6 +2397,9 @@ function settingsNoteText(note) {
   if (text.includes("Sample provider")) return "样例数据模式开启时，仅用于页面结构与交互预览";
   if (text.includes("Bookmarks")) return "收藏数仅在数据源提供时展示";
   if (text.includes("Quote")) return "引用数作为公开传播信号纳入发酵判断";
+  if (text.includes("Public social data collection")) return "公开内容采集已启用，建议结合去重率和误匹配率解读声量";
+  if (text.includes("Chinese translation coverage")) return "中文处理覆盖完整";
+  if (text.includes("Chinese translation unavailable")) return "部分内容使用原文兜底，建议人工复核";
   return text;
 }
 
@@ -2355,7 +2410,7 @@ async function renderDetail(clusterId) {
 function detailPage(detail) {
   const detailSample = isDetailSample(detail);
   const leadPost = representativeDetailPost(detail);
-  const leadItem = itemFromDetailPost(leadPost, "X 舆情");
+  const leadItem = itemFromDetailPost(leadPost, "公开舆情");
   const title = localizedTitle(detail.title, detail.summary_zh, "舆情事件");
   const posts = detail.posts || [];
   const tags = [...(detail.risk_types || []), ...(detail.opportunity_types || []), detail.topic].filter(Boolean);
@@ -2372,7 +2427,7 @@ function detailPage(detail) {
                 ${leadItem.author_handle ? `<em>@${escapeHtml(leadItem.author_handle)}</em>` : ""}
                 ${sourceBadge(levelText(detail.score), "focus")}
               </div>
-              <div class="source-subline">X 舆情${leadItem.author_followers ? ` · ${escapeHtml(formatCompactNumber(leadItem.author_followers))} followers` : ""}</div>
+              <div class="source-subline">公开舆情${leadItem.author_followers ? ` · ${escapeHtml(formatCompactNumber(leadItem.author_followers))} followers` : ""}</div>
             </div>
           </div>
           <div class="readtop-meta">
@@ -2519,7 +2574,6 @@ function itemFromDetailPost(post, fallbackSource) {
     author_followers: author.followers || post?.author_followers || 0,
     translation_zh: post?.translation_zh || post?.summary_zh || "",
     translation_status: post?.translation_status || "unknown",
-    translation_provider: post?.translation_provider || "none",
     original_text: post?.text || post?.clean_text || "",
     links: post?.links || [],
     media: post?.media || [],
@@ -2646,7 +2700,7 @@ function buildDailyEvents(daily) {
 
 function buildJoybuyEvents(daily) {
   const dailySample = isDailySample(daily);
-  return (daily.clusters || []).map((cluster) => clusterToEvent(cluster, "joybuy", "Joybuy / JD", dailySample));
+  return (daily.clusters || []).map((cluster) => clusterToEvent(cluster, "joybuy", "主品牌", dailySample));
 }
 
 function buildCompetitorEvents(daily) {
@@ -2657,8 +2711,8 @@ function buildCompetitorEvents(daily) {
     return [
       {
         brand: "temu",
-        source: "Temu 竞品基线",
-        title: `Temu 当日有效声量 ${competitor.volume}`,
+        source: "样例竞品基线",
+        title: `样例竞品当日有效声量 ${competitor.volume}`,
         summary: "摘要级归档仅保留当日声量与情绪分布，原帖级竞品内容从历史归档功能上线后开始保留。",
         scoreLabel: "声量",
         scoreValue: competitor.volume,
@@ -2675,8 +2729,8 @@ function buildCompetitorEvents(daily) {
     const body = sourcePostBody(post, post.summary_zh || "");
     return {
       brand: "temu",
-      source: `Temu · @${post.author_handle || "unknown"}`,
-      author_name: post.author_name || "Temu Source",
+      source: `样例竞品 · @${post.author_handle || "unknown"}`,
+      author_name: post.author_name || "样例竞品来源",
       author_handle: post.author_handle || "",
       author_avatar_url: post.author_avatar_url || "",
       author_followers: post.author_followers || 0,
@@ -2689,7 +2743,6 @@ function buildCompetitorEvents(daily) {
       summary: body,
       originalText: post.original_text || post.text || "",
       translation_status: post.translation_status || "unknown",
-      translation_provider: post.translation_provider || "none",
       scoreLabel: "互动",
       scoreValue: interactions,
       time: post.created_at,
@@ -2816,7 +2869,7 @@ function competitorSummary(competitor) {
   const sentiment = competitor?.sentiment || {};
   return `
     <div class="metric-grid compact three">
-      ${metric("Temu 声量", competitor?.volume || 0, "竞品有效内容")}
+      ${metric("竞品声量", competitor?.volume || 0, "竞品有效内容")}
       ${metric("负面", sentiment.negative || 0, "轻量情绪判断")}
       ${metric("正面", sentiment.positive || 0, "轻量情绪判断")}
     </div>
@@ -2831,8 +2884,8 @@ function dailyIssueSummary(daily) {
   if (highRisk > 0) return `当日识别 ${highRisk} 条高风险舆情，最高 IPS ${topIpsValue}，建议优先复盘原帖证据。`;
   if (needsReview > 0) return `当日有 ${needsReview} 条舆情需要人工复核，建议关注真实性和潜在扩散。`;
   const joybuyVolume = Number(metrics.joybuy_volume || 0);
-  if (joybuyVolume > 0) return `当日 Joybuy/JD 有效舆情 ${joybuyVolume} 条，整体以常规监测和历史归档为主。`;
-  return "当日暂未发现达到有效阈值的 Joybuy/JD 舆情。";
+  if (joybuyVolume > 0) return `当日主品牌有效舆情 ${joybuyVolume} 条，整体以常规监测和历史归档为主。`;
+  return "当日暂未发现达到有效阈值的主品牌舆情。";
 }
 
 function dailyHistoryTitle(item) {
@@ -2842,7 +2895,7 @@ function dailyHistoryTitle(item) {
   const ips = item.ips ? ` · IPS ${item.ips}` : "";
   if (highRisk > 0) return `高风险 ${highRisk} 条${ips}`;
   if (needsReview > 0) return `待复核 ${needsReview} 条${ips}`;
-  if (joybuy > 0) return `Joybuy ${joybuy} 条${ips}`;
+  if (joybuy > 0) return `主品牌 ${joybuy} 条${ips}`;
   return "暂无有效舆情";
 }
 
@@ -2908,12 +2961,6 @@ function brandBreakdown(source, key, fallback = 0) {
   return source?.brand_breakdown?.[key] ?? fallback ?? 0;
 }
 
-function formatApiUsage(collection) {
-  if (!collection || collection.api_requests_used == null) return "n/a";
-  if (collection.max_api_requests == null) return String(collection.api_requests_used);
-  return `${collection.api_requests_used}/${collection.max_api_requests}`;
-}
-
 async function selectDaily(date) {
   try {
     state.selectedDaily = await loadJson(`./dashboard-data/daily/${date}.json`);
@@ -2966,7 +3013,7 @@ function scoreContributionPanel(detail) {
 
 function scoreContributionRows(score) {
   const rows = [
-    ["品牌相关度", score.brand_relevance, 0.2, "是否明确指向 Joybuy/JD/京东"],
+    ["品牌相关度", score.brand_relevance, 0.2, "是否明确指向主品牌、别名或多语言关键词"],
     ["风险/机会强度", score.risk_or_opportunity_intensity, 0.18, "退款、物流、客服等议题的风险强度"],
     ["当前影响力", score.current_impact, 0.16, "互动量、浏览量和作者影响力"],
     ["未来发酵潜力", score.future_potential, 0.15, "引用、账号影响力、相似原帖密度"],

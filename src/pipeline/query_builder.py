@@ -8,6 +8,18 @@ def build_x_search_queries(keyword_config: dict[str, Any], brand_key: str) -> li
     terms = brand.get("brand_terms", [])
     negative_terms = brand.get("query_negative_terms", [])
     negative_clause = _negative_clause(negative_terms)
+    query_groups = brand.get("query_groups", [])
+
+    if query_groups:
+        queries = []
+        for group in query_groups:
+            group_terms = group.get("terms", []) if isinstance(group, dict) else []
+            group_context = group.get("context_terms", []) if isinstance(group, dict) else []
+            context_clause = f" ({_or_clause(group_context)})" if group_context else ""
+            if group_terms:
+                queries.append(f"({_or_clause(group_terms)}){context_clause} -filter:retweets {negative_clause}".strip())
+        if queries:
+            return queries
 
     if brand_key == "joybuy":
         primary_terms = [

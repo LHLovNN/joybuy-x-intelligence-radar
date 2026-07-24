@@ -29,8 +29,7 @@ def main() -> None:
     fermentation = load(DATA / "fermentation.json")
     competitor = load(DATA / "competitor.json")
     source = load(DATA / "source-status.json")
-    providers = set(source.get("providers", []))
-    is_sample = providers == {"sample"}
+    is_sample = source.get("status") == "sample"
     is_real_provider = not is_sample
     bundle_path = ROOT / "public" / "dashboard-data-bundle.js"
     assert_true(bundle_path.exists(), "dashboard-data-bundle.js should exist for file:// preview")
@@ -78,10 +77,10 @@ def main() -> None:
         assert_true(competitor["volume"] == 0, "empty real source should not create competitor volume")
 
     print("Dashboard data verification passed.")
-    print(f"Providers: {', '.join(sorted(providers))}")
-    print(f"Joybuy signals: {len(clusters)}")
+    print(f"Data mode: {source.get('status', 'unknown')}")
+    print(f"Primary signals: {len(clusters)}")
     print(f"Tracked: {len(tracked)}")
-    print(f"Temu posts: {competitor['volume']}")
+    print(f"Competitor posts: {competitor['volume']}")
 
 
 if __name__ == "__main__":
