@@ -1,15 +1,20 @@
-# Joybuy X Intelligence Radar
+# Brand X Intelligence Radar
 
-Joybuy X Intelligence Radar is an MVP implementation for daily X public-opinion intelligence monitoring.
+Brand X Intelligence Radar is an MVP implementation for daily brand
+public-opinion intelligence monitoring on X.
 
-The current build is a working local prototype:
+The current build is a static dashboard prototype:
 
-- Generates sample Joybuy and Temu intelligence data.
-- Scores Joybuy intelligence clusters with IPS.
-- Builds a fermentation radar.
-- Builds a lightweight Temu competitor radar.
+- Monitors configurable brand-related public conversation signals.
+- Keeps a lightweight competitor baseline.
+- Scores and ranks higher-value public-opinion signals with IPS.
 - Publishes a static dashboard from `public/`.
-- Can run a low-volume TwitterAPI.io real-data bake-off when a local key is set.
+- Supports local maintainer-only real-data runs with secrets kept outside Git.
+
+The public demo configuration currently uses Joybuy/JD as the monitored sample
+brand and Temu as the competitor sample. The product structure is intentionally
+brand-agnostic: keyword dictionaries, source settings, scoring rules and
+dashboard copy can be adjusted for another monitored brand.
 
 ## Quick Start
 
@@ -36,20 +41,21 @@ before committing.
 
 ## Current MVP Status
 
-This repo uses deterministic sample data by default so the dashboard can be
-reviewed without API keys. The production-like MVP path runs on the user's Mac:
-the Mac collects X data, calls local company JoyBuilder translation, generates
-public dashboard JSON, commits it, and pushes it to GitHub.
+This repo uses seeded public dashboard data by default so the dashboard can be
+reviewed without access to private credentials. The production-like MVP path
+runs from a maintainer-controlled local machine: it collects public X data,
+translates non-Chinese content through an approved local service, generates
+public dashboard JSON, commits it, and pushes the static output to GitHub.
 
 Automation status:
 
-- The Mac local automation runs daily at Beijing time 08:00 through launchd.
-- GitHub Actions no longer collects X data, calls translation services, or holds company GPT keys.
+- The local automation runs daily at Beijing time 08:00.
+- GitHub Actions does not collect X data, call translation services, or hold provider credentials.
 - GitHub Actions only publishes already committed static dashboard files to GitHub Pages.
-- Daily guardrail caps are 240 total X posts per day: up to 160 Joybuy/JD/京东 posts, up to 80 Temu posts and up to 12 X API requests per run.
+- Daily collection runs use bounded guardrails for source volume and request count.
 - Each successful Mac run commits the public dashboard JSON archive back to Git, then the GitHub publish workflow deploys Pages. This keeps historical daily reports browsable without pulling old data from Pages.
-- If the X API budget is exhausted or the request cap is reached, the daily run publishes a partial report with collection warnings instead of failing the whole dashboard deployment.
-- The dashboard information architecture follows a clearer intelligence-product hierarchy: `舆情焦点`, `全部舆情`, `舆情日报`, and `设置`. `舆情日报` contains both Joybuy Radar and the Temu competitor baseline, with signals shown on a publish-time vertical timeline.
+- If a source budget or request cap is reached, the daily run publishes a partial report with collection warnings instead of failing the whole dashboard deployment.
+- The dashboard information architecture follows a clearer intelligence-product hierarchy: `舆情焦点`, `全部舆情`, `舆情日报`, and `设置`. `舆情日报` contains both monitored-brand radar and competitor baseline sections, with signals shown on a publish-time vertical timeline.
 
 Current seeded public archive:
 
@@ -58,18 +64,13 @@ Current seeded public archive:
 - `2026-07-19`: summary-only archive from the scheduled Daily report run.
 - Future Mac scheduled runs will add full daily archive files under `public/dashboard-data/daily/`.
 
-Local provider secrets:
+Credential policy:
 
-- `TWITTERAPI_IO_KEY`
-- `XPOZ_API_KEY`
-- `APIFY_TOKEN`
-- `AISA_API_KEY`
-- `TAVILY_API_KEY`
-- `PERPLEXITY_API_KEY`
-- `OPENAI_API_KEY`
-
-Company JoyBuilder translation uses `JDCLOUD_GPT_API_KEY`, but this key is
-local-only for the MVP and must not be added to GitHub repository Secrets.
+- Secrets must never be committed to this repository.
+- Provider keys, translation-service keys and other credentials must stay in a
+  local secret store or another approved secret manager.
+- GitHub Actions should receive only the permissions needed to publish already
+  committed static dashboard files.
 
 ## Architecture
 
@@ -97,10 +98,11 @@ public/
 
 ## Notes
 
-- Joybuy is treated as a canonical monitored entity, not a single literal keyword.
-- `JD` is treated as an ambiguous keyword and must be supported by ecommerce context.
+- A monitored brand is treated as a canonical entity, not a single literal keyword.
+- Short aliases can be ambiguous and should be supported by domain context.
 - Quote posts are public propagation signals. Bookmarks are save signals and are optional.
-- All valid Joybuy intelligence clusters are archived in history, but only high-value clusters enter the fermentation tracking pool.
+- Valid monitored-brand signals are archived in history. Delayed-spread tracking is a
+  future product module and is not exposed in the current MVP navigation.
 - Public dashboard JSON is product content and can be committed. Raw provider outputs, local logs, cluster detail caches and all credentials remain excluded.
 
 ## Verification
@@ -114,46 +116,27 @@ node --check public/assets/app.js
 node --check public/dashboard-data-bundle.js
 ```
 
-## TwitterAPI.io Bake-Off
+## Maintainer Real-Data Runs
 
-Do not put API keys in files. Set the key only in the current shell:
+Real-data collection is intentionally local and maintainer-only. Do not put API
+keys, tokens or other credentials in files.
 
-```bash
-export TWITTERAPI_IO_KEY="paste-your-key-here"
-python3 scripts/bakeoff_twitterapi_io.py
-```
-
-For a very small first run:
+Store approved local secrets through the maintainer setup flow:
 
 ```bash
-export X_BAKEOFF_POST_LIMIT=20
-python3 scripts/bakeoff_twitterapi_io.py
+npm run local:secrets
 ```
 
-After the bake-off, run a capped local daily test. The default local daily
-profile collects up to 240 posts: 160 Joybuy/JD and 80 Temu, across Latest and
-Top search lanes.
+Run a non-publishing real-data preview:
 
 ```bash
-export X_SOURCE_PROVIDER=twitterapi_io
-export X_DAILY_LIMIT=240
-export X_JOYBUY_DAILY_LIMIT=160
-export X_TEMU_DAILY_LIMIT=80
-export X_MAX_API_REQUESTS=12
-npm run local:daily
+npm run local:daily:preview
 ```
 
-Local trusted runs can translate every non-Chinese post into Chinese through the
-company JoyBuilder Responses API:
+Resume from the latest local collection checkpoint without calling X again:
 
-```text
-JDCLOUD_GPT_API_KEY
-TRANSLATION_PROVIDER=joybuilder
-JDBUILDER_TRANSLATION_MODEL=GPT-5.5
-JDBUILDER_TRANSLATION_TIMEOUT_SECONDS=90
-JDBUILDER_TRANSLATION_BATCH_SIZE=6
-JDBUILDER_TRANSLATION_RETRIES=1
-JDBUILDER_TRANSLATION_MAX_CHARS=3500
+```bash
+npm run local:daily:preview:resume
 ```
 
 The translation runner uses small batches and split recovery: if a batch times
@@ -161,13 +144,9 @@ out, it is divided into smaller requests so successful posts can still show
 Chinese translations. Original text is shown only when an item still cannot be
 translated after recovery.
 
-`JDCLOUD_GPT_API_KEY` must be stored only as a local environment variable or
-another company-trusted secret store. It must not be added to GitHub repository
-Secrets during the MVP.
-
 ## Mac Local Automation
 
-Store local secrets in macOS Keychain:
+Store local secrets in the approved local secret store:
 
 ```bash
 npm run local:secrets
@@ -206,7 +185,7 @@ npm run local:daily:uninstall
 ```
 
 Lock screen is fine. Sleep is not: keep the Mac awake, online and able to reach
-TwitterAPI.io, GitHub and the company JoyBuilder endpoint at 08:00.
+the public data source, translation service and GitHub at 08:00.
 
 Local real-browser screenshot QA:
 
@@ -246,12 +225,5 @@ security/data checks, browser screenshot QA, and Pages deployment.
 
 ## Next Step
 
-Review the `舆情日报` historical view, then continue the real-data quality
-bake-off once source credits or fallback source coverage are confirmed.
-
-See:
-
-```text
-docs/API_KEY_SETUP.md
-docs/IMPLEMENTATION_NOTES.md
-```
+Continue real-data quality review, then install the 08:00 local schedule when
+the current dashboard output is accepted.
