@@ -949,7 +949,7 @@ function avatarNode(item) {
   const name = item?.author_name || item?.author_handle || item?.source_name || "X Source";
   const avatar = avatarUrl
     ? `<img class="source-avatar" src="${escapeHtml(avatarUrl)}" alt="" loading="lazy" />`
-    : `<span class="source-avatar fallback">${escapeHtml(initials(name || "JX"))}</span>`;
+    : `<span class="source-avatar fallback">${escapeHtml(initials(name || "BX"))}</span>`;
   return `
     <span class="author-hover" tabindex="0">
       ${avatar}
@@ -1024,12 +1024,12 @@ function legacyAvatarNode(item) {
   if (avatarUrl) {
     return `<img class="source-avatar" src="${escapeHtml(avatarUrl)}" alt="" loading="lazy" />`;
   }
-  return `<span class="source-avatar fallback">${escapeHtml(initials(item.author_name || item.author_handle || item.source_name || "JX"))}</span>`;
+  return `<span class="source-avatar fallback">${escapeHtml(initials(item.author_name || item.author_handle || item.source_name || "BX"))}</span>`;
 }
 
 function initials(value) {
   const text = String(value || "").trim();
-  if (!text) return "JX";
+  if (!text) return "BX";
   const words = text.split(/\s+/).filter(Boolean);
   if (words.length >= 2) return `${words[0][0]}${words[1][0]}`.toUpperCase();
   return text.slice(0, 2).toUpperCase();

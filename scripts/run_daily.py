@@ -32,7 +32,7 @@ CHECKPOINT_PATH = ROOT / "data" / "checkpoints" / "daily" / "latest.json"
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Generate Joybuy X Intelligence Radar daily dashboard data.")
+    parser = argparse.ArgumentParser(description="Generate Brand X Intelligence Radar daily dashboard data.")
     parser.add_argument(
         "--resume-from-checkpoint",
         action="store_true",

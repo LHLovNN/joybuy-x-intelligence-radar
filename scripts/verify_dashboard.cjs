@@ -73,9 +73,9 @@ function shellHtml() {
     <div id="app" class="app-shell">
       <aside class="sidebar" aria-label="Main navigation">
         <div class="brand-block">
-          <div class="brand-mark">JX</div>
+          <div class="brand-mark">BX</div>
           <div>
-            <div class="brand-title">Joybuy X</div>
+            <div class="brand-title">Brand X</div>
             <div class="brand-subtitle">Intelligence Radar</div>
           </div>
         </div>
@@ -89,7 +89,7 @@ function shellHtml() {
       <main class="main-panel">
         <header class="topbar">
           <div>
-            <p class="eyebrow">JOYBUY 舆情中心</p>
+            <p class="eyebrow">BRAND X 舆情中心</p>
             <h1 id="page-title">舆情焦点</h1>
           </div>
           <div class="topbar-meta">

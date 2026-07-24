@@ -38,7 +38,7 @@ def build_dashboard_data(
     hot_topics = build_hot_topics(joybuy_clusters, featured_items)
 
     overview = {
-        "title": "Joybuy X Intelligence Radar",
+        "title": "Brand X Intelligence Radar",
         "generated_at": to_iso(current),
         "generated_at_label": beijing_label(current),
         "report_date": report_date,
