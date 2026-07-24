@@ -55,6 +55,9 @@ if [[ "$LEGACY_PLIST" != "$PLIST" ]]; then
   rm -f "$LEGACY_PLIST"
 fi
 
+launchctl unsetenv TWITTERAPI_IO_KEY >/dev/null 2>&1 || true
+launchctl unsetenv JDCLOUD_GPT_API_KEY >/dev/null 2>&1 || true
+
 launchctl unload "$PLIST" >/dev/null 2>&1 || true
 launchctl load -w "$PLIST"
 

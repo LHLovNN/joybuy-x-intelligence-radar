@@ -7,6 +7,7 @@ source "$ROOT/scripts/macos/local_env.sh"
 LABEL="$BRAND_RADAR_LAUNCHD_LABEL"
 LEGACY_LABEL="$BRAND_RADAR_LEGACY_LAUNCHD_LABEL"
 LOG_DIR="$ROOT/data/logs/macos"
+LAUNCHD_DOMAIN="gui/$(id -u)"
 
 cd "$ROOT"
 
@@ -14,13 +15,13 @@ printf '%s local automation status\n' "$BRAND_RADAR_DISPLAY_NAME"
 printf 'Project: %s\n' "$ROOT"
 printf 'LaunchAgent: %s\n' "$LABEL"
 
-if launchctl list | grep -F "$LABEL" >/dev/null 2>&1; then
+if launchctl print "$LAUNCHD_DOMAIN/$LABEL" >/dev/null 2>&1; then
   printf 'LaunchAgent loaded: yes\n'
 else
   printf 'LaunchAgent loaded: no\n'
 fi
 
-if [[ "$LEGACY_LABEL" != "$LABEL" ]] && launchctl list | grep -F "$LEGACY_LABEL" >/dev/null 2>&1; then
+if [[ "$LEGACY_LABEL" != "$LABEL" ]] && launchctl print "$LAUNCHD_DOMAIN/$LEGACY_LABEL" >/dev/null 2>&1; then
   printf 'Legacy LaunchAgent loaded: yes; run npm run local:daily:install to replace it.\n'
 fi
 
