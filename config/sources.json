@@ -2,8 +2,8 @@
   "social_sources": {
     "primary": "sample",
     "fallback": [
-      "provider_a",
-      "provider_b"
+      "source_a",
+      "source_b"
     ]
   },
   "social_search_modes": [
@@ -32,8 +32,8 @@
     "max_verification_calls_per_day": 0,
     "max_deep_analysis_calls_per_day": 0
   },
-  "guardrails": {
-    "monthly_budget_unit": "configured_externally",
-    "stop_when_runtime_threshold_reached": true
+  "operating_profile": {
+    "mode": "demo",
+    "publishing": "static"
   }
 }

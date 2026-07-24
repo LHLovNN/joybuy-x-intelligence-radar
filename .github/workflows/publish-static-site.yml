@@ -60,7 +60,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: static-site-browser-qa
-          path: data/logs/screenshots
+          path: qa-artifacts/screenshots
           if-no-files-found: ignore
 
       - name: Setup Pages

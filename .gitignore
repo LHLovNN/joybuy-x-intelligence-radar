@@ -35,6 +35,7 @@ data/logs/
 data/clusters/
 data/checkpoints/
 public/dashboard-data/clusters/
+qa-artifacts/
 
 # Temporary files
 *.tmp

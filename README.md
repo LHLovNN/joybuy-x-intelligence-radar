@@ -1,21 +1,22 @@
 # Brand X Intelligence Radar
 
 Brand X Intelligence Radar is a static MVP for brand public-opinion monitoring.
-It demonstrates how a configurable brand radar can collect public social
-signals, normalize multilingual content, score intelligence value, and publish a
-daily dashboard.
+It turns public social signals into a Chinese-first intelligence dashboard with
+focus ranking, full-stream browsing, daily reports and scoring methodology.
 
-The repository is intentionally brand-agnostic. Public configuration files use
-sample primary-brand and sample competitor placeholders. Real monitoring
-keywords, source credentials, connector choices and runtime details should live
-outside the public repository.
+## Product Surface
 
-## What It Shows
+- `舆情焦点`: prioritized signals selected by relevance, impact and risk.
+- `全部舆情`: date-based opinion stream for scanning and tracing source posts.
+- `舆情日报`: daily issue view with primary-brand radar and competitor baseline.
+- `设置`: public run status, data quality and scoring explanation.
 
-- A focus feed for high-priority opinion signals.
-- A complete opinion stream with date-based browsing.
-- A daily report view with primary-brand radar and competitor baseline sections.
-- A settings page for public status, data quality and scoring methodology.
+## Highlights
+
+- Chinese-first reading experience with original-text switching.
+- IPS and CSI scoring for focus prioritization and competitor comparison.
+- Source-card rendering with author, metrics, tags, media and original-post entry.
+- Daily archive browsing with a lightweight timeline structure.
 - Static dashboard output under `public/`.
 
 ## Quick Start
@@ -32,33 +33,19 @@ Open:
 http://localhost:4173
 ```
 
-The dashboard can also render through `public/index.html` because the public
-data bundle is committed with the static files.
+The dashboard can also render through `public/index.html` because the demo data
+bundle is committed with the static files.
 
-## Public Data Policy
+## Data Model
 
-The public dashboard archive may contain public-source evidence text, translated
-content, source links, public engagement counts and product-level scoring
-results. It should not contain:
+The included dashboard data demonstrates the product structure:
 
-- API keys, tokens, cookies or credentials.
-- Private runtime logs or raw connector dumps.
-- Internal connector/provider names.
-- Real monitoring keyword dictionaries.
-- Internal deployment or secret-storage details.
-- Budget, quota or request-cap information.
-
-## Configuration Model
-
-Tracked files under `config/` are sample placeholders. Maintainers can provide
-private runtime configuration through an ignored local override directory:
-
-```text
-config/private/
-```
-
-The application loads private overrides first and falls back to the public sample
-configuration when no override exists.
+- source posts and translated content
+- public engagement metrics
+- focus tags and attention reasons
+- primary-brand signal scoring
+- competitor baseline scoring
+- daily archive metadata
 
 ## Verification
 
@@ -71,12 +58,3 @@ PYTHONPYCACHEPREFIX=.pycache python3 -m compileall scripts src
 node --check public/assets/app.js
 node --check public/dashboard-data-bundle.js
 ```
-
-## Maintainer Notes
-
-Real-data collection and language processing are maintainer-controlled. Keep
-credentials in an approved secret manager and run local/private setup outside
-the public repository.
-
-Generated public dashboard JSON can be committed after review. Private raw data,
-checkpoints, connector logs and local notes are ignored by Git.

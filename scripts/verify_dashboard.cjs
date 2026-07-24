@@ -4,13 +4,13 @@ let chromium;
 try {
   ({ chromium } = require("playwright"));
 } catch (error) {
-  console.error("Playwright is not installed. Install it or provide the bundled runtime before running browser verification.");
+  console.error("Playwright is not installed. Install it before running browser verification.");
   process.exit(1);
 }
 
 const root = path.resolve(__dirname, "..");
 const publicDir = path.join(root, "public");
-const outDir = path.join(root, "data", "logs", "screenshots");
+const outDir = path.join(root, "qa-artifacts", "screenshots");
 const localBrowserCandidates = [
   process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
 ].filter(Boolean);
@@ -44,21 +44,10 @@ function buildDataMap() {
     "dashboard-data/competitor.json": readJson("dashboard-data/competitor.json"),
     "dashboard-data/source-status.json": readJson("dashboard-data/source-status.json"),
   };
-  for (const [key, payload] of Object.entries(bundled.clusters || {})) {
-    map[key] = payload;
-  }
   const dailyDir = path.join(publicDir, "dashboard-data", "daily");
   for (const file of fs.readdirSync(dailyDir)) {
     if (file.endsWith(".json") && file !== "latest.json" && file !== "index.json") {
       map[`dashboard-data/daily/${file}`] = JSON.parse(fs.readFileSync(path.join(dailyDir, file), "utf8"));
-    }
-  }
-  const clustersDir = path.join(publicDir, "dashboard-data", "clusters");
-  if (fs.existsSync(clustersDir)) {
-    for (const file of fs.readdirSync(clustersDir)) {
-      if (file.endsWith(".json")) {
-        map[`dashboard-data/clusters/${file}`] = JSON.parse(fs.readFileSync(path.join(clustersDir, file), "utf8"));
-      }
     }
   }
   return map;

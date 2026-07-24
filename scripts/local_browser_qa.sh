@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-SCREENSHOT_DIR="$ROOT/data/logs/screenshots-local"
+SCREENSHOT_DIR="$ROOT/qa-artifacts/screenshots-local"
 mkdir -p "$SCREENSHOT_DIR"
 
 echo "Joybuy local browser QA"

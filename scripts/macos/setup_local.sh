@@ -38,4 +38,4 @@ command -v security >/dev/null 2>&1 || {
 store_secret TWITTERAPI_IO_KEY
 store_secret JDCLOUD_GPT_API_KEY
 
-printf 'Local secrets setup finished. No secret values were printed or written to the repo.\n'
+printf 'Local setup finished. No values were printed or written to the repo.\n'

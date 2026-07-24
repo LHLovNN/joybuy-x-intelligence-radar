@@ -4,17 +4,11 @@
 
 Build a reusable Brand X Intelligence Radar MVP:
 
-- Public-social monitoring for a configurable primary brand.
-- Lightweight competitor baseline.
-- Daily report with historical browsing.
-- Static dashboard suitable for public demo or stakeholder review after data
-  review.
-
-## Public Positioning
-
-This repository is packaged as a generic brand-opinion monitoring product. Public
-files should describe the product capability, not the operator's real monitoring
-configuration.
+- public-social monitoring for a configurable primary brand
+- lightweight competitor baseline
+- Chinese-first opinion cards
+- daily report with historical browsing
+- static dashboard suitable for stakeholder review
 
 ## Current Product Pages
 
@@ -23,29 +17,26 @@ configuration.
 - `舆情日报`: daily report with primary-brand and competitor sections.
 - `设置`: public status, data quality and scoring methodology.
 
-## Architecture Principles
-
-- Public repo contains sample config and reviewed static dashboard data.
-- Private config overrides live outside Git.
-- Raw connector outputs, checkpoints, private logs and local notes remain
-  ignored.
-- Public dashboard JSON preserves evidence content but removes internal
-  provider, budget, quota, deployment and secret-storage details.
-- Correct architecture takes priority over convenience. If a required step needs
-  user-side authorization or private setup, ask for that step instead of routing
-  around it.
-
 ## Current Status
 
 - Static dashboard shell is implemented.
 - Historical daily archive browsing is implemented.
-- Primary-brand focus, full opinion stream and daily report pages are aligned.
+- Focus feed, full stream and daily report pages are aligned.
 - Author hover cards, media rendering, Chinese/original switching and public
   metric display are implemented.
-- Public pages and docs are being desensitized for public-repository use.
+- Demo dashboard data is bundled for static preview.
+
+## Product Principles
+
+- Keep the first screen useful, not promotional.
+- Preserve source evidence while presenting Chinese-first reading.
+- Separate source content from derived judgement such as tags, scores and
+  attention reasons.
+- Make daily reports traceable by date and source post.
+- Keep scoring explainable enough for stakeholder review.
 
 ## Next
 
-- Finish public desensitization QA.
-- Verify the local dashboard visually.
-- Commit and publish the sanitized version after user confirmation.
+- Continue source-card fidelity QA.
+- Improve visual polish after the MVP data loop is stable.
+- Revisit delayed-spread tracking as a separate product module.
