@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-KEYCHAIN_ACCOUNT="${JOYBUY_RADAR_KEYCHAIN_ACCOUNT:-${USER:-$(id -un)}}"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+source "$ROOT/scripts/macos/local_env.sh"
 MISSING=0
 
 check_secret() {
   local name="$1"
-  local service="joybuy-radar.$name"
+  local label="$2"
 
-  if security find-generic-password -a "$KEYCHAIN_ACCOUNT" -s "$service" >/dev/null 2>&1; then
-    printf '%s: present\n' "$name"
+  if [[ -n "$(brand_radar_keychain_value "$name" || true)" ]]; then
+    printf '%s: present\n' "$label"
   else
-    printf '%s: missing\n' "$name"
+    printf '%s: missing\n' "$label"
     MISSING=1
   fi
 }
@@ -21,7 +22,7 @@ command -v security >/dev/null 2>&1 || {
   exit 1
 }
 
-check_secret TWITTERAPI_IO_KEY
-check_secret JDCLOUD_GPT_API_KEY
+check_secret TWITTERAPI_IO_KEY "Source connector credential"
+check_secret JDCLOUD_GPT_API_KEY "Language processing credential"
 
 exit "$MISSING"

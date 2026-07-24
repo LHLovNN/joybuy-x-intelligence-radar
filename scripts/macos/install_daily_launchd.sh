@@ -2,8 +2,12 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-LABEL="com.joybuy-radar.daily"
+source "$ROOT/scripts/macos/local_env.sh"
+
+LABEL="$BRAND_RADAR_LAUNCHD_LABEL"
+LEGACY_LABEL="$BRAND_RADAR_LEGACY_LAUNCHD_LABEL"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
+LEGACY_PLIST="$HOME/Library/LaunchAgents/$LEGACY_LABEL.plist"
 LOG_DIR="$ROOT/data/logs/macos"
 RUNNER="$ROOT/scripts/macos/run_local_daily.sh"
 
@@ -46,9 +50,14 @@ cat > "$PLIST" <<PLIST
 </plist>
 PLIST
 
+if [[ "$LEGACY_PLIST" != "$PLIST" ]]; then
+  launchctl unload "$LEGACY_PLIST" >/dev/null 2>&1 || true
+  rm -f "$LEGACY_PLIST"
+fi
+
 launchctl unload "$PLIST" >/dev/null 2>&1 || true
 launchctl load -w "$PLIST"
 
 printf 'Installed %s.\n' "$PLIST"
-printf 'Joybuy Radar local daily run is scheduled for 08:00 local time.\n'
+printf '%s local daily run is scheduled for 08:00 local time.\n' "$BRAND_RADAR_DISPLAY_NAME"
 printf 'Keep the Mac awake and network/VPN available at that time. Lock screen is fine; sleep is not.\n'

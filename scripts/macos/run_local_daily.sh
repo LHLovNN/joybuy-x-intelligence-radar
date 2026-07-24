@@ -2,9 +2,10 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+source "$ROOT/scripts/macos/local_env.sh"
+
 LOG_DIR="$ROOT/data/logs/macos"
-LOCK_DIR="${TMPDIR:-/tmp}/joybuy-radar-daily.lock"
-KEYCHAIN_ACCOUNT="${JOYBUY_RADAR_KEYCHAIN_ACCOUNT:-${USER:-$(id -un)}}"
+LOCK_DIR="${TMPDIR:-/tmp}/brand-radar-daily.lock"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 RESUME_FROM_CHECKPOINT="${BRAND_RADAR_RESUME_FROM_CHECKPOINT:-0}"
 
@@ -24,22 +25,18 @@ cleanup() {
 }
 
 if ! mkdir "$LOCK_DIR" 2>/dev/null; then
-  fail "Another Joybuy Radar daily run is already active."
+  fail "Another ${BRAND_RADAR_DISPLAY_NAME} daily run is already active."
 fi
 trap cleanup EXIT
 
-keychain_value() {
+require_local_secret() {
   local name="$1"
-  local service="joybuy-radar.$name"
-  security find-generic-password -a "$KEYCHAIN_ACCOUNT" -s "$service" -w 2>/dev/null || true
-}
-
-require_keychain_secret() {
-  local name="$1"
+  local label="$2"
   local value
-  value="$(keychain_value "$name")"
+
+  value="$(brand_radar_keychain_value "$name" || true)"
   if [[ -z "$value" ]]; then
-    fail "$name is missing in macOS Keychain service joybuy-radar.$name."
+    fail "Required $label is missing from local secure storage. Run npm run local:setup."
   fi
   printf '%s' "$value"
 }
@@ -103,7 +100,7 @@ command -v git >/dev/null 2>&1 || fail "git is not available."
 command -v security >/dev/null 2>&1 || fail "macOS security command is not available."
 command -v "$PYTHON_BIN" >/dev/null 2>&1 || fail "$PYTHON_BIN is not available."
 
-log "Starting Joybuy Radar local daily run."
+log "Starting ${BRAND_RADAR_DISPLAY_NAME} local daily run."
 ensure_no_local_source_changes
 
 log "Syncing repository."
@@ -126,9 +123,9 @@ export JDCLOUD_GPT_API_KEY
 if [[ "$RESUME_FROM_CHECKPOINT" == "1" ]]; then
   log "Resuming daily dashboard generation from local checkpoint without calling X."
 else
-  TWITTERAPI_IO_KEY="$(require_keychain_secret TWITTERAPI_IO_KEY)"
+  TWITTERAPI_IO_KEY="$(require_local_secret TWITTERAPI_IO_KEY "source connector credential")"
 fi
-JDCLOUD_GPT_API_KEY="$(require_keychain_secret JDCLOUD_GPT_API_KEY)"
+JDCLOUD_GPT_API_KEY="$(require_local_secret JDCLOUD_GPT_API_KEY "language processing credential")"
 
 log "Generating real daily dashboard data."
 run_daily
@@ -150,4 +147,4 @@ else
   git push
 fi
 
-log "Joybuy Radar local daily run finished."
+log "${BRAND_RADAR_DISPLAY_NAME} local daily run finished."

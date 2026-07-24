@@ -1887,7 +1887,7 @@ function dailyPage() {
             ${reportTocItem("02", "竞品雷达", "样例竞品当日声量、情绪和高互动内容。", competitorEvents.length)}
           </div>
         </nav>
-        ${dailyReportSection("01", "主品牌舆情", "Brand Radar", `${brandBreakdown(source, "joybuy_effective", metrics.joybuy_volume)} 条有效内容，${metrics.high_risk || 0} 个高风险。`, "joybuy-radar", joybuyEvents, "该日暂无主品牌有效舆情")}
+        ${dailyReportSection("01", "主品牌舆情", "Brand Radar", `${brandBreakdown(source, "joybuy_effective", metrics.joybuy_volume)} 条有效内容，${metrics.high_risk || 0} 个高风险。`, "primary-radar", joybuyEvents, "该日暂无主品牌有效舆情")}
         ${dailyReportSection("02", "竞品雷达", "Competitor", `样例竞品有效内容 ${brandBreakdown(source, "temu_effective", metrics.temu_volume)} 条。`, "competitor-radar", competitorEvents, "该日暂无竞品内容", competitorSummary(daily.competitor || state.competitor))}
       </article>
     </div>
@@ -2854,7 +2854,7 @@ function featureCard(event) {
 }
 
 function reportTocItem(index, title, summary, count) {
-  const target = index === "01" ? "joybuy-radar" : "competitor-radar";
+  const target = index === "01" ? "primary-radar" : "competitor-radar";
   return `
     <button class="toc-card" type="button" data-scroll-target="${target}">
       <span>${escapeHtml(index)}</span>
