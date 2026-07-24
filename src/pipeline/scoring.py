@@ -24,6 +24,7 @@ def _future_score(cluster: dict[str, Any]) -> int:
         "delivery": 14,
         "customer_service": 15,
         "quality": 12,
+        "regulatory": 20,
         "price_opportunity": 8,
         "general": 7,
     }.get(topic, 6)
@@ -42,7 +43,7 @@ def _credibility_score(cluster: dict[str, Any]) -> int:
         evidence += 12
     if any(post.get("brand_context_evidence") for post in posts):
         evidence += 16
-    if cluster["topic"] in {"refund", "delivery", "customer_service"}:
+    if cluster["topic"] in {"refund", "delivery", "customer_service", "regulatory"}:
         evidence += 8
     return _clamp(42 + evidence)
 
@@ -61,6 +62,7 @@ def _intensity(cluster: dict[str, Any]) -> int:
         "delivery": 66,
         "customer_service": 70,
         "quality": 62,
+        "regulatory": 82,
         "price_opportunity": 58,
         "general": 45,
     }.get(cluster["topic"], 45)
@@ -76,6 +78,7 @@ def _business_impact(cluster: dict[str, Any]) -> int:
             "delivery": 78,
             "customer_service": 76,
             "quality": 70,
+            "regulatory": 90,
             "price_opportunity": 52,
             "general": 48,
         }.get(cluster["topic"], 48)
@@ -88,6 +91,7 @@ def _urgency(cluster: dict[str, Any], current_impact: int, future_potential: int
         "delivery": 63,
         "customer_service": 64,
         "quality": 60,
+        "regulatory": 78,
         "price_opportunity": 38,
         "general": 34,
     }.get(cluster["topic"], 34)
@@ -159,6 +163,8 @@ def score_clusters(clusters: list[dict[str, Any]], scoring_config: dict[str, Any
 
 
 def action_for(level: str, topic: str, credibility: int, current_impact: int, future_potential: int) -> str:
+    if topic == "regulatory":
+        return "管理层同步" if level in {"urgent", "high", "medium"} else "人工核查"
     if level == "urgent":
         return "高层同步"
     if level == "high":
@@ -178,7 +184,8 @@ def explain_score(cluster: dict[str, Any], ips: int, credibility: int, current_i
         return f"物流与追踪议题容易形成集中投诉，当前影响力 {current_impact}，未来发酵潜力 {future_potential}。"
     if topic == "customer_service":
         return f"客服与退货响应涉及售后体验，建议观察是否出现更多相似投诉。综合优先级 {ips}。"
+    if topic == "regulatory":
+        return f"监管与并购审查影响海外市场准入和品牌信任，当前影响力 {current_impact}，可信度 {credibility}，建议纳入管理层视野。"
     if topic == "price_opportunity":
         return f"该情报偏正向机会，体现价格、配送或促销优势，可用于观察传播借势。综合优先级 {ips}。"
     return f"该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 {ips}。"
-

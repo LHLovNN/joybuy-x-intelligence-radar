@@ -39,10 +39,18 @@ class TwitterApiIoAdapter(XSourceBase):
         self.request_budget_exhausted = False
         self.last_request_at = 0.0
 
-    def search_posts(self, query: str, start_time: str, end_time: str, limit: int) -> list[dict[str, Any]]:
+    def search_posts(
+        self,
+        query: str,
+        start_time: str,
+        end_time: str,
+        limit: int,
+        query_type: str = "Latest",
+    ) -> list[dict[str, Any]]:
         if limit <= 0:
             return []
 
+        query_type = self._normalized_query_type(query_type)
         bounded_query = self._with_time_window(query, start_time, end_time)
         posts: list[dict[str, Any]] = []
         seen_ids: set[str] = set()
@@ -57,7 +65,7 @@ class TwitterApiIoAdapter(XSourceBase):
                 seen_cursors.add(cursor)
             params = {
                 "query": bounded_query,
-                "queryType": "Latest",
+                "queryType": query_type,
             }
             if cursor:
                 params["cursor"] = cursor
@@ -69,7 +77,7 @@ class TwitterApiIoAdapter(XSourceBase):
                 break
 
             for row in rows:
-                post = self._map_tweet(row, query)
+                post = self._map_tweet(row, query, query_type=query_type)
                 post_id = post["post_id"]
                 if post_id in seen_ids:
                     continue
@@ -84,6 +92,12 @@ class TwitterApiIoAdapter(XSourceBase):
             time.sleep(self.request_pause_seconds)
 
         return posts
+
+    def _normalized_query_type(self, query_type: str) -> str:
+        value = str(query_type or "Latest").strip().lower()
+        if value == "top":
+            return "Top"
+        return "Latest"
 
     def hydrate_posts(self, post_ids: list[str]) -> list[dict[str, Any]]:
         raise NotImplementedError("TwitterAPI.io hydration is not needed for the daily MVP path yet.")
@@ -194,7 +208,7 @@ class TwitterApiIoAdapter(XSourceBase):
                     return str(value)
         return None
 
-    def _map_tweet(self, tweet: dict[str, Any], query: str) -> dict[str, Any]:
+    def _map_tweet(self, tweet: dict[str, Any], query: str, query_type: str = "Latest") -> dict[str, Any]:
         author = self._first_dict(tweet, "author", "user", "userInfo", "user_info") or {}
         post_id = self._string_value(tweet, "id", "tweet_id", "tweetId", "rest_id") or ""
         author_handle = self._string_value(author, "userName", "username", "screen_name", "handle") or ""
@@ -223,7 +237,22 @@ class TwitterApiIoAdapter(XSourceBase):
                 "avatar_url",
             ),
             "author_followers": self._int_value(author, "followers", "followers_count", "followersCount"),
-            "author_verified": self._bool_value(author, "verified", "isVerified", "isBlueVerified"),
+            "author_following": self._int_value(author, "following", "friends_count", "followingCount"),
+            "author_bio": self._string_value(author, "description", "bio", "profileDescription"),
+            "author_location": self._string_value(author, "location", "profileLocation", "userLocation"),
+            "author_joined_at": self._normalized_time(
+                self._first_value(author, "created_at", "createdAt", "created_time", "createdTime")
+            ),
+            "author_verified": self._bool_value(
+                author,
+                "verified",
+                "isVerified",
+                "isBlueVerified",
+                "is_blue_verified",
+                "blue",
+                "verifiedType",
+                "verified_type",
+            ),
             "created_at": self._normalized_time(
                 self._first_value(tweet, "created_at", "createdAt", "created_time", "createdTime", "timestamp")
             ),
@@ -237,7 +266,7 @@ class TwitterApiIoAdapter(XSourceBase):
             "quote_count": self._metric_value(tweet, "quote_count", "quoteCount"),
             "bookmark_count": self._metric_value(tweet, "bookmark_count", "bookmarkCount", allow_none=True),
             "view_count": self._metric_value(tweet, "view_count", "viewCount", "views", allow_none=True),
-            "media": self._list_value(tweet, "media", "extended_entities.media"),
+            "media": self._media(tweet),
             "links": self._links(tweet),
             "quoted_post_id": self._nested_string(tweet, "quoted_tweet.id", "quotedTweet.id", "quoted_status_id_str"),
             "reply_to_post_id": self._string_value(
@@ -247,8 +276,19 @@ class TwitterApiIoAdapter(XSourceBase):
                 "in_reply_to_tweet_id",
                 "replyToTweetId",
             ),
+            "reply_to_handle": self._string_value(
+                tweet,
+                "in_reply_to_screen_name",
+                "inReplyToScreenName",
+                "replyToUser.username",
+                "replyToUser.userName",
+                "reply_to_user.username",
+                "reply_to_user.userName",
+            ),
+            "conversation_id": self._string_value(tweet, "conversation_id", "conversationId"),
             "source_provider": self.provider_name,
             "query": query,
+            "query_type": self._normalized_query_type(query_type),
             "brand_candidate": "",
         }
 
@@ -272,6 +312,23 @@ class TwitterApiIoAdapter(XSourceBase):
                 if url:
                     values.append(url)
         return values
+
+    def _media(self, tweet: dict[str, Any]) -> list[Any]:
+        media: list[Any] = []
+        for key in (
+            "media",
+            "extended_entities.media",
+            "extendedEntities.media",
+            "entities.media",
+            "attachments.media",
+            "attachments.media_items",
+            "photos",
+            "images",
+        ):
+            for item in self._list_value(tweet, key):
+                if item not in media:
+                    media.append(item)
+        return media
 
     def _normalized_time(self, value: Any) -> str:
         if value is None:

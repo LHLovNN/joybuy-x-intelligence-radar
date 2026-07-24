@@ -1,7 +1,41 @@
 {
-  "latest_date": "2026-07-22",
-  "generated_at": "2026-07-22T08:24:59Z",
+  "latest_date": "2026-07-24",
+  "generated_at": "2026-07-24T01:28:20Z",
   "items": [
+    {
+      "date": "2026-07-24",
+      "generated_at_label": "2026-07-24 09:28 BJT",
+      "window_label": "2026-07-23 08:00 BJT - 2026-07-24 08:00 BJT",
+      "title": "Regulatory and market-access scrutiny around JD.com",
+      "cluster_count": 5,
+      "joybuy_effective": 27,
+      "temu_effective": 33,
+      "high_risk": 1,
+      "needs_review": 0,
+      "collection_status": "complete",
+      "api_requests_used": 9,
+      "max_api_requests": 12,
+      "ips": 85,
+      "level": "high",
+      "summary_only": false
+    },
+    {
+      "date": "2026-07-23",
+      "generated_at_label": "2026-07-23 18:43 BJT",
+      "window_label": "2026-07-22 08:00 BJT - 2026-07-23 08:00 BJT",
+      "title": "Regulatory and market-access scrutiny around JD.com",
+      "cluster_count": 4,
+      "joybuy_effective": 38,
+      "temu_effective": 35,
+      "high_risk": 1,
+      "needs_review": 0,
+      "collection_status": "complete",
+      "api_requests_used": 9,
+      "max_api_requests": 12,
+      "ips": 91,
+      "level": "urgent",
+      "summary_only": false
+    },
     {
       "date": "2026-07-22",
       "generated_at_label": "2026-07-22 16:24 BJT",

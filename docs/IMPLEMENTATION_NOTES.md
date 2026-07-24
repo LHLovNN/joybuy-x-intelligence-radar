@@ -127,8 +127,10 @@ After the bake-off looks healthy, run one manual local daily job:
 
 ```bash
 export X_SOURCE_PROVIDER=twitterapi_io
-export X_JOYBUY_DAILY_LIMIT=45
-export X_TEMU_DAILY_LIMIT=15
+export X_DAILY_LIMIT=240
+export X_JOYBUY_DAILY_LIMIT=160
+export X_TEMU_DAILY_LIMIT=80
+export X_MAX_API_REQUESTS=12
 npm run local:daily
 ```
 

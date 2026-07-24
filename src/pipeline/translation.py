@@ -11,6 +11,9 @@ from typing import Any
 
 
 CHINESE_RE = re.compile(r"[\u3400-\u9fff]")
+JAPANESE_KANA_RE = re.compile(r"[\u3040-\u30ff]")
+HANGUL_RE = re.compile(r"[\uac00-\ud7af]")
+TEXT_SIGNAL_RE = re.compile(r"[\w\u3400-\u9fff\u3040-\u30ff\uac00-\ud7af]", re.UNICODE)
 ZH_LANGUAGES = {"zh", "zh-cn", "zh-hans", "zh-tw", "zh-hant", "cn"}
 
 
@@ -288,7 +291,21 @@ def needs_translation(post: dict[str, Any]) -> bool:
     text = post.get("clean_text") or post.get("text") or ""
     if language in ZH_LANGUAGES:
         return False
-    return not bool(CHINESE_RE.search(text))
+    if language and language != "und":
+        return True
+    return not is_probably_chinese_text(text)
+
+
+def is_probably_chinese_text(text: str) -> bool:
+    if not text or not CHINESE_RE.search(text):
+        return False
+    if JAPANESE_KANA_RE.search(text) or HANGUL_RE.search(text):
+        return False
+    signal_chars = TEXT_SIGNAL_RE.findall(text)
+    if not signal_chars:
+        return False
+    chinese_chars = CHINESE_RE.findall(text)
+    return len(chinese_chars) / len(signal_chars) >= 0.3
 
 
 def translation_report(posts: list[dict[str, Any]], provider: str, error_message: str = "") -> dict[str, Any]:

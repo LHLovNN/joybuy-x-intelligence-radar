@@ -18,13 +18,12 @@ def load_optional(path: Path) -> dict[str, Any]:
     return load(path)
 
 
-def format_top_cluster(clusters: list[dict[str, Any]]) -> str:
-    if not clusters:
+def format_top_signal(signals: list[dict[str, Any]]) -> str:
+    if not signals:
         return "none"
-    top = clusters[0]
+    top = signals[0]
     score = top.get("score", {})
     return (
-        f"{top.get('cluster_id', 'unknown')} | "
         f"IPS {score.get('ips', 'n/a')} | "
         f"{score.get('level', 'n/a')} | "
         f"{top.get('title', 'Untitled')}"
@@ -41,7 +40,7 @@ def main() -> None:
     collection_status = run_status.get("collection_status", {})
     metrics = latest.get("metrics", {})
     breakdown = source.get("brand_breakdown", {})
-    clusters = daily.get("clusters", [])
+    signals = daily.get("clusters", [])
     providers = source.get("providers") or [run_status.get("provider", "unknown")]
 
     print("Daily report summary")
@@ -64,11 +63,11 @@ def main() -> None:
     print(f"- Effective posts: {source.get('effective_posts', 0)}")
     print(f"- Joybuy candidates/effective: {breakdown.get('joybuy_candidates', 0)}/{breakdown.get('joybuy_effective', 0)}")
     print(f"- Temu candidates/effective: {breakdown.get('temu_candidates', 0)}/{breakdown.get('temu_effective', 0)}")
-    print(f"- Joybuy clusters: {len(clusters)}")
-    print(f"- High risk clusters: {metrics.get('high_risk', 0)}")
+    print(f"- Joybuy signals: {len(signals)}")
+    print(f"- High risk signals: {metrics.get('high_risk', 0)}")
     print(f"- Needs review: {metrics.get('needs_review', 0)}")
     print(f"- Fermenting: {metrics.get('fermenting', 0)}")
-    print(f"- Top cluster: {format_top_cluster(clusters)}")
+    print(f"- Top signal: {format_top_signal(signals)}")
     print(f"- Temu baseline volume: {competitor.get('volume', 0)}")
     print(f"- Estimated source cost USD: {source.get('estimated_cost_usd', 0)}")
     print(f"- Daily archive days: {len(daily_index.get('items', []))}")

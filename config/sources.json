@@ -3,11 +3,25 @@
     "primary": "sample",
     "fallback": ["twitterapi_io", "xpoz", "apify", "aisa_x"]
   },
+  "x_search_modes": [
+    {
+      "query_type": "Latest",
+      "ratio": 1
+    },
+    {
+      "query_type": "Top",
+      "ratio": 1
+    }
+  ],
+  "x_search_future_capabilities": {
+    "engagement_minimum_filters": ["min_faves", "min_retweets", "min_replies"],
+    "status": "documented_not_enabled"
+  },
   "limits": {
-    "max_posts_per_day": 60,
-    "max_joybuy_posts_per_day": 45,
-    "max_temu_posts_per_day": 15,
-    "max_x_api_requests_per_run": 6,
+    "max_posts_per_day": 240,
+    "max_joybuy_posts_per_day": 160,
+    "max_temu_posts_per_day": 80,
+    "max_x_api_requests_per_run": 12,
     "max_tavily_calls_per_day": 80,
     "max_perplexity_calls_per_day": 20
   },

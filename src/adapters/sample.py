@@ -13,7 +13,14 @@ class SampleXSource(XSourceBase):
         joybuy_posts, temu_posts = build_sample_posts()
         return joybuy_posts + temu_posts
 
-    def search_posts(self, query: str, start_time: str, end_time: str, limit: int) -> list[dict[str, Any]]:
+    def search_posts(
+        self,
+        query: str,
+        start_time: str,
+        end_time: str,
+        limit: int,
+        query_type: str = "Latest",
+    ) -> list[dict[str, Any]]:
         query_lower = query.lower()
         matches = [post for post in self.all_posts() if any(part in post["text"].lower() for part in query_lower.split())]
         return matches[:limit]
@@ -21,4 +28,3 @@ class SampleXSource(XSourceBase):
     def hydrate_posts(self, post_ids: list[str]) -> list[dict[str, Any]]:
         wanted = set(post_ids)
         return [post for post in self.all_posts() if post["post_id"] in wanted]
-

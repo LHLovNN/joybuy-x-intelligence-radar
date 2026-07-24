@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 import sys
 from pathlib import Path
+from typing import Optional
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from src.pipeline.normalizer import normalize_posts
+from src.pipeline.clusterer import cluster_posts
 from src.utils.io import read_json
 
 
-def post(post_id: str, text: str, brand_candidate: str = "joybuy") -> dict:
+def post(post_id: str, text: str, brand_candidate: str = "joybuy", links: Optional[list[str]] = None) -> dict:
     return {
         "post_id": post_id,
         "url": f"https://x.com/test/status/{post_id}",
@@ -29,7 +31,7 @@ def post(post_id: str, text: str, brand_candidate: str = "joybuy") -> dict:
         "bookmark_count": None,
         "view_count": 1,
         "media": [],
-        "links": [],
+        "links": links or [],
         "quoted_post_id": None,
         "reply_to_post_id": None,
         "source_provider": "test",
@@ -49,6 +51,11 @@ def main() -> None:
             post("5", "Class action alleges Temu used deceptive spam emails to install tracking technology", "temu"),
             post("6", "Temu journalist is spreading fake news again", "temu"),
             post("7", "Cada vez que veo algo de Temu cierro la app por los premios gratis", "temu"),
+            post(
+                "8",
+                "EU regulator sends charge sheet to https://t.co/brand over Ceconomy deal https://t.co/news",
+                links=["http://JD.com", "https://www.reuters.com/business/eu-regulator-sends-charge-sheet-jdcom-over-ceconomy-deal/"],
+            ),
         ],
         config,
     )
@@ -63,6 +70,12 @@ def main() -> None:
     assert by_id["5"]["is_relevant"], "Temu tracking/privacy controversy should remain relevant"
     assert not by_id["6"]["is_relevant"], "Temu-as-insult false positive must be excluded"
     assert by_id["7"]["is_relevant"], "Temu app complaint should remain relevant"
+    assert by_id["8"]["is_relevant"], "JD.com regulatory/acquisition news in expanded links must remain relevant"
+    assert "JD.com" in by_id["8"]["clean_text"], "Expanded JD.com link should remain readable in clean text"
+    assert "regulator" in by_id["8"]["risk_terms"], "Regulatory news should carry a regulatory risk signal"
+    clusters = cluster_posts(rows, "joybuy")
+    regulatory = [cluster for cluster in clusters if cluster["topic"] == "regulatory"]
+    assert regulatory, "JD.com regulatory/acquisition news should be grouped under regulatory topic"
     print("Quality filter tests passed.")
 
 

@@ -41,7 +41,6 @@ function buildDataMap() {
     "dashboard-data/latest.json": readJson("dashboard-data/latest.json"),
     "dashboard-data/daily/latest.json": readJson("dashboard-data/daily/latest.json"),
     "dashboard-data/daily/index.json": readJson("dashboard-data/daily/index.json"),
-    "dashboard-data/fermentation.json": readJson("dashboard-data/fermentation.json"),
     "dashboard-data/competitor.json": readJson("dashboard-data/competitor.json"),
     "dashboard-data/source-status.json": readJson("dashboard-data/source-status.json"),
   };
@@ -84,7 +83,6 @@ function shellHtml() {
           <a href="#/" data-route="overview">舆情焦点</a>
           <a href="#/all" data-route="all">全部舆情</a>
           <a href="#/daily" data-route="daily">舆情日报</a>
-          <a href="#/fermentation" data-route="fermentation">发酵追踪</a>
           <a href="#/settings" data-route="settings">设置</a>
         </nav>
       </aside>
@@ -149,11 +147,6 @@ async function main() {
   await page.click('[data-all-source-filter="joybuy"]');
   await page.waitForSelector(".all-date-group", { timeout: 5000 });
   await page.screenshot({ path: path.join(outDir, "all.png"), fullPage: true });
-
-  await page.click('a[href="#/fermentation"]');
-  await page.waitForSelector(".tracking-layout", { timeout: 5000 });
-  await page.waitForSelector(".tracking-card, .empty", { timeout: 5000 });
-  await page.screenshot({ path: path.join(outDir, "fermentation.png"), fullPage: true });
 
   await page.click('a[href="#/settings"]');
   await page.waitForSelector(".settings-layout", { timeout: 5000 });

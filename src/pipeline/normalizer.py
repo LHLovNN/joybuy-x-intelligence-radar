@@ -1,4 +1,5 @@
 import re
+from urllib.parse import urlparse
 from typing import Any
 
 
@@ -19,11 +20,53 @@ def _contains_any(text: str, terms: list[str]) -> list[str]:
     return found
 
 
+def _expanded_link_text(post: dict[str, Any]) -> str:
+    links = post.get("links") or []
+    if not isinstance(links, list):
+        return ""
+    return " ".join(str(link) for link in links if link)
+
+
+def _matching_text(post: dict[str, Any]) -> str:
+    return _lower_text(f"{post.get('text', '')} {_expanded_link_text(post)}")
+
+
+def _readable_url_label(url: str) -> str:
+    parsed = urlparse(url if "://" in url else f"https://{url}")
+    host = parsed.netloc.replace("www.", "")
+    path = parsed.path.strip("/")
+    if not host:
+        return url
+    if host.lower() == "jd.com":
+        return "JD.com"
+    if not path:
+        return host
+    first_segment = path.split("/")[0]
+    return f"{host}/{first_segment}"
+
+
+def _clean_text(post: dict[str, Any]) -> str:
+    text = str(post.get("text") or "")
+    links = [str(link) for link in post.get("links") or [] if link]
+    cursor = 0
+
+    def replace_url(match: re.Match[str]) -> str:
+        nonlocal cursor
+        replacement = ""
+        if cursor < len(links):
+            replacement = _readable_url_label(links[cursor])
+        cursor += 1
+        return replacement
+
+    cleaned = re.sub(r"https?://\S+", replace_url, text)
+    return re.sub(r"[ \t]+", " ", cleaned).strip()
+
+
 def normalize_posts(posts: list[dict[str, Any]], keyword_config: dict[str, Any]) -> list[dict[str, Any]]:
     brands = keyword_config["brands"]
     normalized = []
     for post in posts:
-        text = _lower_text(post["text"])
+        text = _matching_text(post)
         brand_key = post.get("brand_candidate", "")
         brand_config = brands.get(brand_key, {})
         brand_terms = brand_config.get("brand_terms", [])
@@ -65,7 +108,7 @@ def normalize_posts(posts: list[dict[str, Any]], keyword_config: dict[str, Any])
         )
         spam_score = 0.85 if matched_spam_terms or matched_irrelevant_terms else 0.05
 
-        clean_text = re.sub(r"https?://\S+", "", post["text"]).strip()
+        clean_text = _clean_text(post)
         normalized.append(
             {
                 **post,
@@ -106,6 +149,10 @@ def normalize_posts(posts: list[dict[str, Any]], keyword_config: dict[str, Any])
                     "name": post.get("author_name"),
                     "avatar_url": post.get("author_avatar_url"),
                     "followers": post.get("author_followers", 0),
+                    "following": post.get("author_following", 0),
+                    "bio": post.get("author_bio", ""),
+                    "location": post.get("author_location", ""),
+                    "joined_at": post.get("author_joined_at", ""),
                     "verified": post.get("author_verified", False),
                 },
             }

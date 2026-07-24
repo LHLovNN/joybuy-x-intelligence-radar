@@ -14,9 +14,8 @@ class ApifyXAdapter(XSourceBase):
         self.token = token
         self.actor_id = actor_id
 
-    def search_posts(self, query: str, start_time: str, end_time: str, limit: int):
+    def search_posts(self, query: str, start_time: str, end_time: str, limit: int, query_type: str = "Latest"):
         raise NotImplementedError("Map Apify Actor output to RawPost before enabling.")
 
     def hydrate_posts(self, post_ids: list[str]):
         raise NotImplementedError("Apify hydration support depends on the selected Actor.")
-

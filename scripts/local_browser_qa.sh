@@ -31,21 +31,8 @@ print((Path.cwd() / "public" / "index.html").as_uri())
 PY
 )"
 
-DETAIL_ID="$(python3 - <<'PY'
-import json
-from pathlib import Path
-daily = json.loads((Path.cwd() / "public" / "dashboard-data" / "daily" / "latest.json").read_text())
-clusters = daily.get("clusters") or []
-print(clusters[0]["cluster_id"] if clusters else "")
-PY
-)"
-
-ROUTE_NAMES=("overview" "all" "daily" "fermentation" "settings")
-ROUTE_HASHES=("#/" "#/all" "#/daily" "#/fermentation" "#/settings")
-if [[ -n "$DETAIL_ID" ]]; then
-  ROUTE_NAMES+=("detail")
-  ROUTE_HASHES+=("#/intel/$DETAIL_ID")
-fi
+ROUTE_NAMES=("overview" "all" "daily" "settings")
+ROUTE_HASHES=("#/" "#/all" "#/daily" "#/settings")
 
 CHROME_BIN="${CHROME_BIN:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
 FIREFOX_BIN="${FIREFOX_BIN:-/Applications/Firefox.app/Contents/MacOS/firefox}"

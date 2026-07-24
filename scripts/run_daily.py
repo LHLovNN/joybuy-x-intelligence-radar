@@ -91,6 +91,59 @@ def source_request_stats(x_source: Any) -> dict[str, Any]:
     }
 
 
+def configured_search_modes(source_config: dict[str, Any]) -> list[dict[str, Any]]:
+    raw_modes = source_config.get("x_search_modes") or [{"query_type": "Latest", "ratio": 1}]
+    modes: list[dict[str, Any]] = []
+    for mode in raw_modes:
+        if isinstance(mode, str):
+            query_type = mode
+            ratio = 1
+        else:
+            query_type = mode.get("query_type", "Latest")
+            ratio = mode.get("ratio", 1)
+        query_type = "Top" if str(query_type).strip().lower() == "top" else "Latest"
+        try:
+            ratio_value = float(ratio)
+        except (TypeError, ValueError):
+            ratio_value = 1
+        if ratio_value <= 0:
+            continue
+        modes.append({"query_type": query_type, "ratio": ratio_value})
+    return modes or [{"query_type": "Latest", "ratio": 1}]
+
+
+def query_limit_for_mode(brand_limit: int, query_count: int, modes: list[dict[str, Any]], mode: dict[str, Any]) -> int:
+    total_ratio = sum(item["ratio"] for item in modes) or 1
+    mode_brand_limit = brand_limit * mode["ratio"] / total_ratio
+    return max(1, math.ceil(mode_brand_limit / max(1, query_count)))
+
+
+def merge_duplicate_collection_context(existing: dict[str, Any], incoming: dict[str, Any]) -> None:
+    for query_type in incoming.get("collection_query_types", []):
+        existing.setdefault("collection_query_types", [])
+        if query_type not in existing["collection_query_types"]:
+            existing["collection_query_types"].append(query_type)
+
+
+def apply_collection_caps(
+    posts: list[dict[str, Any]],
+    brand_limits: dict[str, int],
+    max_total: int,
+) -> list[dict[str, Any]]:
+    capped: list[dict[str, Any]] = []
+    brand_counts = {brand: 0 for brand in brand_limits}
+    for post in posts:
+        if len(capped) >= max_total:
+            break
+        brand = post.get("brand_candidate", "")
+        brand_limit = brand_limits.get(brand, max_total)
+        if brand_counts.get(brand, 0) >= brand_limit:
+            continue
+        capped.append(post)
+        brand_counts[brand] = brand_counts.get(brand, 0) + 1
+    return capped
+
+
 def collect_real_posts(
     x_source: Any,
     keyword_config: dict[str, Any],
@@ -107,6 +160,7 @@ def collect_real_posts(
     seen: dict[str, dict[str, Any]] = {}
     warnings: list[str] = []
     stopped_early = False
+    search_modes = configured_search_modes(source_config)
 
     for brand_key in ("joybuy", "temu"):
         if stopped_early:
@@ -115,31 +169,43 @@ def collect_real_posts(
         if brand_limit <= 0:
             continue
         queries = build_x_search_queries(keyword_config, brand_key)
-        per_query_limit = max(1, math.ceil(brand_limit / len(queries)))
-        for query in queries:
-            try:
-                posts = x_source.search_posts(query, to_iso(start), to_iso(end), per_query_limit)
-            except ProviderBudgetExceeded as error:
-                warnings.append(str(error))
-                stopped_early = True
+        for mode in search_modes:
+            if stopped_early:
                 break
-            except RuntimeError as error:
-                warnings.append(f"Provider collection stopped after error: {str(error)[:240]}")
-                stopped_early = True
-                break
-            for post in posts:
-                enriched = {**post, "brand_candidate": brand_key}
-                post_id = enriched["post_id"]
-                existing = seen.get(post_id)
-                if existing and existing.get("brand_candidate") == "joybuy":
-                    continue
-                if existing and brand_key != "joybuy":
-                    continue
-                seen[post_id] = enriched
+            query_type = mode["query_type"]
+            per_query_limit = query_limit_for_mode(brand_limit, len(queries), search_modes, mode)
+            for query in queries:
+                try:
+                    posts = x_source.search_posts(query, to_iso(start), to_iso(end), per_query_limit, query_type=query_type)
+                except ProviderBudgetExceeded as error:
+                    warnings.append(str(error))
+                    stopped_early = True
+                    break
+                except RuntimeError as error:
+                    warnings.append(f"Provider collection stopped after error: {str(error)[:240]}")
+                    stopped_early = True
+                    break
+                for post in posts:
+                    enriched = {
+                        **post,
+                        "brand_candidate": brand_key,
+                        "collection_query_type": query_type,
+                        "collection_query_types": [query_type],
+                    }
+                    post_id = enriched["post_id"]
+                    existing = seen.get(post_id)
+                    if existing and existing.get("brand_candidate") == "joybuy":
+                        merge_duplicate_collection_context(existing, enriched)
+                        continue
+                    if existing and brand_key != "joybuy":
+                        merge_duplicate_collection_context(existing, enriched)
+                        continue
+                    if existing:
+                        merge_duplicate_collection_context(enriched, existing)
+                    seen[post_id] = enriched
 
-    raw_posts = list(seen.values())
     max_total = limit_from_env("X_DAILY_LIMIT", limits["max_posts_per_day"])
-    raw_posts = raw_posts[:max_total]
+    raw_posts = apply_collection_caps(list(seen.values()), brand_limits, max_total)
     request_stats = source_request_stats(x_source)
     return raw_posts, {
         "status": "partial" if warnings or request_stats["request_budget_exhausted"] else "complete",
@@ -150,6 +216,7 @@ def collect_real_posts(
             "max_temu_posts": brand_limits["temu"],
             "max_api_requests": request_stats["max_api_requests"],
         },
+        "search_modes": search_modes,
         **request_stats,
     }
 
@@ -280,7 +347,7 @@ def main() -> None:
     write_json(str(ROOT / "public" / "dashboard-data" / "run-status.json"), run_log)
     write_json(str(ROOT / "data" / "logs" / f"daily-{today}.json"), run_log)
     print(f"Generated dashboard data: {overview['generated_at_label']}")
-    print(f"Joybuy clusters: {len(joybuy_clusters)}")
+    print(f"Joybuy signals: {len(joybuy_clusters)}")
     print(f"Raw posts: {len(raw_posts)}")
     print(f"Collection status: {collection_status['status']}")
     print(f"Translation: {translation_status['provider']} | missing {translation_status.get('missing_count', 0)}")

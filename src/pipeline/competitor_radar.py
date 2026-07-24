@@ -40,7 +40,7 @@ def sentiment_for(post: dict[str, Any]) -> str:
     has_hard_negative = any(term in text for term in HARD_NEGATIVE_TERMS)
     if has_positive and not has_hard_negative:
         return "positive"
-    if any(term in text for term in NEGATIVE_TERMS):
+    if has_hard_negative or "customer service" in text:
         return "negative"
     return "neutral"
 
@@ -59,14 +59,26 @@ def post_card(post: dict[str, Any]) -> dict[str, Any]:
         "post_id": post["post_id"],
         "url": post["url"],
         "text": post["clean_text"],
-        "translation_zh": post.get("translation_zh") or post["summary_zh"],
+        "original_text": post.get("text", ""),
+        "links": post.get("links", []),
+        "translation_zh": post.get("translation_zh") or post.get("clean_text") or post.get("text") or "",
         "translation_status": post.get("translation_status", "unknown"),
         "translation_provider": post.get("translation_provider", "none"),
         "summary_zh": post["summary_zh"],
         "author_name": post["author"].get("name") or post["author"].get("handle"),
         "author_handle": post["author"]["handle"],
         "author_avatar_url": post["author"].get("avatar_url"),
+        "author_followers": post["author"].get("followers", 0),
+        "author_following": post["author"].get("following", 0),
+        "author_bio": post["author"].get("bio", ""),
+        "author_location": post["author"].get("location", ""),
+        "author_joined_at": post["author"].get("joined_at", ""),
+        "author_verified": post["author"].get("verified", False),
         "created_at": post["created_at"],
+        "reply_to_post_id": post.get("reply_to_post_id", ""),
+        "reply_to_handle": post.get("reply_to_handle", ""),
+        "quoted_post_id": post.get("quoted_post_id", ""),
+        "conversation_id": post.get("conversation_id", ""),
         "language": post.get("language", "und"),
         "media": post.get("media", []),
         "metrics": post["metrics"],

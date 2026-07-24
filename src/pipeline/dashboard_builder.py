@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -9,7 +10,7 @@ from src.utils.io import write_json
 from src.utils.time import BEIJING, beijing_label, now_utc, to_iso
 
 
-FEATURED_IPS_THRESHOLD = 70
+FEATURED_IPS_THRESHOLD = 55
 
 
 def build_dashboard_data(
@@ -217,24 +218,59 @@ def build_featured_items(joybuy_clusters: list[dict[str, Any]], competitor: dict
     items = [featured_item_for_cluster(cluster) for cluster in joybuy_clusters if is_featured_cluster(cluster)]
     items = [item for item in items if item]
     items.extend(featured_item_for_competitor_post(post) for post in competitor.get("top_posts", []) if is_featured_competitor_post(post))
-    return sorted([item for item in items if item], key=featured_sort_key, reverse=True)[:18]
+    return finalize_featured_items([item for item in items if item])
+
+
+def finalize_featured_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    joybuy_items = sorted([item for item in items if item.get("brand") != "temu"], key=featured_priority_score, reverse=True)[:5]
+    competitor_limit = 2 if joybuy_items else 3
+    competitor_items = sorted([item for item in items if item.get("brand") == "temu"], key=featured_priority_score, reverse=True)[:competitor_limit]
+    return sorted([*joybuy_items, *competitor_items], key=featured_priority_score, reverse=True)[:7]
 
 
 def is_featured_cluster(cluster: dict[str, Any]) -> bool:
     score = cluster.get("score", {})
+    post = representative_post(cluster)
+    if not post or not post.get("url"):
+        return False
+    reason = analysis_reason_for_post(
+        post,
+        "joybuy",
+        topic=cluster.get("topic", "general"),
+        aggregate_metrics=cluster.get("metrics", {}),
+        source_count=cluster.get("post_count", 1),
+        score=score,
+    )
     return (
         score.get("ips", 0) >= FEATURED_IPS_THRESHOLD
         or score.get("level") in {"urgent", "high"}
-        or score.get("future_potential", 0) >= 75
-        or score.get("current_impact", 0) >= 70
+        or score.get("future_potential", 0) >= 65
+        or score.get("current_impact", 0) >= 50
         or cluster.get("metrics", {}).get("max_author_followers", 0) >= 20_000
+        or cluster.get("post_count", 0) > 1
+        or bool(reason)
     )
 
 
 def is_featured_competitor_post(post: dict[str, Any]) -> bool:
     metrics = post.get("metrics", {})
     interactions = public_interactions(metrics)
-    return post.get("sentiment") == "negative" and interactions >= 30
+    views = int(metrics.get("views") or metrics.get("total_views") or 0)
+    followers = int(post.get("author_followers") or post.get("author", {}).get("followers") or 0)
+    text = source_text_for_reason(post).lower()
+    focus = temu_focus_signal(text, post)
+    if not focus["central"]:
+        return False
+    reason = analysis_reason_for_post(post, "temu", source_count=1)
+    hard_risk_terms = {"refund", "scam", "fake", "damaged", "slow", "missing", "customer service"}
+    sensitive = any(term in hard_risk_terms for term in post.get("matched_terms", []))
+    return bool(reason) and (
+        (sensitive and not focus["negative_trope"] and (views >= 50 or interactions > 0))
+        or (focus["negative_trope"] and (views >= 1000 or interactions >= 5 or followers >= 20_000))
+        or (focus["strong"] and (views >= 1000 or interactions >= 5 or followers >= 20_000))
+        or views >= 2000
+        or interactions >= 8
+    )
 
 
 def featured_item_for_cluster(cluster: dict[str, Any]) -> dict[str, Any] | None:
@@ -252,17 +288,26 @@ def featured_item_for_cluster(cluster: dict[str, Any]) -> dict[str, Any] | None:
         "author_handle": post.get("author", {}).get("handle") or post.get("author_handle"),
         "author_avatar_url": post.get("author", {}).get("avatar_url") or post.get("author_avatar_url"),
         "author_followers": post.get("author", {}).get("followers", post.get("author_followers", 0)),
+        "author_following": post.get("author", {}).get("following", post.get("author_following", 0)),
+        "author_bio": post.get("author", {}).get("bio", post.get("author_bio", "")),
+        "author_location": post.get("author", {}).get("location", post.get("author_location", "")),
+        "author_joined_at": post.get("author", {}).get("joined_at", post.get("author_joined_at", "")),
         "author_verified": post.get("author", {}).get("verified", post.get("author_verified", False)),
         "post_url": post.get("url", ""),
+        "reply_to_post_id": post.get("reply_to_post_id", ""),
+        "reply_to_handle": post.get("reply_to_handle", ""),
+        "quoted_post_id": post.get("quoted_post_id", ""),
+        "conversation_id": post.get("conversation_id", ""),
         "created_at": post.get("created_at") or cluster.get("first_seen_at"),
         "language": post.get("language", "und"),
         "title": cluster["title"],
         "display_title": cluster.get("summary_zh") or cluster["title"],
-        "original_text": post.get("clean_text") or post.get("text") or cluster.get("summary", ""),
-        "translation_zh": post.get("translation_zh") or post.get("summary_zh") or cluster.get("summary_zh", ""),
+        "original_text": post.get("text") or post.get("clean_text") or cluster.get("summary", ""),
+        "translation_zh": post.get("translation_zh") or post.get("clean_text") or post.get("text") or cluster.get("summary_zh", ""),
         "translation_status": post.get("translation_status", "unknown"),
         "translation_provider": post.get("translation_provider", "none"),
         "summary_zh": cluster.get("summary_zh", ""),
+        "links": post.get("links", []),
         "media": media_items(post),
         "score": score,
         "score_value": score.get("ips", 0),
@@ -274,7 +319,7 @@ def featured_item_for_cluster(cluster: dict[str, Any]) -> dict[str, Any] | None:
         "related_sources": max(0, cluster.get("post_count", 1) - 1),
         "selected_reason": selected_reason_for_cluster(cluster),
         "recommended_action": score.get("recommended_action", "持续监测"),
-        "href": f"#/intel/{cluster['cluster_id']}",
+        "href": "",
         "external_href": post.get("url", ""),
         "sentiment": score.get("sentiment", "neutral"),
         "level": score.get("level", "low"),
@@ -284,6 +329,7 @@ def featured_item_for_cluster(cluster: dict[str, Any]) -> dict[str, Any] | None:
 def featured_item_for_competitor_post(post: dict[str, Any]) -> dict[str, Any] | None:
     interactions = public_interactions(post.get("metrics", {}))
     score_value = min(100, 55 + round(interactions / 8))
+    title = competitor_focus_title(post)
     return {
         "id": f"featured-temu-{post.get('post_id', '')}",
         "brand": "temu",
@@ -293,16 +339,27 @@ def featured_item_for_competitor_post(post: dict[str, Any]) -> dict[str, Any] | 
         "author_name": post.get("author_name") or post.get("author_handle"),
         "author_handle": post.get("author_handle"),
         "author_avatar_url": post.get("author_avatar_url"),
+        "author_followers": post.get("author_followers", 0),
+        "author_following": post.get("author_following", 0),
+        "author_bio": post.get("author_bio", ""),
+        "author_location": post.get("author_location", ""),
+        "author_joined_at": post.get("author_joined_at", ""),
+        "author_verified": post.get("author_verified", False),
         "post_url": post.get("url", ""),
+        "reply_to_post_id": post.get("reply_to_post_id", ""),
+        "reply_to_handle": post.get("reply_to_handle", ""),
+        "quoted_post_id": post.get("quoted_post_id", ""),
+        "conversation_id": post.get("conversation_id", ""),
         "created_at": post.get("created_at"),
         "language": post.get("language", "und"),
-        "title": "Temu 负向竞品讨论出现较高互动",
-        "display_title": "Temu 负向竞品讨论出现较高互动",
+        "title": title,
+        "display_title": title,
         "original_text": post.get("text", ""),
-        "translation_zh": post.get("translation_zh") or post.get("summary_zh", ""),
+        "translation_zh": post.get("translation_zh") or post.get("clean_text") or post.get("text") or "",
         "translation_status": post.get("translation_status", "unknown"),
         "translation_provider": post.get("translation_provider", "none"),
         "summary_zh": post.get("summary_zh", ""),
+        "links": post.get("links", []),
         "media": media_items(post),
         "score": {"ips": score_value, "level": "medium", "sentiment": post.get("sentiment", "neutral")},
         "score_value": score_value,
@@ -312,7 +369,7 @@ def featured_item_for_competitor_post(post: dict[str, Any]) -> dict[str, Any] | 
         "post_metrics": post.get("metrics", {}),
         "source_count": 1,
         "related_sources": 0,
-        "selected_reason": "竞品负向讨论具备一定互动量，可作为 Joybuy 当日风险语境和对比样本。",
+        "selected_reason": analysis_reason_for_post(post, "temu", source_count=1),
         "recommended_action": "纳入竞品基线观察",
         "href": "",
         "external_href": post.get("url", ""),
@@ -375,6 +432,185 @@ def public_interactions(metrics: dict[str, Any]) -> int:
     )
 
 
+def analysis_reason_for_post(
+    post: dict[str, Any],
+    brand: str,
+    topic: str = "",
+    aggregate_metrics: dict[str, Any] | None = None,
+    source_count: int = 1,
+    score: dict[str, Any] | None = None,
+) -> str:
+    text = source_text_for_reason(post)
+    signal = signal_context(text, brand, topic)
+    metrics = post.get("metrics", {}) or aggregate_metrics or {}
+    impact = impact_context(metrics, post)
+    interactions = public_interactions(metrics)
+    views = int(metrics.get("views") or metrics.get("total_views") or 0)
+    followers = int(post.get("author_followers") or post.get("author", {}).get("followers") or 0)
+    ips = int((score or {}).get("ips") or 0)
+    temu_focus = temu_focus_signal(text, post) if brand == "temu" else {"central": True, "strong": False}
+    if brand == "temu" and not temu_focus["central"]:
+        return ""
+    sensitive_enough = signal.get("sensitive") and (brand != "temu" or views >= 50 or interactions > 0)
+    signal_has_evidence = signal["useful"] and (
+        brand != "temu"
+        or sensitive_enough
+        or followers >= 20_000
+        or views >= 1000
+        or interactions >= 3
+        or (views >= 50 and interactions > 0)
+    )
+    if brand == "temu":
+        useful = signal_has_evidence or (
+            temu_focus["strong"] and (followers >= 20_000 or views >= 1000 or interactions >= 5)
+        )
+    else:
+        useful = (
+            signal_has_evidence
+            or source_count > 1
+            or followers >= 20_000
+            or views >= 1000
+            or interactions >= 3
+            or ips >= 65
+        )
+    if not useful:
+        return ""
+    count_phrase = f"，同日相似讨论 {source_count} 条" if source_count and source_count > 1 else ""
+    return f"内容指向{signal['name']}：{signal['angle']}；{impact}{count_phrase}；研判：{signal['implication']}"
+
+
+def source_text_for_reason(post: dict[str, Any]) -> str:
+    return str(post.get("translation_zh") or post.get("clean_text") or post.get("text") or post.get("summary_zh") or "")
+
+
+def has_term(text: str, terms: list[str]) -> bool:
+    lower = text.lower()
+    return any(term.lower() in lower or term in text for term in terms)
+
+
+def signal_context(text: str, brand: str, topic: str = "") -> dict[str, Any]:
+    brand_label = "竞品侧" if brand == "temu" else "Joybuy/JD"
+    if topic == "refund" or has_term(text, ["refund", "退款", "退货", "售后", "chargeback"]):
+        return {
+            "name": "退款/售后体验",
+            "angle": "用户明确提到退款、退货或售后处理",
+            "implication": f"{brand_label}的信任成本会被放大，需关注是否出现更多相似投诉。",
+            "useful": True,
+            "sensitive": True,
+        }
+    if topic == "delivery" or has_term(text, ["delivery", "shipping", "parcel", "warehouse", "ships from", "发货", "配送", "物流", "包裹", "本地仓", "仓库", "transporteur", "commande"]):
+        return {
+            "name": "履约与物流心智",
+            "angle": "原帖围绕发货、仓库、配送或包裹进度展开",
+            "implication": "可作为 Temu 履约卖点/槽点的竞品参照。" if brand == "temu" else "需要判断这是正向履约口碑还是潜在配送投诉。",
+            "useful": True,
+        }
+    if topic == "price_opportunity" or has_term(text, ["coupon", "discount", "promo", "deal", "save", "ultra-low", "优惠", "折扣", "券", "低价", "省钱", "促销"]):
+        return {
+            "name": "价格促销与导购",
+            "angle": "内容强调优惠、低价、券包或导购入口",
+            "implication": "有助于观察 Temu 拉新促销话术及垃圾推广占比。" if brand == "temu" else "可评估是否存在可借势传播的价格/活动卖点。",
+            "useful": True,
+        }
+    if topic == "regulatory" or has_term(text, ["regulator", "regulatory", "investigation", "foreign subsidies", "subsidy", "charge sheet", "european commission", "ceconomy", "takeover", "acquisition", "antitrust", "欧盟", "监管", "收购", "并购", "补贴", "反垄断"]):
+        return {
+            "name": "监管/并购风险",
+            "angle": "内容涉及海外监管审查、并购交易或市场准入风险",
+            "implication": "这类舆情可能影响管理层判断、市场信任和欧洲业务推进，应从普通消费体验中单独拎出。",
+            "useful": True,
+            "sensitive": True,
+        }
+    if has_term(text, ["amazon", "fnac", "cdiscount", "micromania", "shein", "jd.com", "京东"]):
+        return {
+            "name": "多平台比价/货架露出",
+            "angle": "原帖把品牌与其他电商平台并列展示",
+            "implication": "适合观察品牌在海外用户心智中的货架位置和竞品集合。",
+            "useful": True,
+        }
+    if brand == "temu" and has_term(text, ["cheap", "low quality", "knockoff", "lazy", "temu version", "temu-looking", "temu looking", "敷衍", "低质", "山寨", "乱七八糟"]):
+        return {
+            "name": "竞品低价/低质心智",
+            "angle": "原帖把 Temu 作为低价、低质或山寨感的表达符号",
+            "implication": "这类内容可作为竞品品牌心智参照，但只有出现较高传播时才需要进入焦点。",
+            "useful": True,
+            "sensitive": True,
+        }
+    if has_term(text, ["order", "cart", "shop", "buy", "下单", "订单", "购物车", "购买", "想试试"]):
+        return {
+            "name": "购买意向与日常购物",
+            "angle": "用户表达下单、加购或尝试购买意向",
+            "implication": "可作为竞品自然需求与用户使用场景样本，需结合互动与浏览判断是否异常。" if brand == "temu" else "可用于判断 Joybuy/JD 是否被真实用户纳入购买选择。",
+            "useful": True,
+        }
+    if has_term(text, ["scam", "fake", "damaged", "stupid", "lazy", "nonsense", "蠢", "假", "坏了", "差", "敷衍", "乱七八糟"]):
+        return {
+            "name": "负向情绪/玩梗表达",
+            "angle": "文本带有吐槽、嘲讽或低信任表达",
+            "implication": "短期未必是正式投诉，但容易在高互动场景下转化为品牌负面语境。",
+            "useful": True,
+            "sensitive": True,
+        }
+    return {
+        "name": "竞品日常声量" if brand == "temu" else "品牌日常声量",
+        "angle": "原帖没有明显投诉或处置线索，主要体现日常提及",
+        "implication": "适合进入声量基线，用于和后续异常波动做对照。",
+        "useful": False,
+    }
+
+
+def impact_context(metrics: dict[str, Any], post: dict[str, Any]) -> str:
+    interactions = public_interactions(metrics)
+    replies = int(metrics.get("replies") or metrics.get("total_replies") or 0)
+    reposts = int(metrics.get("reposts") or metrics.get("total_reposts") or 0)
+    quotes = int(metrics.get("quotes") or metrics.get("total_quotes") or 0)
+    views = int(metrics.get("views") or metrics.get("total_views") or 0)
+    followers = int(post.get("author_followers") or post.get("author", {}).get("followers") or 0)
+    if followers >= 20_000:
+        return f"作者具备较高影响力（{followers} followers），当前 {interactions} 次赞评转引、{views} 浏览"
+    if reposts + quotes >= 5:
+        return f"转引信号相对突出，当前 {interactions} 次赞评转引、{views} 浏览"
+    if replies >= 3:
+        return f"评论参与高于普通样本，当前 {interactions} 次赞评转引、{views} 浏览"
+    if views >= 1000 and interactions <= 3:
+        return f"已有千级浏览但互动偏低，当前 {interactions} 次赞评转引、{views} 浏览"
+    if interactions == 0:
+        return f"当前传播仍弱，{views} 浏览且暂无赞评转引" if views else "当前尚未形成可见互动"
+    return f"当前 {interactions} 次赞评转引、{views} 浏览"
+
+
+def temu_focus_signal(text: str, post: dict[str, Any] | None = None) -> dict[str, bool]:
+    raw = str(text or "")
+    lower = raw.lower()
+    post_data = post or {}
+    matched_terms = post_data.get("matched_terms") or []
+    tags_value = post_data.get("tags") or []
+    tags = {str(tag).lower() for tag in [*matched_terms, *tags_value]}
+    has_temu = bool(re.search(r"\btemu\b", lower))
+    platform_phrases = bool(
+        re.search(r"\b(order(?:ed|ing)?|buy|bought|shop|shopping|cart|coupon|discount|deal|gift|delivery|shipping|warehouse|app|ads?|haul|refund|return)\b.{0,36}\btemu\b", lower)
+        or re.search(r"\btemu\b.{0,36}\b(order(?:ed|ing)?|buy|bought|shop|shopping|cart|coupon|discount|deal|gift|delivery|shipping|warehouse|app|ads?|haul|refund|return)\b", lower)
+        or re.search(r"\b(from|off|on|via|through)\s+temu\b", lower)
+        or has_term(raw, ["Temu 上", "Temu下", "Temu 订单", "Temu订单", "Temu 快递", "Temu快递", "Temu 配送", "Temu配送", "Temu 优惠", "Temu优惠", "Temu 折扣", "Temu折扣", "Temu App", "Temu 广告", "Temu广告", "Temu 购物车", "Temu购物车", "本地仓", "来自 Temu", "从 Temu"])
+    )
+    negative_trope = has_term(raw, ["cheap", "low quality", "knockoff", "fake", "lazy", "stupid", "temu version", "temu-looking", "temu looking", "敷衍", "低质", "山寨", "假", "蠢", "乱七八糟"])
+    matched_topic = bool(tags & {"delivery", "refund", "return", "scam", "fake", "damaged", "slow", "missing", "customer service"})
+    return {
+        "central": has_temu and (platform_phrases or matched_topic or negative_trope),
+        "strong": has_temu and (platform_phrases or matched_topic or negative_trope),
+        "negative_trope": has_temu and negative_trope,
+    }
+
+
+def competitor_focus_title(post: dict[str, Any]) -> str:
+    text = source_text_for_reason(post)
+    signal = signal_context(text, "temu")
+    if signal.get("sensitive"):
+        return f"Temu {signal['name']}出现传播信号"
+    if signal.get("useful"):
+        return f"Temu {signal['name']}进入竞品观察"
+    return "Temu 竞品异常讨论"
+
+
 def source_name_for_post(post: dict[str, Any], fallback: str) -> str:
     handle = post.get("author", {}).get("handle") or post.get("author_handle")
     if handle:
@@ -395,17 +631,27 @@ def featured_tags(cluster: dict[str, Any]) -> list[str]:
 
 
 def selected_reason_for_cluster(cluster: dict[str, Any]) -> str:
+    post = representative_post(cluster)
+    if post:
+        return analysis_reason_for_post(
+            post,
+            "joybuy",
+            topic=cluster.get("topic", "general"),
+            aggregate_metrics=cluster.get("metrics", {}),
+            source_count=cluster.get("post_count", 1),
+            score=cluster.get("score", {}),
+        )
     score = cluster.get("score", {})
     base = score.get("explanation") or "该舆情达到焦点阈值，建议结合原帖证据持续观察。"
     source_count = cluster.get("post_count", 0)
     if source_count > 1:
-        base += f" 当前关联到 {source_count} 条相关原帖。"
+        base += f" 当前关联到 {source_count} 条同日相似讨论。"
     if cluster.get("metrics", {}).get("max_author_followers", 0) >= 20_000:
         base += " 其中包含高影响力账号信号。"
     return base
 
 
-def media_items(post: dict[str, Any]) -> list[dict[str, str]]:
+def media_items(post: dict[str, Any]) -> list[dict[str, Any]]:
     items = []
     for item in post.get("media", []) or []:
         if isinstance(item, str):
@@ -414,12 +660,41 @@ def media_items(post: dict[str, Any]) -> list[dict[str, str]]:
             url = (
                 item.get("media_url_https")
                 or item.get("media_url")
+                or item.get("mediaUrlHttps")
+                or item.get("mediaUrl")
                 or item.get("preview_image_url")
+                or item.get("previewImageUrl")
                 or item.get("thumbnail_url")
+                or item.get("thumbnailUrl")
+                or item.get("image_url")
+                or item.get("imageUrl")
                 or item.get("url")
+                or item.get("src")
             )
             if url:
-                items.append({"url": url, "type": str(item.get("type") or "image")})
+                media_type = str(item.get("type") or item.get("media_type") or "image")
+                payload: dict[str, Any] = {
+                    "url": url,
+                    "type": media_type,
+                }
+                preview_url = (
+                    item.get("media_url_https")
+                    or item.get("media_url")
+                    or item.get("preview_image_url")
+                    or item.get("previewImageUrl")
+                    or item.get("thumbnail_url")
+                    or item.get("thumbnailUrl")
+                )
+                if preview_url:
+                    payload["preview_image_url"] = preview_url
+                    payload["media_url_https"] = preview_url
+                video_info = item.get("video_info") or item.get("videoInfo")
+                if video_info:
+                    payload["video_info"] = video_info
+                expanded_url = item.get("expanded_url") or item.get("expandedUrl")
+                if expanded_url:
+                    payload["expanded_url"] = expanded_url
+                items.append(payload)
     return items[:4]
 
 
@@ -438,6 +713,29 @@ def featured_sort_key(item: dict[str, Any]) -> tuple[int, int, str]:
     return (brand_priority, int(item.get("score_value") or 0), str(item.get("created_at") or ""))
 
 
+def featured_priority_score(item: dict[str, Any]) -> int:
+    metrics = item.get("post_metrics") or item.get("metrics") or {}
+    views = int(metrics.get("views") or metrics.get("total_views") or 0)
+    interactions = public_interactions(metrics)
+    followers = int(item.get("author_followers") or 0)
+    source_count = int(item.get("source_count") or 1)
+    tags = {str(tag).lower() for tag in item.get("tags", [])}
+    score = int(item.get("score", {}).get("ips") or item.get("score_value") or 0)
+    value = 0
+    if item.get("brand") != "temu":
+        value += 40
+    if tags & {"refund", "delivery", "customer_service", "brand_trust"}:
+        value += 16
+    if tags & {"positive_value", "delivery_strength", "price_opportunity"}:
+        value += 10
+    value += min(40, score)
+    value += min(20, source_count * 4)
+    value += min(24, interactions * 3)
+    value += min(16, len(str(max(1, views))) * 4)
+    value += min(16, len(str(max(1, followers))) * 3)
+    return value
+
+
 def build_hot_topics(joybuy_clusters: list[dict[str, Any]], featured_items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     topics = []
     for rank, item in enumerate(featured_items[:5], start=1):
@@ -449,7 +747,7 @@ def build_hot_topics(joybuy_clusters: list[dict[str, Any]], featured_items: list
                 "score_value": item.get("score_value"),
                 "level": item.get("level"),
                 "source_count": item.get("source_count", 1),
-                "count_label": f"{item.get('source_count', 1)} 条相关原帖" if item.get("source_count", 1) > 1 else item.get("source_type", "1 条原帖"),
+                "count_label": f"{item.get('source_count', 1)} 条同日相似讨论" if item.get("source_count", 1) > 1 else item.get("source_type", "1 条原帖"),
                 "reason": item.get("selected_reason", ""),
             }
         )
@@ -465,7 +763,7 @@ def build_hot_topics(joybuy_clusters: list[dict[str, Any]], featured_items: list
                 "score_value": score.get("ips"),
                 "level": score.get("level"),
                 "source_count": cluster.get("post_count", 0),
-                "count_label": f"{cluster.get('post_count', 0)} 条相关原帖",
+                "count_label": f"{cluster.get('post_count', 0)} 条同日相似讨论",
                 "reason": score.get("explanation", ""),
             }
         )
@@ -507,12 +805,21 @@ def lead_post_summary(post: dict[str, Any]) -> dict[str, Any]:
         "author_handle": post.get("author", {}).get("handle") or post.get("author_handle"),
         "author_avatar_url": post.get("author", {}).get("avatar_url") or post.get("author_avatar_url"),
         "author_followers": post.get("author", {}).get("followers", post.get("author_followers", 0)),
+        "author_following": post.get("author", {}).get("following", post.get("author_following", 0)),
+        "author_bio": post.get("author", {}).get("bio", post.get("author_bio", "")),
+        "author_location": post.get("author", {}).get("location", post.get("author_location", "")),
+        "author_joined_at": post.get("author", {}).get("joined_at", post.get("author_joined_at", "")),
         "author_verified": post.get("author", {}).get("verified", post.get("author_verified", False)),
         "url": post.get("url", ""),
+        "reply_to_post_id": post.get("reply_to_post_id", ""),
+        "reply_to_handle": post.get("reply_to_handle", ""),
+        "quoted_post_id": post.get("quoted_post_id", ""),
+        "conversation_id": post.get("conversation_id", ""),
         "language": post.get("language", "und"),
+        "text": post.get("text") or post.get("clean_text") or "",
         "clean_text": post.get("clean_text") or post.get("text") or "",
         "links": post.get("links", []),
-        "translation_zh": post.get("translation_zh") or post.get("summary_zh") or post.get("clean_text") or post.get("text") or "",
+        "translation_zh": post.get("translation_zh") or post.get("clean_text") or post.get("text") or "",
         "translation_status": post.get("translation_status", "unknown"),
         "translation_provider": post.get("translation_provider", "none"),
         "summary_zh": post.get("summary_zh", ""),

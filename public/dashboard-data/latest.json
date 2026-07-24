@@ -1,63 +1,218 @@
 {
   "title": "Joybuy X Intelligence Radar",
-  "generated_at": "2026-07-22T08:24:59Z",
-  "generated_at_label": "2026-07-22 16:24 BJT",
-  "report_date": "2026-07-22",
+  "generated_at": "2026-07-24T01:28:20Z",
+  "generated_at_label": "2026-07-24 09:28 BJT",
+  "report_date": "2026-07-24",
   "report_window": "Past 24 hours",
-  "window_label": "2026-07-21 08:00 BJT - 2026-07-22 08:00 BJT",
+  "window_label": "2026-07-23 08:00 BJT - 2026-07-24 08:00 BJT",
   "health": "normal",
   "metrics": {
-    "effective_intelligence": 2,
-    "high_risk": 0,
-    "fermenting": 0,
+    "effective_intelligence": 5,
+    "high_risk": 1,
+    "fermenting": 2,
     "needs_review": 0,
-    "joybuy_volume": 5,
-    "joybuy_candidate_volume": 5,
-    "temu_volume": 12,
-    "negative_share": 0
+    "joybuy_volume": 27,
+    "joybuy_candidate_volume": 29,
+    "temu_volume": 33,
+    "negative_share": 60
   },
   "executive_summary": {
-    "headline": "Today's highest-priority Joybuy signal is: General Joybuy/JD overseas shopping discussion.",
-    "risk": "Overall risk is medium with IPS 61.",
-    "action": "Recommended action: 观察. Temu baseline shows overlap around refund and delivery."
+    "headline": "Today's highest-priority Joybuy signal is: Regulatory and market-access scrutiny around JD.com.",
+    "risk": "Overall risk is high with IPS 85.",
+    "action": "Recommended action: 管理层同步. Temu baseline shows overlap around refund and delivery."
   },
   "top_intelligence": [
     {
-      "cluster_id": "joybuy-cluster-001",
-      "title": "General Joybuy/JD overseas shopping discussion",
-      "summary": "4 related posts discuss Joybuy/JD overseas shopping context.",
-      "summary_zh": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "cluster_id": "joybuy-cluster-005",
+      "title": "Regulatory and market-access scrutiny around JD.com",
+      "summary": "6 related posts discuss regulatory review, acquisition scrutiny or market-access risk.",
+      "summary_zh": "相关讨论涉及 JD.com 在海外市场的监管审查、并购交易或市场准入风险。",
       "lead_post": {
-        "post_id": "2079619898234318981",
-        "created_at": "2026-07-21T17:29:55Z",
+        "post_id": "2080201149357916409",
+        "created_at": "2026-07-23T07:59:36Z",
         "author": {
-          "id": "2575210651",
-          "handle": "1_oeil",
-          "name": "𝓟𝓼𝔂𝓬𝓱𝓸_𝓒𝓪𝓽🐦",
-          "avatar_url": "https://pbs.twimg.com/profile_images/1920086537481469952/3NTPhutH_normal.jpg",
-          "followers": 400,
+          "id": "923284200631013376",
+          "handle": "stup360",
+          "name": "Startup360 | استارتاپ ۳۶۰",
+          "avatar_url": "https://pbs.twimg.com/profile_images/923284866174726145/4A8-25Wv_normal.jpg",
+          "followers": 6886,
+          "following": 0,
+          "bio": null,
+          "location": "Tehran, Iran",
+          "joined_at": "2017-10-25T20:24:42Z",
           "verified": false
         },
-        "author_name": "𝓟𝓼𝔂𝓬𝓱𝓸_𝓒𝓪𝓽🐦",
-        "author_handle": "1_oeil",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/1920086537481469952/3NTPhutH_normal.jpg",
-        "author_followers": 400,
+        "author_name": "Startup360 | استارتاپ ۳۶۰",
+        "author_handle": "stup360",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/923284866174726145/4A8-25Wv_normal.jpg",
+        "author_followers": 6886,
+        "author_following": 0,
+        "author_bio": null,
+        "author_location": "Tehran, Iran",
+        "author_joined_at": "2017-10-25T20:24:42Z",
         "author_verified": false,
-        "url": "https://x.com/1_oeil/status/2079619898234318981",
-        "language": "fr",
-        "clean_text": "Commander sur JoyBuy le mardi à 1h du matin\nLa commande est préparée dans l'heure qui suit\nLa commande mise à disposition du transporteur à 6h\nLa commande a été retiré par le transporteur à 11h\nArrivé sur le centre de tri de départ à 12h\nBien sûr, c'est une livraison Express",
-        "links": [],
-        "translation_zh": "周二凌晨 1 点在 JoyBuy 下单\n订单在接下来的一小时内完成备货\n订单在 6 点交给承运商\n订单在 11 点被承运商取走\n12 点到达始发分拣中心\n当然，这是 Express 配送",
+        "url": "https://x.com/stup360/status/2080201149357916409",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080201149357916409",
+        "language": "fa",
+        "text": "کمیسیون اروپا درباره خرید ۲.۵ میلیارد دلاری Ceconomy توسط https://t.co/gZo8lmWbtJ ابراز نگرانی کرد. اروپا در حال بررسی احتمال استفاده جی‌دی‌دات‌کام از تامین مالی ترجیحی، مشوق‌های مالیاتی و کمک‌های دولت چین است. بیشتربخوانید:\nhttps://t.co/Vg9ou06otU https://t.co/etpMJd0cMk",
+        "clean_text": "کمیسیون اروپا درباره خرید ۲.۵ میلیارد دلاری Ceconomy توسط JD.com ابراز نگرانی کرد. اروپا در حال بررسی احتمال استفاده جی‌دی‌دات‌کام از تامین مالی ترجیحی، مشوق‌های مالیاتی و کمک‌های دولت چین است. بیشتربخوانید:\nstartup360.ir/jd-com-ceconomy-eu-regulatory-concerns",
+        "links": [
+          "http://JD.com",
+          "https://startup360.ir/jd-com-ceconomy-eu-regulatory-concerns/"
+        ],
+        "translation_zh": "欧盟委员会对 JD.com 以 25 亿美元收购 Ceconomy 表示担忧。欧洲正在调查京东是否可能使用优惠融资、税收激励以及中国政府的援助。阅读更多：\nstartup360.ir/jd-com-ceconomy-eu-regulatory-concerns",
         "translation_status": "translated",
         "translation_provider": "joybuilder",
         "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
         "metrics": {
-          "likes": 2,
+          "likes": 1,
           "reposts": 0,
-          "replies": 1,
+          "replies": 0,
           "quotes": 0,
           "bookmarks": 0,
-          "views": 114
+          "views": 167
+        },
+        "media": [
+          {
+            "url": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+            "type": "photo",
+            "preview_image_url": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+            "media_url_https": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+            "expanded_url": "https://x.com/stup360/status/2080201149357916409/photo/1"
+          }
+        ]
+      },
+      "topic": "regulatory",
+      "risk_types": [
+        "regulatory",
+        "market_access",
+        "acquisition"
+      ],
+      "opportunity_types": [],
+      "post_count": 6,
+      "first_seen_at": "2026-07-23T07:59:36Z",
+      "last_seen_at": "2026-07-23T16:01:44Z",
+      "metrics": {
+        "total_likes": 3,
+        "total_reposts": 1,
+        "total_replies": 1,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 1279,
+        "max_author_followers": 51573,
+        "public_interactions": 5
+      },
+      "score": {
+        "ips": 85,
+        "level": "high",
+        "brand_relevance": 100,
+        "risk_or_opportunity_intensity": 90,
+        "current_impact": 43,
+        "future_potential": 87,
+        "credibility": 94,
+        "business_impact": 90,
+        "urgency": 94,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "管理层同步",
+        "risk_labels": [
+          "regulatory",
+          "market_access",
+          "acquisition"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [
+          "potential_viral",
+          "high_influence_account"
+        ],
+        "explanation": "监管与并购审查影响海外市场准入和品牌信任，当前影响力 43，可信度 94，建议纳入管理层视野。"
+      },
+      "fermentation": {
+        "status": "升温中",
+        "tracking_days": 14,
+        "first_seen_at": "2026-07-23T07:59:36Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 0,
+          "quotes_24h": 0,
+          "new_related_posts_24h": 12
+        },
+        "signals": [
+          "高影响力账号参与讨论",
+          "相似内容数量增加",
+          "未来发酵潜力较高"
+        ],
+        "risk_change": "up"
+      },
+      "tracking_eligible": true,
+      "tracking_reason": [
+        "high_future_potential",
+        "high_influence_account",
+        "high_risk",
+        "ips_top_candidate"
+      ],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 3,
+        "amplifiers": 1,
+        "latest": 3,
+        "supporting_evidence": 0,
+        "contradicting_evidence": 0
+      }
+    },
+    {
+      "cluster_id": "joybuy-cluster-002",
+      "title": "General Joybuy/JD overseas shopping discussion",
+      "summary": "18 related posts discuss Joybuy/JD overseas shopping context.",
+      "summary_zh": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "lead_post": {
+        "post_id": "2080342699396260083",
+        "created_at": "2026-07-23T17:22:05Z",
+        "author": {
+          "id": "252695794",
+          "handle": "tmngmsyk",
+          "name": "oiaaaaui",
+          "avatar_url": "https://pbs.twimg.com/profile_images/1534080441485246465/WuLg92pF_normal.jpg",
+          "followers": 30,
+          "following": 441,
+          "bio": null,
+          "location": "Euskirchen, Germany",
+          "joined_at": "2011-02-15T18:33:32Z",
+          "verified": false
+        },
+        "author_name": "oiaaaaui",
+        "author_handle": "tmngmsyk",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/1534080441485246465/WuLg92pF_normal.jpg",
+        "author_followers": 30,
+        "author_following": 441,
+        "author_bio": null,
+        "author_location": "Euskirchen, Germany",
+        "author_joined_at": "2011-02-15T18:33:32Z",
+        "author_verified": false,
+        "url": "https://x.com/tmngmsyk/status/2080342699396260083",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080342699396260083",
+        "language": "ja",
+        "text": "Joybuyって言うアジアフードオンラインショッピンして今日配達済みになってるけど、アパート周り色々見たけど無し！どうなってるの？\n問い合わせ先もわかりにくいし、面倒だー\n不在通知入れて、パケットステーションに入れてくれればそれで終わりなのに\n不在通知も無いし。\nめんどうだー\n#DHL\n#Joybuy",
+        "clean_text": "Joybuyって言うアジアフードオンラインショッピンして今日配達済みになってるけど、アパート周り色々見たけど無し！どうなってるの？\n問い合わせ先もわかりにくいし、面倒だー\n不在通知入れて、パケットステーションに入れてくれればそれで終わりなのに\n不在通知も無いし。\nめんどうだー\n#DHL\n#Joybuy",
+        "links": [],
+        "translation_zh": "叫 Joybuy 的亚洲食品在线购物，说今天已经送达了，但我在公寓周围到处看了都没有！这是怎么回事？\n咨询联系方式也很难找，真麻烦——\n如果投个未在家通知，然后放进包裹站里，不就结束了吗\n也没有未在家通知。\n真麻烦——\n#DHL\n#Joybuy",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "metrics": {
+          "likes": 1,
+          "reposts": 0,
+          "replies": 0,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 14
         },
         "media": []
       },
@@ -66,29 +221,29 @@
         "brand_trust"
       ],
       "opportunity_types": [],
-      "post_count": 4,
-      "first_seen_at": "2026-07-21T04:40:29Z",
-      "last_seen_at": "2026-07-21T21:58:24Z",
+      "post_count": 18,
+      "first_seen_at": "2026-07-23T00:15:00Z",
+      "last_seen_at": "2026-07-23T22:58:35Z",
       "metrics": {
-        "total_likes": 10,
-        "total_reposts": 0,
-        "total_replies": 2,
-        "total_quotes": 0,
-        "total_bookmarks": 0,
-        "total_views": 711,
-        "max_author_followers": 11562,
-        "public_interactions": 12
+        "total_likes": 364,
+        "total_reposts": 140,
+        "total_replies": 4,
+        "total_quotes": 3,
+        "total_bookmarks": 19,
+        "total_views": 10722,
+        "max_author_followers": 207050,
+        "public_interactions": 511
       },
       "score": {
-        "ips": 61,
+        "ips": 75,
         "level": "medium",
         "brand_relevance": 100,
-        "risk_or_opportunity_intensity": 45,
-        "current_impact": 30,
-        "future_potential": 56,
+        "risk_or_opportunity_intensity": 53,
+        "current_impact": 82,
+        "future_potential": 82,
         "credibility": 86,
         "business_impact": 48,
-        "urgency": 44,
+        "urgency": 49,
         "sentiment": "mixed",
         "confidence": 0.81,
         "recommended_action": "观察",
@@ -96,22 +251,414 @@
           "brand_trust"
         ],
         "opportunity_labels": [],
+        "special_flags": [
+          "potential_viral",
+          "high_influence_account"
+        ],
+        "explanation": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 75。"
+      },
+      "fermentation": {
+        "status": "升温中",
+        "tracking_days": 10,
+        "first_seen_at": "2026-07-23T00:15:00Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 41,
+          "quotes_24h": 3,
+          "new_related_posts_24h": 24
+        },
+        "signals": [
+          "高影响力账号参与讨论",
+          "相似内容数量增加",
+          "未来发酵潜力较高"
+        ],
+        "risk_change": "up"
+      },
+      "tracking_eligible": true,
+      "tracking_reason": [
+        "high_future_potential",
+        "high_influence_account",
+        "ips_top_candidate"
+      ],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 3,
+        "amplifiers": 2,
+        "latest": 3,
+        "supporting_evidence": 0,
+        "contradicting_evidence": 0
+      }
+    },
+    {
+      "cluster_id": "joybuy-cluster-004",
+      "title": "Refund and payment complaints around Joybuy",
+      "summary": "1 related posts discuss refund progress, cancelled orders or payment holds.",
+      "summary_zh": "多条帖子讨论 Joybuy 退款进度、取消订单或支付挂起问题。",
+      "lead_post": {
+        "post_id": "2080192730232484109",
+        "created_at": "2026-07-23T07:26:09Z",
+        "author": {
+          "id": "1402816876850253827",
+          "handle": "shoppinginCN1",
+          "name": "Shopping in China",
+          "avatar_url": "https://pbs.twimg.com/profile_images/2065003885262196736/zbDMRuMQ_normal.jpg",
+          "followers": 25476,
+          "following": 318,
+          "bio": null,
+          "location": null,
+          "joined_at": "2021-06-10T02:36:34Z",
+          "verified": false
+        },
+        "author_name": "Shopping in China",
+        "author_handle": "shoppinginCN1",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/2065003885262196736/zbDMRuMQ_normal.jpg",
+        "author_followers": 25476,
+        "author_following": 318,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2021-06-10T02:36:34Z",
+        "author_verified": false,
+        "url": "https://x.com/shoppinginCN1/status/2080192730232484109",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080192730232484109",
+        "language": "en",
+        "text": "Getting a tax refund is becoming even easier for international shoppers in China. https://t.co/Vm3da2vv5o has upgraded its online departure tax refund service with paperless applications, overseas bank card binding and an \"instant buy-and-refund\" option, covering 800+ product categories.\n\nEligible travelers can complete tax refund applications through the JD app, track progress in real time and receive refunds faster. Qualifying purchases are also eligible for up to a 9% VAT refund.",
+        "clean_text": "Getting a tax refund is becoming even easier for international shoppers in China. JD.com has upgraded its online departure tax refund service with paperless applications, overseas bank card binding and an \"instant buy-and-refund\" option, covering 800+ product categories.\n\nEligible travelers can complete tax refund applications through the JD app, track progress in real time and receive refunds faster. Qualifying purchases are also eligible for up to a 9% VAT refund.",
+        "links": [
+          "http://JD.com"
+        ],
+        "translation_zh": "在中国，国际购物者办理退税正变得更加容易。JD.com 已升级其线上离境退税服务，提供无纸化申请、绑定海外银行卡以及“即买即退”选项，覆盖 800+ 个商品类别。\n\n符合条件的旅客可以通过 JD app 完成退税申请，实时跟踪进度，并更快收到退款。符合条件的购物还可享受最高 9% 的增值税退税。",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户讨论退款进度、支付或售后处理问题。",
+        "metrics": {
+          "likes": 0,
+          "reposts": 0,
+          "replies": 0,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 135
+        },
+        "media": [
+          {
+            "url": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+            "type": "photo",
+            "preview_image_url": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+            "media_url_https": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+            "expanded_url": "https://x.com/shoppinginCN1/status/2080192730232484109/photo/1"
+          }
+        ]
+      },
+      "topic": "refund",
+      "risk_types": [
+        "refund",
+        "payment",
+        "customer_service"
+      ],
+      "opportunity_types": [],
+      "post_count": 1,
+      "first_seen_at": "2026-07-23T07:26:09Z",
+      "last_seen_at": "2026-07-23T07:26:09Z",
+      "metrics": {
+        "total_likes": 0,
+        "total_reposts": 0,
+        "total_replies": 0,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 135,
+        "max_author_followers": 25476,
+        "public_interactions": 0
+      },
+      "score": {
+        "ips": 68,
+        "level": "medium",
+        "brand_relevance": 70,
+        "risk_or_opportunity_intensity": 78,
+        "current_impact": 34,
+        "future_potential": 60,
+        "credibility": 76,
+        "business_impact": 86,
+        "urgency": 83,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "观察",
+        "risk_labels": [
+          "refund",
+          "payment",
+          "customer_service"
+        ],
+        "opportunity_labels": [],
         "special_flags": [],
-        "explanation": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 61。"
+        "explanation": "退款议题直接影响信任与支付体验，当前影响力 34，未来发酵潜力 60，可信度 76。"
+      },
+      "fermentation": {
+        "status": "观察中",
+        "tracking_days": 10,
+        "first_seen_at": "2026-07-23T07:26:09Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 0,
+          "quotes_24h": 0,
+          "new_related_posts_24h": 2
+        },
+        "signals": [],
+        "risk_change": "flat"
+      },
+      "tracking_eligible": true,
+      "tracking_reason": [
+        "refund_issue"
+      ],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 1,
+        "amplifiers": 1,
+        "latest": 1,
+        "supporting_evidence": 1,
+        "contradicting_evidence": 0
+      }
+    },
+    {
+      "cluster_id": "joybuy-cluster-001",
+      "title": "Customer service and return response concerns",
+      "summary": "1 related posts mention customer service response and returns.",
+      "summary_zh": "相关讨论集中在客服响应、退货和售后体验。",
+      "lead_post": {
+        "post_id": "2080124043714277728",
+        "created_at": "2026-07-23T02:53:13Z",
+        "author": {
+          "id": "1684851246229073921",
+          "handle": "BluesAvalon",
+          "name": "BluesAvalon ☀️🍊",
+          "avatar_url": "https://pbs.twimg.com/profile_images/2074858919458201601/uFRVJMle_normal.jpg",
+          "followers": 202,
+          "following": 536,
+          "bio": null,
+          "location": null,
+          "joined_at": "2023-07-28T09:01:08Z",
+          "verified": false
+        },
+        "author_name": "BluesAvalon ☀️🍊",
+        "author_handle": "BluesAvalon",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/2074858919458201601/uFRVJMle_normal.jpg",
+        "author_followers": 202,
+        "author_following": 536,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2023-07-28T09:01:08Z",
+        "author_verified": false,
+        "url": "https://x.com/BluesAvalon/status/2080124043714277728",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080124043714277728",
+        "language": "en",
+        "text": "Guys, bakal ada livestream Lyu Sitong di https://t.co/ZosrvnB01o: \n\nLü Shitong will be a guest on the A’morie Beauty and Personal Care Live Stream on July 30th at 8 PM. We welcome everyone to support him!\n\nLive stream link:\n https://t.co/BM2szRVhTT",
+        "clean_text": "Guys, bakal ada livestream Lyu Sitong di JD.com \n\nLü Shitong will be a guest on the A’morie Beauty and Personal Care Live Stream on July 30th at 8 PM. We welcome everyone to support him!\n\nLive stream link:\n t.cn/AX92qlwE",
+        "links": [
+          "http://jd.com",
+          "http://t.cn/AX92qlwE"
+        ],
+        "translation_zh": "大家，JD.com 将会有 Lyu Sitong 的直播\n\nLü Shitong 将于 7 月 30 日晚上 8 点作为嘉宾参加 A’morie 美妆与个人护理直播。欢迎大家支持他！\n\n直播链接：\n t.cn/AX92qlwE",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "metrics": {
+          "likes": 78,
+          "reposts": 24,
+          "replies": 1,
+          "quotes": 0,
+          "bookmarks": 14,
+          "views": 1283
+        },
+        "media": []
+      },
+      "topic": "customer_service",
+      "risk_types": [
+        "customer_service",
+        "returns"
+      ],
+      "opportunity_types": [],
+      "post_count": 1,
+      "first_seen_at": "2026-07-23T02:53:13Z",
+      "last_seen_at": "2026-07-23T02:53:13Z",
+      "metrics": {
+        "total_likes": 78,
+        "total_reposts": 24,
+        "total_replies": 1,
+        "total_quotes": 0,
+        "total_bookmarks": 14,
+        "total_views": 1283,
+        "max_author_followers": 202,
+        "public_interactions": 103
+      },
+      "score": {
+        "ips": 61,
+        "level": "medium",
+        "brand_relevance": 70,
+        "risk_or_opportunity_intensity": 70,
+        "current_impact": 34,
+        "future_potential": 47,
+        "credibility": 66,
+        "business_impact": 76,
+        "urgency": 72,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "观察",
+        "risk_labels": [
+          "customer_service",
+          "returns"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [],
+        "explanation": "客服与退货响应涉及售后体验，建议观察是否出现更多相似投诉。综合优先级 61。"
+      },
+      "fermentation": {
+        "status": "观察中",
+        "tracking_days": 10,
+        "first_seen_at": "2026-07-23T02:53:13Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 8,
+          "quotes_24h": 0,
+          "new_related_posts_24h": 2
+        },
+        "signals": [],
+        "risk_change": "flat"
+      },
+      "tracking_eligible": true,
+      "tracking_reason": [
+        "customer_service_issue"
+      ],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 1,
+        "amplifiers": 0,
+        "latest": 1,
+        "supporting_evidence": 0,
+        "contradicting_evidence": 1
+      }
+    },
+    {
+      "cluster_id": "joybuy-cluster-003",
+      "title": "Positive price and delivery opportunity signals",
+      "summary": "1 related posts mention fast delivery, discounts or positive value signals.",
+      "summary_zh": "相关讨论体现价格、优惠或配送体验上的正向机会。",
+      "lead_post": {
+        "post_id": "2080361769168433502",
+        "created_at": "2026-07-23T18:37:51Z",
+        "author": {
+          "id": "14102485",
+          "handle": "dofornop",
+          "name": "Paul do Forno 🛒 🇺🇸🇨🇦🇵🇹",
+          "avatar_url": "https://pbs.twimg.com/profile_images/1827770445967347712/vWjf1wgT_normal.jpg",
+          "followers": 4341,
+          "following": 2076,
+          "bio": null,
+          "location": "Columbus, Ohio | via Canada",
+          "joined_at": "2008-03-08T19:06:40Z",
+          "verified": false
+        },
+        "author_name": "Paul do Forno 🛒 🇺🇸🇨🇦🇵🇹",
+        "author_handle": "dofornop",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/1827770445967347712/vWjf1wgT_normal.jpg",
+        "author_followers": 4341,
+        "author_following": 2076,
+        "author_bio": null,
+        "author_location": "Columbus, Ohio | via Canada",
+        "author_joined_at": "2008-03-08T19:06:40Z",
+        "author_verified": false,
+        "url": "https://x.com/dofornop/status/2080361769168433502",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080361769168433502",
+        "language": "en",
+        "text": "\"Costco Launches Official Store on https://t.co/psZZLTuvYd with Fast Delivery Nationwide in China\"\n\n🤝 https://t.co/psZZLTuvYd becomes Costco's sole official e-commerce platform partner in China, combining Costco's product selection with https://t.co/psZZLTuvYd's nationwide supply chain\n\n🚚 Consumers across China can now order Costco products online with fulfillment as fast as same-day\n\n🛒 The flagship store, in trial since late May, already features about 700 product types spanning snacks, food staples, personal care, beauty, paper products and nutritional supplements\n\n📊 In its first month alone, the storefront drew over 30 million visitors and nearly 200,000 store followers\n\n📈 Kirkland Signature items, including its signature pistachios, sold out repeatedly and required constant restocking\n\n🔗 JD Super notes its 700 million active users align closely with Costco's quality-and-value-focused customer base\n\n#ecommerce #retail \nhttps://t.co/pbgoa50Dxq",
+        "clean_text": "\"Costco Launches Official Store on JD.com with Fast Delivery Nationwide in China\"\n\n🤝 JD.com becomes Costco's sole official e-commerce platform partner in China, combining Costco's product selection with JD.com nationwide supply chain\n\n🚚 Consumers across China can now order Costco products online with fulfillment as fast as same-day\n\n🛒 The flagship store, in trial since late May, already features about 700 product types spanning snacks, food staples, personal care, beauty, paper products and nutritional supplements\n\n📊 In its first month alone, the storefront drew over 30 million visitors and nearly 200,000 store followers\n\n📈 Kirkland Signature items, including its signature pistachios, sold out repeatedly and required constant restocking\n\n🔗 JD Super notes its 700 million active users align closely with Costco's quality-and-value-focused customer base\n\n#ecommerce #retail \nbuff.ly/Q0iAhVM",
+        "links": [
+          "http://JD.com",
+          "http://JD.com",
+          "http://JD.com",
+          "https://buff.ly/Q0iAhVM"
+        ],
+        "translation_zh": "\"Costco 在 JD.com 开设官方店，在中国全国范围内提供快速配送\"\n\n🤝 JD.com 成为 Costco 在中国唯一的官方电商平台合作伙伴，将 Costco 的商品选择与 JD.com 的全国供应链结合起来\n\n🚚 中国各地消费者现在都可以在线订购 Costco 商品，履约最快可当日完成\n\n🛒 这家旗舰店自 5 月下旬起试运营，目前已上架约 700 种商品，涵盖零食、食品主食、个人护理、美妆、纸制品和营养补充剂\n\n📊 仅在开业首月，该店铺就吸引了超过 3000 万名访客，并获得近 200,000 名店铺粉丝\n\n📈 Kirkland Signature 商品，包括其标志性的开心果，多次售罄，并需要持续补货\n\n🔗 JD Super 指出，其 7 亿活跃用户与 Costco 注重品质和价值的客户群高度契合\n\n#ecommerce #retail \nbuff.ly/Q0iAhVM",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
+        "metrics": {
+          "likes": 0,
+          "reposts": 0,
+          "replies": 0,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 34
+        },
+        "media": [
+          {
+            "url": "https://pbs.twimg.com/media/HN7uAREXEAAzpKF.jpg",
+            "type": "photo",
+            "preview_image_url": "https://pbs.twimg.com/media/HN7uAREXEAAzpKF.jpg",
+            "media_url_https": "https://pbs.twimg.com/media/HN7uAREXEAAzpKF.jpg",
+            "expanded_url": "https://x.com/dofornop/status/2080361769168433502/photo/1"
+          }
+        ]
+      },
+      "topic": "price_opportunity",
+      "risk_types": [],
+      "opportunity_types": [
+        "positive_value",
+        "delivery_strength"
+      ],
+      "post_count": 1,
+      "first_seen_at": "2026-07-23T18:37:51Z",
+      "last_seen_at": "2026-07-23T18:37:51Z",
+      "metrics": {
+        "total_likes": 0,
+        "total_reposts": 0,
+        "total_replies": 0,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 34,
+        "max_author_followers": 4341,
+        "public_interactions": 0
+      },
+      "score": {
+        "ips": 51,
+        "level": "low",
+        "brand_relevance": 70,
+        "risk_or_opportunity_intensity": 58,
+        "current_impact": 26,
+        "future_potential": 42,
+        "credibility": 58,
+        "business_impact": 52,
+        "urgency": 46,
+        "sentiment": "positive",
+        "confidence": 0.81,
+        "recommended_action": "传播机会",
+        "risk_labels": [],
+        "opportunity_labels": [
+          "positive_value",
+          "delivery_strength"
+        ],
+        "special_flags": [],
+        "explanation": "该情报偏正向机会，体现价格、配送或促销优势，可用于观察传播借势。综合优先级 51。"
       },
       "fermentation": {
         "status": "不追踪",
         "tracking_days": 0,
-        "first_seen_at": "2026-07-21T04:40:29Z",
-        "last_checked_at": "2026-07-22T07:32:58Z",
+        "first_seen_at": "2026-07-23T18:37:51Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
         "growth": {
-          "public_interactions_24h": 1,
+          "public_interactions_24h": 0,
           "quotes_24h": 0,
-          "new_related_posts_24h": 8
+          "new_related_posts_24h": 2
         },
-        "signals": [
-          "相似内容数量增加"
-        ],
+        "signals": [],
         "risk_change": "flat"
       },
       "tracking_eligible": false,
@@ -119,8 +666,681 @@
       "evidence_counts": {
         "origin": 1,
         "stakeholders": 0,
-        "popular": 3,
+        "popular": 1,
         "amplifiers": 0,
+        "latest": 1,
+        "supporting_evidence": 0,
+        "contradicting_evidence": 1
+      }
+    }
+  ],
+  "negative_top": [
+    {
+      "cluster_id": "joybuy-cluster-005",
+      "title": "Regulatory and market-access scrutiny around JD.com",
+      "summary": "6 related posts discuss regulatory review, acquisition scrutiny or market-access risk.",
+      "summary_zh": "相关讨论涉及 JD.com 在海外市场的监管审查、并购交易或市场准入风险。",
+      "lead_post": {
+        "post_id": "2080201149357916409",
+        "created_at": "2026-07-23T07:59:36Z",
+        "author": {
+          "id": "923284200631013376",
+          "handle": "stup360",
+          "name": "Startup360 | استارتاپ ۳۶۰",
+          "avatar_url": "https://pbs.twimg.com/profile_images/923284866174726145/4A8-25Wv_normal.jpg",
+          "followers": 6886,
+          "following": 0,
+          "bio": null,
+          "location": "Tehran, Iran",
+          "joined_at": "2017-10-25T20:24:42Z",
+          "verified": false
+        },
+        "author_name": "Startup360 | استارتاپ ۳۶۰",
+        "author_handle": "stup360",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/923284866174726145/4A8-25Wv_normal.jpg",
+        "author_followers": 6886,
+        "author_following": 0,
+        "author_bio": null,
+        "author_location": "Tehran, Iran",
+        "author_joined_at": "2017-10-25T20:24:42Z",
+        "author_verified": false,
+        "url": "https://x.com/stup360/status/2080201149357916409",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080201149357916409",
+        "language": "fa",
+        "text": "کمیسیون اروپا درباره خرید ۲.۵ میلیارد دلاری Ceconomy توسط https://t.co/gZo8lmWbtJ ابراز نگرانی کرد. اروپا در حال بررسی احتمال استفاده جی‌دی‌دات‌کام از تامین مالی ترجیحی، مشوق‌های مالیاتی و کمک‌های دولت چین است. بیشتربخوانید:\nhttps://t.co/Vg9ou06otU https://t.co/etpMJd0cMk",
+        "clean_text": "کمیسیون اروپا درباره خرید ۲.۵ میلیارد دلاری Ceconomy توسط JD.com ابراز نگرانی کرد. اروپا در حال بررسی احتمال استفاده جی‌دی‌دات‌کام از تامین مالی ترجیحی، مشوق‌های مالیاتی و کمک‌های دولت چین است. بیشتربخوانید:\nstartup360.ir/jd-com-ceconomy-eu-regulatory-concerns",
+        "links": [
+          "http://JD.com",
+          "https://startup360.ir/jd-com-ceconomy-eu-regulatory-concerns/"
+        ],
+        "translation_zh": "欧盟委员会对 JD.com 以 25 亿美元收购 Ceconomy 表示担忧。欧洲正在调查京东是否可能使用优惠融资、税收激励以及中国政府的援助。阅读更多：\nstartup360.ir/jd-com-ceconomy-eu-regulatory-concerns",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "metrics": {
+          "likes": 1,
+          "reposts": 0,
+          "replies": 0,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 167
+        },
+        "media": [
+          {
+            "url": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+            "type": "photo",
+            "preview_image_url": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+            "media_url_https": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+            "expanded_url": "https://x.com/stup360/status/2080201149357916409/photo/1"
+          }
+        ]
+      },
+      "topic": "regulatory",
+      "risk_types": [
+        "regulatory",
+        "market_access",
+        "acquisition"
+      ],
+      "opportunity_types": [],
+      "post_count": 6,
+      "first_seen_at": "2026-07-23T07:59:36Z",
+      "last_seen_at": "2026-07-23T16:01:44Z",
+      "metrics": {
+        "total_likes": 3,
+        "total_reposts": 1,
+        "total_replies": 1,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 1279,
+        "max_author_followers": 51573,
+        "public_interactions": 5
+      },
+      "score": {
+        "ips": 85,
+        "level": "high",
+        "brand_relevance": 100,
+        "risk_or_opportunity_intensity": 90,
+        "current_impact": 43,
+        "future_potential": 87,
+        "credibility": 94,
+        "business_impact": 90,
+        "urgency": 94,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "管理层同步",
+        "risk_labels": [
+          "regulatory",
+          "market_access",
+          "acquisition"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [
+          "potential_viral",
+          "high_influence_account"
+        ],
+        "explanation": "监管与并购审查影响海外市场准入和品牌信任，当前影响力 43，可信度 94，建议纳入管理层视野。"
+      },
+      "fermentation": {
+        "status": "升温中",
+        "tracking_days": 14,
+        "first_seen_at": "2026-07-23T07:59:36Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 0,
+          "quotes_24h": 0,
+          "new_related_posts_24h": 12
+        },
+        "signals": [
+          "高影响力账号参与讨论",
+          "相似内容数量增加",
+          "未来发酵潜力较高"
+        ],
+        "risk_change": "up"
+      },
+      "tracking_eligible": true,
+      "tracking_reason": [
+        "high_future_potential",
+        "high_influence_account",
+        "high_risk",
+        "ips_top_candidate"
+      ],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 3,
+        "amplifiers": 1,
+        "latest": 3,
+        "supporting_evidence": 0,
+        "contradicting_evidence": 0
+      }
+    },
+    {
+      "cluster_id": "joybuy-cluster-004",
+      "title": "Refund and payment complaints around Joybuy",
+      "summary": "1 related posts discuss refund progress, cancelled orders or payment holds.",
+      "summary_zh": "多条帖子讨论 Joybuy 退款进度、取消订单或支付挂起问题。",
+      "lead_post": {
+        "post_id": "2080192730232484109",
+        "created_at": "2026-07-23T07:26:09Z",
+        "author": {
+          "id": "1402816876850253827",
+          "handle": "shoppinginCN1",
+          "name": "Shopping in China",
+          "avatar_url": "https://pbs.twimg.com/profile_images/2065003885262196736/zbDMRuMQ_normal.jpg",
+          "followers": 25476,
+          "following": 318,
+          "bio": null,
+          "location": null,
+          "joined_at": "2021-06-10T02:36:34Z",
+          "verified": false
+        },
+        "author_name": "Shopping in China",
+        "author_handle": "shoppinginCN1",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/2065003885262196736/zbDMRuMQ_normal.jpg",
+        "author_followers": 25476,
+        "author_following": 318,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2021-06-10T02:36:34Z",
+        "author_verified": false,
+        "url": "https://x.com/shoppinginCN1/status/2080192730232484109",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080192730232484109",
+        "language": "en",
+        "text": "Getting a tax refund is becoming even easier for international shoppers in China. https://t.co/Vm3da2vv5o has upgraded its online departure tax refund service with paperless applications, overseas bank card binding and an \"instant buy-and-refund\" option, covering 800+ product categories.\n\nEligible travelers can complete tax refund applications through the JD app, track progress in real time and receive refunds faster. Qualifying purchases are also eligible for up to a 9% VAT refund.",
+        "clean_text": "Getting a tax refund is becoming even easier for international shoppers in China. JD.com has upgraded its online departure tax refund service with paperless applications, overseas bank card binding and an \"instant buy-and-refund\" option, covering 800+ product categories.\n\nEligible travelers can complete tax refund applications through the JD app, track progress in real time and receive refunds faster. Qualifying purchases are also eligible for up to a 9% VAT refund.",
+        "links": [
+          "http://JD.com"
+        ],
+        "translation_zh": "在中国，国际购物者办理退税正变得更加容易。JD.com 已升级其线上离境退税服务，提供无纸化申请、绑定海外银行卡以及“即买即退”选项，覆盖 800+ 个商品类别。\n\n符合条件的旅客可以通过 JD app 完成退税申请，实时跟踪进度，并更快收到退款。符合条件的购物还可享受最高 9% 的增值税退税。",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户讨论退款进度、支付或售后处理问题。",
+        "metrics": {
+          "likes": 0,
+          "reposts": 0,
+          "replies": 0,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 135
+        },
+        "media": [
+          {
+            "url": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+            "type": "photo",
+            "preview_image_url": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+            "media_url_https": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+            "expanded_url": "https://x.com/shoppinginCN1/status/2080192730232484109/photo/1"
+          }
+        ]
+      },
+      "topic": "refund",
+      "risk_types": [
+        "refund",
+        "payment",
+        "customer_service"
+      ],
+      "opportunity_types": [],
+      "post_count": 1,
+      "first_seen_at": "2026-07-23T07:26:09Z",
+      "last_seen_at": "2026-07-23T07:26:09Z",
+      "metrics": {
+        "total_likes": 0,
+        "total_reposts": 0,
+        "total_replies": 0,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 135,
+        "max_author_followers": 25476,
+        "public_interactions": 0
+      },
+      "score": {
+        "ips": 68,
+        "level": "medium",
+        "brand_relevance": 70,
+        "risk_or_opportunity_intensity": 78,
+        "current_impact": 34,
+        "future_potential": 60,
+        "credibility": 76,
+        "business_impact": 86,
+        "urgency": 83,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "观察",
+        "risk_labels": [
+          "refund",
+          "payment",
+          "customer_service"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [],
+        "explanation": "退款议题直接影响信任与支付体验，当前影响力 34，未来发酵潜力 60，可信度 76。"
+      },
+      "fermentation": {
+        "status": "观察中",
+        "tracking_days": 10,
+        "first_seen_at": "2026-07-23T07:26:09Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 0,
+          "quotes_24h": 0,
+          "new_related_posts_24h": 2
+        },
+        "signals": [],
+        "risk_change": "flat"
+      },
+      "tracking_eligible": true,
+      "tracking_reason": [
+        "refund_issue"
+      ],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 1,
+        "amplifiers": 1,
+        "latest": 1,
+        "supporting_evidence": 1,
+        "contradicting_evidence": 0
+      }
+    },
+    {
+      "cluster_id": "joybuy-cluster-001",
+      "title": "Customer service and return response concerns",
+      "summary": "1 related posts mention customer service response and returns.",
+      "summary_zh": "相关讨论集中在客服响应、退货和售后体验。",
+      "lead_post": {
+        "post_id": "2080124043714277728",
+        "created_at": "2026-07-23T02:53:13Z",
+        "author": {
+          "id": "1684851246229073921",
+          "handle": "BluesAvalon",
+          "name": "BluesAvalon ☀️🍊",
+          "avatar_url": "https://pbs.twimg.com/profile_images/2074858919458201601/uFRVJMle_normal.jpg",
+          "followers": 202,
+          "following": 536,
+          "bio": null,
+          "location": null,
+          "joined_at": "2023-07-28T09:01:08Z",
+          "verified": false
+        },
+        "author_name": "BluesAvalon ☀️🍊",
+        "author_handle": "BluesAvalon",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/2074858919458201601/uFRVJMle_normal.jpg",
+        "author_followers": 202,
+        "author_following": 536,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2023-07-28T09:01:08Z",
+        "author_verified": false,
+        "url": "https://x.com/BluesAvalon/status/2080124043714277728",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080124043714277728",
+        "language": "en",
+        "text": "Guys, bakal ada livestream Lyu Sitong di https://t.co/ZosrvnB01o: \n\nLü Shitong will be a guest on the A’morie Beauty and Personal Care Live Stream on July 30th at 8 PM. We welcome everyone to support him!\n\nLive stream link:\n https://t.co/BM2szRVhTT",
+        "clean_text": "Guys, bakal ada livestream Lyu Sitong di JD.com \n\nLü Shitong will be a guest on the A’morie Beauty and Personal Care Live Stream on July 30th at 8 PM. We welcome everyone to support him!\n\nLive stream link:\n t.cn/AX92qlwE",
+        "links": [
+          "http://jd.com",
+          "http://t.cn/AX92qlwE"
+        ],
+        "translation_zh": "大家，JD.com 将会有 Lyu Sitong 的直播\n\nLü Shitong 将于 7 月 30 日晚上 8 点作为嘉宾参加 A’morie 美妆与个人护理直播。欢迎大家支持他！\n\n直播链接：\n t.cn/AX92qlwE",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "metrics": {
+          "likes": 78,
+          "reposts": 24,
+          "replies": 1,
+          "quotes": 0,
+          "bookmarks": 14,
+          "views": 1283
+        },
+        "media": []
+      },
+      "topic": "customer_service",
+      "risk_types": [
+        "customer_service",
+        "returns"
+      ],
+      "opportunity_types": [],
+      "post_count": 1,
+      "first_seen_at": "2026-07-23T02:53:13Z",
+      "last_seen_at": "2026-07-23T02:53:13Z",
+      "metrics": {
+        "total_likes": 78,
+        "total_reposts": 24,
+        "total_replies": 1,
+        "total_quotes": 0,
+        "total_bookmarks": 14,
+        "total_views": 1283,
+        "max_author_followers": 202,
+        "public_interactions": 103
+      },
+      "score": {
+        "ips": 61,
+        "level": "medium",
+        "brand_relevance": 70,
+        "risk_or_opportunity_intensity": 70,
+        "current_impact": 34,
+        "future_potential": 47,
+        "credibility": 66,
+        "business_impact": 76,
+        "urgency": 72,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "观察",
+        "risk_labels": [
+          "customer_service",
+          "returns"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [],
+        "explanation": "客服与退货响应涉及售后体验，建议观察是否出现更多相似投诉。综合优先级 61。"
+      },
+      "fermentation": {
+        "status": "观察中",
+        "tracking_days": 10,
+        "first_seen_at": "2026-07-23T02:53:13Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 8,
+          "quotes_24h": 0,
+          "new_related_posts_24h": 2
+        },
+        "signals": [],
+        "risk_change": "flat"
+      },
+      "tracking_eligible": true,
+      "tracking_reason": [
+        "customer_service_issue"
+      ],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 1,
+        "amplifiers": 0,
+        "latest": 1,
+        "supporting_evidence": 0,
+        "contradicting_evidence": 1
+      }
+    }
+  ],
+  "opportunity_top": [
+    {
+      "cluster_id": "joybuy-cluster-003",
+      "title": "Positive price and delivery opportunity signals",
+      "summary": "1 related posts mention fast delivery, discounts or positive value signals.",
+      "summary_zh": "相关讨论体现价格、优惠或配送体验上的正向机会。",
+      "lead_post": {
+        "post_id": "2080361769168433502",
+        "created_at": "2026-07-23T18:37:51Z",
+        "author": {
+          "id": "14102485",
+          "handle": "dofornop",
+          "name": "Paul do Forno 🛒 🇺🇸🇨🇦🇵🇹",
+          "avatar_url": "https://pbs.twimg.com/profile_images/1827770445967347712/vWjf1wgT_normal.jpg",
+          "followers": 4341,
+          "following": 2076,
+          "bio": null,
+          "location": "Columbus, Ohio | via Canada",
+          "joined_at": "2008-03-08T19:06:40Z",
+          "verified": false
+        },
+        "author_name": "Paul do Forno 🛒 🇺🇸🇨🇦🇵🇹",
+        "author_handle": "dofornop",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/1827770445967347712/vWjf1wgT_normal.jpg",
+        "author_followers": 4341,
+        "author_following": 2076,
+        "author_bio": null,
+        "author_location": "Columbus, Ohio | via Canada",
+        "author_joined_at": "2008-03-08T19:06:40Z",
+        "author_verified": false,
+        "url": "https://x.com/dofornop/status/2080361769168433502",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080361769168433502",
+        "language": "en",
+        "text": "\"Costco Launches Official Store on https://t.co/psZZLTuvYd with Fast Delivery Nationwide in China\"\n\n🤝 https://t.co/psZZLTuvYd becomes Costco's sole official e-commerce platform partner in China, combining Costco's product selection with https://t.co/psZZLTuvYd's nationwide supply chain\n\n🚚 Consumers across China can now order Costco products online with fulfillment as fast as same-day\n\n🛒 The flagship store, in trial since late May, already features about 700 product types spanning snacks, food staples, personal care, beauty, paper products and nutritional supplements\n\n📊 In its first month alone, the storefront drew over 30 million visitors and nearly 200,000 store followers\n\n📈 Kirkland Signature items, including its signature pistachios, sold out repeatedly and required constant restocking\n\n🔗 JD Super notes its 700 million active users align closely with Costco's quality-and-value-focused customer base\n\n#ecommerce #retail \nhttps://t.co/pbgoa50Dxq",
+        "clean_text": "\"Costco Launches Official Store on JD.com with Fast Delivery Nationwide in China\"\n\n🤝 JD.com becomes Costco's sole official e-commerce platform partner in China, combining Costco's product selection with JD.com nationwide supply chain\n\n🚚 Consumers across China can now order Costco products online with fulfillment as fast as same-day\n\n🛒 The flagship store, in trial since late May, already features about 700 product types spanning snacks, food staples, personal care, beauty, paper products and nutritional supplements\n\n📊 In its first month alone, the storefront drew over 30 million visitors and nearly 200,000 store followers\n\n📈 Kirkland Signature items, including its signature pistachios, sold out repeatedly and required constant restocking\n\n🔗 JD Super notes its 700 million active users align closely with Costco's quality-and-value-focused customer base\n\n#ecommerce #retail \nbuff.ly/Q0iAhVM",
+        "links": [
+          "http://JD.com",
+          "http://JD.com",
+          "http://JD.com",
+          "https://buff.ly/Q0iAhVM"
+        ],
+        "translation_zh": "\"Costco 在 JD.com 开设官方店，在中国全国范围内提供快速配送\"\n\n🤝 JD.com 成为 Costco 在中国唯一的官方电商平台合作伙伴，将 Costco 的商品选择与 JD.com 的全国供应链结合起来\n\n🚚 中国各地消费者现在都可以在线订购 Costco 商品，履约最快可当日完成\n\n🛒 这家旗舰店自 5 月下旬起试运营，目前已上架约 700 种商品，涵盖零食、食品主食、个人护理、美妆、纸制品和营养补充剂\n\n📊 仅在开业首月，该店铺就吸引了超过 3000 万名访客，并获得近 200,000 名店铺粉丝\n\n📈 Kirkland Signature 商品，包括其标志性的开心果，多次售罄，并需要持续补货\n\n🔗 JD Super 指出，其 7 亿活跃用户与 Costco 注重品质和价值的客户群高度契合\n\n#ecommerce #retail \nbuff.ly/Q0iAhVM",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
+        "metrics": {
+          "likes": 0,
+          "reposts": 0,
+          "replies": 0,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 34
+        },
+        "media": [
+          {
+            "url": "https://pbs.twimg.com/media/HN7uAREXEAAzpKF.jpg",
+            "type": "photo",
+            "preview_image_url": "https://pbs.twimg.com/media/HN7uAREXEAAzpKF.jpg",
+            "media_url_https": "https://pbs.twimg.com/media/HN7uAREXEAAzpKF.jpg",
+            "expanded_url": "https://x.com/dofornop/status/2080361769168433502/photo/1"
+          }
+        ]
+      },
+      "topic": "price_opportunity",
+      "risk_types": [],
+      "opportunity_types": [
+        "positive_value",
+        "delivery_strength"
+      ],
+      "post_count": 1,
+      "first_seen_at": "2026-07-23T18:37:51Z",
+      "last_seen_at": "2026-07-23T18:37:51Z",
+      "metrics": {
+        "total_likes": 0,
+        "total_reposts": 0,
+        "total_replies": 0,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 34,
+        "max_author_followers": 4341,
+        "public_interactions": 0
+      },
+      "score": {
+        "ips": 51,
+        "level": "low",
+        "brand_relevance": 70,
+        "risk_or_opportunity_intensity": 58,
+        "current_impact": 26,
+        "future_potential": 42,
+        "credibility": 58,
+        "business_impact": 52,
+        "urgency": 46,
+        "sentiment": "positive",
+        "confidence": 0.81,
+        "recommended_action": "传播机会",
+        "risk_labels": [],
+        "opportunity_labels": [
+          "positive_value",
+          "delivery_strength"
+        ],
+        "special_flags": [],
+        "explanation": "该情报偏正向机会，体现价格、配送或促销优势，可用于观察传播借势。综合优先级 51。"
+      },
+      "fermentation": {
+        "status": "不追踪",
+        "tracking_days": 0,
+        "first_seen_at": "2026-07-23T18:37:51Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 0,
+          "quotes_24h": 0,
+          "new_related_posts_24h": 2
+        },
+        "signals": [],
+        "risk_change": "flat"
+      },
+      "tracking_eligible": false,
+      "tracking_reason": [],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 1,
+        "amplifiers": 0,
+        "latest": 1,
+        "supporting_evidence": 0,
+        "contradicting_evidence": 1
+      }
+    }
+  ],
+  "fermentation_snapshot": [
+    {
+      "cluster_id": "joybuy-cluster-005",
+      "title": "Regulatory and market-access scrutiny around JD.com",
+      "summary": "6 related posts discuss regulatory review, acquisition scrutiny or market-access risk.",
+      "summary_zh": "相关讨论涉及 JD.com 在海外市场的监管审查、并购交易或市场准入风险。",
+      "lead_post": {
+        "post_id": "2080201149357916409",
+        "created_at": "2026-07-23T07:59:36Z",
+        "author": {
+          "id": "923284200631013376",
+          "handle": "stup360",
+          "name": "Startup360 | استارتاپ ۳۶۰",
+          "avatar_url": "https://pbs.twimg.com/profile_images/923284866174726145/4A8-25Wv_normal.jpg",
+          "followers": 6886,
+          "following": 0,
+          "bio": null,
+          "location": "Tehran, Iran",
+          "joined_at": "2017-10-25T20:24:42Z",
+          "verified": false
+        },
+        "author_name": "Startup360 | استارتاپ ۳۶۰",
+        "author_handle": "stup360",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/923284866174726145/4A8-25Wv_normal.jpg",
+        "author_followers": 6886,
+        "author_following": 0,
+        "author_bio": null,
+        "author_location": "Tehran, Iran",
+        "author_joined_at": "2017-10-25T20:24:42Z",
+        "author_verified": false,
+        "url": "https://x.com/stup360/status/2080201149357916409",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080201149357916409",
+        "language": "fa",
+        "text": "کمیسیون اروپا درباره خرید ۲.۵ میلیارد دلاری Ceconomy توسط https://t.co/gZo8lmWbtJ ابراز نگرانی کرد. اروپا در حال بررسی احتمال استفاده جی‌دی‌دات‌کام از تامین مالی ترجیحی، مشوق‌های مالیاتی و کمک‌های دولت چین است. بیشتربخوانید:\nhttps://t.co/Vg9ou06otU https://t.co/etpMJd0cMk",
+        "clean_text": "کمیسیون اروپا درباره خرید ۲.۵ میلیارد دلاری Ceconomy توسط JD.com ابراز نگرانی کرد. اروپا در حال بررسی احتمال استفاده جی‌دی‌دات‌کام از تامین مالی ترجیحی، مشوق‌های مالیاتی و کمک‌های دولت چین است. بیشتربخوانید:\nstartup360.ir/jd-com-ceconomy-eu-regulatory-concerns",
+        "links": [
+          "http://JD.com",
+          "https://startup360.ir/jd-com-ceconomy-eu-regulatory-concerns/"
+        ],
+        "translation_zh": "欧盟委员会对 JD.com 以 25 亿美元收购 Ceconomy 表示担忧。欧洲正在调查京东是否可能使用优惠融资、税收激励以及中国政府的援助。阅读更多：\nstartup360.ir/jd-com-ceconomy-eu-regulatory-concerns",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "metrics": {
+          "likes": 1,
+          "reposts": 0,
+          "replies": 0,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 167
+        },
+        "media": [
+          {
+            "url": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+            "type": "photo",
+            "preview_image_url": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+            "media_url_https": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+            "expanded_url": "https://x.com/stup360/status/2080201149357916409/photo/1"
+          }
+        ]
+      },
+      "topic": "regulatory",
+      "risk_types": [
+        "regulatory",
+        "market_access",
+        "acquisition"
+      ],
+      "opportunity_types": [],
+      "post_count": 6,
+      "first_seen_at": "2026-07-23T07:59:36Z",
+      "last_seen_at": "2026-07-23T16:01:44Z",
+      "metrics": {
+        "total_likes": 3,
+        "total_reposts": 1,
+        "total_replies": 1,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 1279,
+        "max_author_followers": 51573,
+        "public_interactions": 5
+      },
+      "score": {
+        "ips": 85,
+        "level": "high",
+        "brand_relevance": 100,
+        "risk_or_opportunity_intensity": 90,
+        "current_impact": 43,
+        "future_potential": 87,
+        "credibility": 94,
+        "business_impact": 90,
+        "urgency": 94,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "管理层同步",
+        "risk_labels": [
+          "regulatory",
+          "market_access",
+          "acquisition"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [
+          "potential_viral",
+          "high_influence_account"
+        ],
+        "explanation": "监管与并购审查影响海外市场准入和品牌信任，当前影响力 43，可信度 94，建议纳入管理层视野。"
+      },
+      "fermentation": {
+        "status": "升温中",
+        "tracking_days": 14,
+        "first_seen_at": "2026-07-23T07:59:36Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 0,
+          "quotes_24h": 0,
+          "new_related_posts_24h": 12
+        },
+        "signals": [
+          "高影响力账号参与讨论",
+          "相似内容数量增加",
+          "未来发酵潜力较高"
+        ],
+        "risk_change": "up"
+      },
+      "tracking_eligible": true,
+      "tracking_reason": [
+        "high_future_potential",
+        "high_influence_account",
+        "high_risk",
+        "ips_top_candidate"
+      ],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 3,
+        "amplifiers": 1,
         "latest": 3,
         "supporting_evidence": 0,
         "contradicting_evidence": 0
@@ -128,387 +1348,1689 @@
     },
     {
       "cluster_id": "joybuy-cluster-002",
-      "title": "Positive price and delivery opportunity signals",
-      "summary": "1 related posts mention fast delivery, discounts or positive value signals.",
-      "summary_zh": "相关讨论体现价格、优惠或配送体验上的正向机会。",
+      "title": "General Joybuy/JD overseas shopping discussion",
+      "summary": "18 related posts discuss Joybuy/JD overseas shopping context.",
+      "summary_zh": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
       "lead_post": {
-        "post_id": "2079439909182439571",
-        "created_at": "2026-07-21T05:34:43Z",
+        "post_id": "2080342699396260083",
+        "created_at": "2026-07-23T17:22:05Z",
         "author": {
-          "id": "1038326748943933440",
-          "handle": "SteelbookV",
-          "name": "Steelbook Jeux Vidéo - Scalou",
-          "avatar_url": "https://pbs.twimg.com/profile_images/1519236240251490304/MYRjRt7b_normal.jpg",
-          "followers": 2841,
+          "id": "252695794",
+          "handle": "tmngmsyk",
+          "name": "oiaaaaui",
+          "avatar_url": "https://pbs.twimg.com/profile_images/1534080441485246465/WuLg92pF_normal.jpg",
+          "followers": 30,
+          "following": 441,
+          "bio": null,
+          "location": "Euskirchen, Germany",
+          "joined_at": "2011-02-15T18:33:32Z",
           "verified": false
         },
-        "author_name": "Steelbook Jeux Vidéo - Scalou",
-        "author_handle": "SteelbookV",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/1519236240251490304/MYRjRt7b_normal.jpg",
-        "author_followers": 2841,
+        "author_name": "oiaaaaui",
+        "author_handle": "tmngmsyk",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/1534080441485246465/WuLg92pF_normal.jpg",
+        "author_followers": 30,
+        "author_following": 441,
+        "author_bio": null,
+        "author_location": "Euskirchen, Germany",
+        "author_joined_at": "2011-02-15T18:33:32Z",
         "author_verified": false,
-        "url": "https://x.com/SteelbookV/status/2079439909182439571",
-        "language": "fr",
-        "clean_text": "Splatoon Raiders sur Nintendo Switch 2 sort après demain ⤵️\n\nAmazon : \nFnac : \nJoyBuy : \nCdiscount : \nMicromania : \n\nInfos :",
-        "links": [
-          "https://amzn.to/431EReG",
-          "https://tidd.ly/3QUGLLe",
-          "https://tidd.ly/4dAdxKF",
-          "https://tidd.ly/3Qq7aAu",
-          "https://lk.gt/apnqa",
-          "https://www.steelbookjeuxvideo.fr/splatoon-raiders-nintendo-switch-2"
-        ],
-        "translation_zh": "Nintendo Switch 2 上的 Splatoon Raiders 后天发售 ⤵️\n\nAmazon：\nFnac：\nJoyBuy：\nCdiscount：\nMicromania：\n\n信息：",
-        "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户讨论价格、优惠或正向购物体验。",
-        "metrics": {
-          "likes": 2,
-          "reposts": 1,
-          "replies": 0,
-          "quotes": 0,
-          "bookmarks": 0,
-          "views": 326
-        },
-        "media": []
-      },
-      "topic": "price_opportunity",
-      "risk_types": [],
-      "opportunity_types": [
-        "positive_value",
-        "delivery_strength"
-      ],
-      "post_count": 1,
-      "first_seen_at": "2026-07-21T05:34:43Z",
-      "last_seen_at": "2026-07-21T05:34:43Z",
-      "metrics": {
-        "total_likes": 2,
-        "total_reposts": 1,
-        "total_replies": 0,
-        "total_quotes": 0,
-        "total_bookmarks": 0,
-        "total_views": 326,
-        "max_author_followers": 2841,
-        "public_interactions": 3
-      },
-      "score": {
-        "ips": 51,
-        "level": "low",
-        "brand_relevance": 70,
-        "risk_or_opportunity_intensity": 58,
-        "current_impact": 26,
-        "future_potential": 41,
-        "credibility": 58,
-        "business_impact": 52,
-        "urgency": 45,
-        "sentiment": "positive",
-        "confidence": 0.81,
-        "recommended_action": "传播机会",
-        "risk_labels": [],
-        "opportunity_labels": [
-          "positive_value",
-          "delivery_strength"
-        ],
-        "special_flags": [],
-        "explanation": "该情报偏正向机会，体现价格、配送或促销优势，可用于观察传播借势。综合优先级 51。"
-      },
-      "fermentation": {
-        "status": "不追踪",
-        "tracking_days": 0,
-        "first_seen_at": "2026-07-21T05:34:43Z",
-        "last_checked_at": "2026-07-22T07:32:58Z",
-        "growth": {
-          "public_interactions_24h": 0,
-          "quotes_24h": 0,
-          "new_related_posts_24h": 2
-        },
-        "signals": [],
-        "risk_change": "flat"
-      },
-      "tracking_eligible": false,
-      "tracking_reason": [],
-      "evidence_counts": {
-        "origin": 1,
-        "stakeholders": 0,
-        "popular": 1,
-        "amplifiers": 0,
-        "latest": 1,
-        "supporting_evidence": 0,
-        "contradicting_evidence": 1
-      }
-    }
-  ],
-  "negative_top": [],
-  "opportunity_top": [
-    {
-      "cluster_id": "joybuy-cluster-002",
-      "title": "Positive price and delivery opportunity signals",
-      "summary": "1 related posts mention fast delivery, discounts or positive value signals.",
-      "summary_zh": "相关讨论体现价格、优惠或配送体验上的正向机会。",
-      "lead_post": {
-        "post_id": "2079439909182439571",
-        "created_at": "2026-07-21T05:34:43Z",
-        "author": {
-          "id": "1038326748943933440",
-          "handle": "SteelbookV",
-          "name": "Steelbook Jeux Vidéo - Scalou",
-          "avatar_url": "https://pbs.twimg.com/profile_images/1519236240251490304/MYRjRt7b_normal.jpg",
-          "followers": 2841,
-          "verified": false
-        },
-        "author_name": "Steelbook Jeux Vidéo - Scalou",
-        "author_handle": "SteelbookV",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/1519236240251490304/MYRjRt7b_normal.jpg",
-        "author_followers": 2841,
-        "author_verified": false,
-        "url": "https://x.com/SteelbookV/status/2079439909182439571",
-        "language": "fr",
-        "clean_text": "Splatoon Raiders sur Nintendo Switch 2 sort après demain ⤵️\n\nAmazon : \nFnac : \nJoyBuy : \nCdiscount : \nMicromania : \n\nInfos :",
-        "links": [
-          "https://amzn.to/431EReG",
-          "https://tidd.ly/3QUGLLe",
-          "https://tidd.ly/4dAdxKF",
-          "https://tidd.ly/3Qq7aAu",
-          "https://lk.gt/apnqa",
-          "https://www.steelbookjeuxvideo.fr/splatoon-raiders-nintendo-switch-2"
-        ],
-        "translation_zh": "Nintendo Switch 2 上的 Splatoon Raiders 后天发售 ⤵️\n\nAmazon：\nFnac：\nJoyBuy：\nCdiscount：\nMicromania：\n\n信息：",
-        "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户讨论价格、优惠或正向购物体验。",
-        "metrics": {
-          "likes": 2,
-          "reposts": 1,
-          "replies": 0,
-          "quotes": 0,
-          "bookmarks": 0,
-          "views": 326
-        },
-        "media": []
-      },
-      "topic": "price_opportunity",
-      "risk_types": [],
-      "opportunity_types": [
-        "positive_value",
-        "delivery_strength"
-      ],
-      "post_count": 1,
-      "first_seen_at": "2026-07-21T05:34:43Z",
-      "last_seen_at": "2026-07-21T05:34:43Z",
-      "metrics": {
-        "total_likes": 2,
-        "total_reposts": 1,
-        "total_replies": 0,
-        "total_quotes": 0,
-        "total_bookmarks": 0,
-        "total_views": 326,
-        "max_author_followers": 2841,
-        "public_interactions": 3
-      },
-      "score": {
-        "ips": 51,
-        "level": "low",
-        "brand_relevance": 70,
-        "risk_or_opportunity_intensity": 58,
-        "current_impact": 26,
-        "future_potential": 41,
-        "credibility": 58,
-        "business_impact": 52,
-        "urgency": 45,
-        "sentiment": "positive",
-        "confidence": 0.81,
-        "recommended_action": "传播机会",
-        "risk_labels": [],
-        "opportunity_labels": [
-          "positive_value",
-          "delivery_strength"
-        ],
-        "special_flags": [],
-        "explanation": "该情报偏正向机会，体现价格、配送或促销优势，可用于观察传播借势。综合优先级 51。"
-      },
-      "fermentation": {
-        "status": "不追踪",
-        "tracking_days": 0,
-        "first_seen_at": "2026-07-21T05:34:43Z",
-        "last_checked_at": "2026-07-22T07:32:58Z",
-        "growth": {
-          "public_interactions_24h": 0,
-          "quotes_24h": 0,
-          "new_related_posts_24h": 2
-        },
-        "signals": [],
-        "risk_change": "flat"
-      },
-      "tracking_eligible": false,
-      "tracking_reason": [],
-      "evidence_counts": {
-        "origin": 1,
-        "stakeholders": 0,
-        "popular": 1,
-        "amplifiers": 0,
-        "latest": 1,
-        "supporting_evidence": 0,
-        "contradicting_evidence": 1
-      }
-    }
-  ],
-  "fermentation_snapshot": [],
-  "featured_items": [],
-  "hot_topics": [
-    {
-      "rank": 1,
-      "title": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
-      "cluster_id": "joybuy-cluster-001",
-      "score_value": 61,
-      "level": "medium",
-      "source_count": 4,
-      "count_label": "4 条相关原帖",
-      "reason": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 61。"
-    },
-    {
-      "rank": 2,
-      "title": "相关讨论体现价格、优惠或配送体验上的正向机会。",
-      "cluster_id": "joybuy-cluster-002",
-      "score_value": 51,
-      "level": "low",
-      "source_count": 1,
-      "count_label": "1 条相关原帖",
-      "reason": "该情报偏正向机会，体现价格、配送或促销优势，可用于观察传播借势。综合优先级 51。"
-    }
-  ],
-  "competitor": {
-    "brand": "temu",
-    "volume": 12,
-    "sentiment": {
-      "negative": 1,
-      "neutral": 11,
-      "positive": 0
-    },
-    "top_terms": [
-      {
-        "term": "delivery",
-        "count": 1
-      }
-    ],
-    "top_posts": [
-      {
-        "post_id": "2079695285857505346",
-        "url": "https://x.com/Handbeetle/status/2079695285857505346",
-        "text": "@Skelegoat486 At least order a polyester jumpsuit off of Temu if you're going to do a lazy cosplay😪",
-        "translation_zh": "@Skelegoat486 如果你要敷衍地 cosplay，至少从 Temu 上订一件聚酯连体服吧😪",
+        "url": "https://x.com/tmngmsyk/status/2080342699396260083",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080342699396260083",
+        "language": "ja",
+        "text": "Joybuyって言うアジアフードオンラインショッピンして今日配達済みになってるけど、アパート周り色々見たけど無し！どうなってるの？\n問い合わせ先もわかりにくいし、面倒だー\n不在通知入れて、パケットステーションに入れてくれればそれで終わりなのに\n不在通知も無いし。\nめんどうだー\n#DHL\n#Joybuy",
+        "clean_text": "Joybuyって言うアジアフードオンラインショッピンして今日配達済みになってるけど、アパート周り色々見たけど無し！どうなってるの？\n問い合わせ先もわかりにくいし、面倒だー\n不在通知入れて、パケットステーションに入れてくれればそれで終わりなのに\n不在通知も無いし。\nめんどうだー\n#DHL\n#Joybuy",
+        "links": [],
+        "translation_zh": "叫 Joybuy 的亚洲食品在线购物，说今天已经送达了，但我在公寓周围到处看了都没有！这是怎么回事？\n咨询联系方式也很难找，真麻烦——\n如果投个未在家通知，然后放进包裹站里，不就结束了吗\n也没有未在家通知。\n真麻烦——\n#DHL\n#Joybuy",
         "translation_status": "translated",
         "translation_provider": "joybuilder",
         "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-        "author_name": "Yeashura",
-        "author_handle": "Handbeetle",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/2078609046056103936/ksSih1ho_normal.jpg",
-        "created_at": "2026-07-21T22:29:29Z",
-        "language": "en",
-        "media": [],
-        "metrics": {
-          "likes": 3,
-          "reposts": 0,
-          "replies": 0,
-          "quotes": 0,
-          "bookmarks": 0,
-          "views": 2299
-        },
-        "sentiment": "neutral",
-        "matched_terms": []
-      },
-      {
-        "post_id": "2079707608093470902",
-        "url": "https://x.com/MrTraze/status/2079707608093470902",
-        "text": "Let me order different nonsense from Temu, nothing my daughter never add for cart",
-        "translation_zh": "让我在 Temu 上订些不同的乱七八糟的东西吧，没什么是我女儿不会加进购物车的",
-        "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-        "author_name": "TRAZE 🐅",
-        "author_handle": "MrTraze",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/1851763511958876160/yFrLG-s-_normal.jpg",
-        "created_at": "2026-07-21T23:18:27Z",
-        "language": "en",
-        "media": [],
         "metrics": {
           "likes": 1,
           "reposts": 0,
           "replies": 0,
           "quotes": 0,
           "bookmarks": 0,
-          "views": 378
+          "views": 14
         },
-        "sentiment": "neutral",
-        "matched_terms": []
+        "media": []
       },
-      {
-        "post_id": "2079714920044855787",
-        "url": "https://x.com/cok34ngel_/status/2079714920044855787",
-        "text": "me when my temu order says 'ships from local warehouse'",
-        "translation_zh": "当我的 temu 订单显示“从本地仓库发货”时的我",
+      "topic": "general",
+      "risk_types": [
+        "brand_trust"
+      ],
+      "opportunity_types": [],
+      "post_count": 18,
+      "first_seen_at": "2026-07-23T00:15:00Z",
+      "last_seen_at": "2026-07-23T22:58:35Z",
+      "metrics": {
+        "total_likes": 364,
+        "total_reposts": 140,
+        "total_replies": 4,
+        "total_quotes": 3,
+        "total_bookmarks": 19,
+        "total_views": 10722,
+        "max_author_followers": 207050,
+        "public_interactions": 511
+      },
+      "score": {
+        "ips": 75,
+        "level": "medium",
+        "brand_relevance": 100,
+        "risk_or_opportunity_intensity": 53,
+        "current_impact": 82,
+        "future_potential": 82,
+        "credibility": 86,
+        "business_impact": 48,
+        "urgency": 49,
+        "sentiment": "mixed",
+        "confidence": 0.81,
+        "recommended_action": "观察",
+        "risk_labels": [
+          "brand_trust"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [
+          "potential_viral",
+          "high_influence_account"
+        ],
+        "explanation": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 75。"
+      },
+      "fermentation": {
+        "status": "升温中",
+        "tracking_days": 10,
+        "first_seen_at": "2026-07-23T00:15:00Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 41,
+          "quotes_24h": 3,
+          "new_related_posts_24h": 24
+        },
+        "signals": [
+          "高影响力账号参与讨论",
+          "相似内容数量增加",
+          "未来发酵潜力较高"
+        ],
+        "risk_change": "up"
+      },
+      "tracking_eligible": true,
+      "tracking_reason": [
+        "high_future_potential",
+        "high_influence_account",
+        "ips_top_candidate"
+      ],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 3,
+        "amplifiers": 2,
+        "latest": 3,
+        "supporting_evidence": 0,
+        "contradicting_evidence": 0
+      }
+    },
+    {
+      "cluster_id": "joybuy-cluster-004",
+      "title": "Refund and payment complaints around Joybuy",
+      "summary": "1 related posts discuss refund progress, cancelled orders or payment holds.",
+      "summary_zh": "多条帖子讨论 Joybuy 退款进度、取消订单或支付挂起问题。",
+      "lead_post": {
+        "post_id": "2080192730232484109",
+        "created_at": "2026-07-23T07:26:09Z",
+        "author": {
+          "id": "1402816876850253827",
+          "handle": "shoppinginCN1",
+          "name": "Shopping in China",
+          "avatar_url": "https://pbs.twimg.com/profile_images/2065003885262196736/zbDMRuMQ_normal.jpg",
+          "followers": 25476,
+          "following": 318,
+          "bio": null,
+          "location": null,
+          "joined_at": "2021-06-10T02:36:34Z",
+          "verified": false
+        },
+        "author_name": "Shopping in China",
+        "author_handle": "shoppinginCN1",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/2065003885262196736/zbDMRuMQ_normal.jpg",
+        "author_followers": 25476,
+        "author_following": 318,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2021-06-10T02:36:34Z",
+        "author_verified": false,
+        "url": "https://x.com/shoppinginCN1/status/2080192730232484109",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080192730232484109",
+        "language": "en",
+        "text": "Getting a tax refund is becoming even easier for international shoppers in China. https://t.co/Vm3da2vv5o has upgraded its online departure tax refund service with paperless applications, overseas bank card binding and an \"instant buy-and-refund\" option, covering 800+ product categories.\n\nEligible travelers can complete tax refund applications through the JD app, track progress in real time and receive refunds faster. Qualifying purchases are also eligible for up to a 9% VAT refund.",
+        "clean_text": "Getting a tax refund is becoming even easier for international shoppers in China. JD.com has upgraded its online departure tax refund service with paperless applications, overseas bank card binding and an \"instant buy-and-refund\" option, covering 800+ product categories.\n\nEligible travelers can complete tax refund applications through the JD app, track progress in real time and receive refunds faster. Qualifying purchases are also eligible for up to a 9% VAT refund.",
+        "links": [
+          "http://JD.com"
+        ],
+        "translation_zh": "在中国，国际购物者办理退税正变得更加容易。JD.com 已升级其线上离境退税服务，提供无纸化申请、绑定海外银行卡以及“即买即退”选项，覆盖 800+ 个商品类别。\n\n符合条件的旅客可以通过 JD app 完成退税申请，实时跟踪进度，并更快收到退款。符合条件的购物还可享受最高 9% 的增值税退税。",
         "translation_status": "translated",
         "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-        "author_name": "Gabriel Held Impersonator🍒",
-        "author_handle": "cok34ngel_",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/2079713628714840064/zTWl6vlK_normal.jpg",
-        "created_at": "2026-07-21T23:47:30Z",
-        "language": "en",
-        "media": [],
+        "summary_zh": "用户讨论退款进度、支付或售后处理问题。",
         "metrics": {
           "likes": 0,
           "reposts": 0,
           "replies": 0,
           "quotes": 0,
           "bookmarks": 0,
-          "views": 5
+          "views": 135
+        },
+        "media": [
+          {
+            "url": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+            "type": "photo",
+            "preview_image_url": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+            "media_url_https": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+            "expanded_url": "https://x.com/shoppinginCN1/status/2080192730232484109/photo/1"
+          }
+        ]
+      },
+      "topic": "refund",
+      "risk_types": [
+        "refund",
+        "payment",
+        "customer_service"
+      ],
+      "opportunity_types": [],
+      "post_count": 1,
+      "first_seen_at": "2026-07-23T07:26:09Z",
+      "last_seen_at": "2026-07-23T07:26:09Z",
+      "metrics": {
+        "total_likes": 0,
+        "total_reposts": 0,
+        "total_replies": 0,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 135,
+        "max_author_followers": 25476,
+        "public_interactions": 0
+      },
+      "score": {
+        "ips": 68,
+        "level": "medium",
+        "brand_relevance": 70,
+        "risk_or_opportunity_intensity": 78,
+        "current_impact": 34,
+        "future_potential": 60,
+        "credibility": 76,
+        "business_impact": 86,
+        "urgency": 83,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "观察",
+        "risk_labels": [
+          "refund",
+          "payment",
+          "customer_service"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [],
+        "explanation": "退款议题直接影响信任与支付体验，当前影响力 34，未来发酵潜力 60，可信度 76。"
+      },
+      "fermentation": {
+        "status": "观察中",
+        "tracking_days": 10,
+        "first_seen_at": "2026-07-23T07:26:09Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 0,
+          "quotes_24h": 0,
+          "new_related_posts_24h": 2
+        },
+        "signals": [],
+        "risk_change": "flat"
+      },
+      "tracking_eligible": true,
+      "tracking_reason": [
+        "refund_issue"
+      ],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 1,
+        "amplifiers": 1,
+        "latest": 1,
+        "supporting_evidence": 1,
+        "contradicting_evidence": 0
+      }
+    },
+    {
+      "cluster_id": "joybuy-cluster-001",
+      "title": "Customer service and return response concerns",
+      "summary": "1 related posts mention customer service response and returns.",
+      "summary_zh": "相关讨论集中在客服响应、退货和售后体验。",
+      "lead_post": {
+        "post_id": "2080124043714277728",
+        "created_at": "2026-07-23T02:53:13Z",
+        "author": {
+          "id": "1684851246229073921",
+          "handle": "BluesAvalon",
+          "name": "BluesAvalon ☀️🍊",
+          "avatar_url": "https://pbs.twimg.com/profile_images/2074858919458201601/uFRVJMle_normal.jpg",
+          "followers": 202,
+          "following": 536,
+          "bio": null,
+          "location": null,
+          "joined_at": "2023-07-28T09:01:08Z",
+          "verified": false
+        },
+        "author_name": "BluesAvalon ☀️🍊",
+        "author_handle": "BluesAvalon",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/2074858919458201601/uFRVJMle_normal.jpg",
+        "author_followers": 202,
+        "author_following": 536,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2023-07-28T09:01:08Z",
+        "author_verified": false,
+        "url": "https://x.com/BluesAvalon/status/2080124043714277728",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080124043714277728",
+        "language": "en",
+        "text": "Guys, bakal ada livestream Lyu Sitong di https://t.co/ZosrvnB01o: \n\nLü Shitong will be a guest on the A’morie Beauty and Personal Care Live Stream on July 30th at 8 PM. We welcome everyone to support him!\n\nLive stream link:\n https://t.co/BM2szRVhTT",
+        "clean_text": "Guys, bakal ada livestream Lyu Sitong di JD.com \n\nLü Shitong will be a guest on the A’morie Beauty and Personal Care Live Stream on July 30th at 8 PM. We welcome everyone to support him!\n\nLive stream link:\n t.cn/AX92qlwE",
+        "links": [
+          "http://jd.com",
+          "http://t.cn/AX92qlwE"
+        ],
+        "translation_zh": "大家，JD.com 将会有 Lyu Sitong 的直播\n\nLü Shitong 将于 7 月 30 日晚上 8 点作为嘉宾参加 A’morie 美妆与个人护理直播。欢迎大家支持他！\n\n直播链接：\n t.cn/AX92qlwE",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "metrics": {
+          "likes": 78,
+          "reposts": 24,
+          "replies": 1,
+          "quotes": 0,
+          "bookmarks": 14,
+          "views": 1283
+        },
+        "media": []
+      },
+      "topic": "customer_service",
+      "risk_types": [
+        "customer_service",
+        "returns"
+      ],
+      "opportunity_types": [],
+      "post_count": 1,
+      "first_seen_at": "2026-07-23T02:53:13Z",
+      "last_seen_at": "2026-07-23T02:53:13Z",
+      "metrics": {
+        "total_likes": 78,
+        "total_reposts": 24,
+        "total_replies": 1,
+        "total_quotes": 0,
+        "total_bookmarks": 14,
+        "total_views": 1283,
+        "max_author_followers": 202,
+        "public_interactions": 103
+      },
+      "score": {
+        "ips": 61,
+        "level": "medium",
+        "brand_relevance": 70,
+        "risk_or_opportunity_intensity": 70,
+        "current_impact": 34,
+        "future_potential": 47,
+        "credibility": 66,
+        "business_impact": 76,
+        "urgency": 72,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "观察",
+        "risk_labels": [
+          "customer_service",
+          "returns"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [],
+        "explanation": "客服与退货响应涉及售后体验，建议观察是否出现更多相似投诉。综合优先级 61。"
+      },
+      "fermentation": {
+        "status": "观察中",
+        "tracking_days": 10,
+        "first_seen_at": "2026-07-23T02:53:13Z",
+        "last_checked_at": "2026-07-24T01:28:20Z",
+        "growth": {
+          "public_interactions_24h": 8,
+          "quotes_24h": 0,
+          "new_related_posts_24h": 2
+        },
+        "signals": [],
+        "risk_change": "flat"
+      },
+      "tracking_eligible": true,
+      "tracking_reason": [
+        "customer_service_issue"
+      ],
+      "evidence_counts": {
+        "origin": 1,
+        "stakeholders": 0,
+        "popular": 1,
+        "amplifiers": 0,
+        "latest": 1,
+        "supporting_evidence": 0,
+        "contradicting_evidence": 1
+      }
+    }
+  ],
+  "featured_items": [
+    {
+      "id": "featured-joybuy-cluster-001",
+      "brand": "joybuy",
+      "cluster_id": "joybuy-cluster-001",
+      "source_type": "X 舆情",
+      "source_name": "Joybuy / JD · @BluesAvalon",
+      "author_name": "BluesAvalon ☀️🍊",
+      "author_handle": "BluesAvalon",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/2074858919458201601/uFRVJMle_normal.jpg",
+      "author_followers": 202,
+      "author_following": 536,
+      "author_bio": null,
+      "author_location": null,
+      "author_joined_at": "2023-07-28T09:01:08Z",
+      "author_verified": false,
+      "post_url": "https://x.com/BluesAvalon/status/2080124043714277728",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080124043714277728",
+      "created_at": "2026-07-23T02:53:13Z",
+      "language": "en",
+      "title": "Customer service and return response concerns",
+      "display_title": "相关讨论集中在客服响应、退货和售后体验。",
+      "original_text": "Guys, bakal ada livestream Lyu Sitong di https://t.co/ZosrvnB01o: \n\nLü Shitong will be a guest on the A’morie Beauty and Personal Care Live Stream on July 30th at 8 PM. We welcome everyone to support him!\n\nLive stream link:\n https://t.co/BM2szRVhTT",
+      "translation_zh": "大家，JD.com 将会有 Lyu Sitong 的直播\n\nLü Shitong 将于 7 月 30 日晚上 8 点作为嘉宾参加 A’morie 美妆与个人护理直播。欢迎大家支持他！\n\n直播链接：\n t.cn/AX92qlwE",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "相关讨论集中在客服响应、退货和售后体验。",
+      "links": [
+        "http://jd.com",
+        "http://t.cn/AX92qlwE"
+      ],
+      "media": [],
+      "score": {
+        "ips": 61,
+        "level": "medium",
+        "brand_relevance": 70,
+        "risk_or_opportunity_intensity": 70,
+        "current_impact": 34,
+        "future_potential": 47,
+        "credibility": 66,
+        "business_impact": 76,
+        "urgency": 72,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "观察",
+        "risk_labels": [
+          "customer_service",
+          "returns"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [],
+        "explanation": "客服与退货响应涉及售后体验，建议观察是否出现更多相似投诉。综合优先级 61。"
+      },
+      "score_value": 61,
+      "score_label": "IPS",
+      "tags": [
+        "customer_service",
+        "returns"
+      ],
+      "metrics": {
+        "total_likes": 78,
+        "total_reposts": 24,
+        "total_replies": 1,
+        "total_quotes": 0,
+        "total_bookmarks": 14,
+        "total_views": 1283,
+        "max_author_followers": 202,
+        "public_interactions": 103
+      },
+      "post_metrics": {
+        "likes": 78,
+        "reposts": 24,
+        "replies": 1,
+        "quotes": 0,
+        "bookmarks": 14,
+        "views": 1283
+      },
+      "source_count": 1,
+      "related_sources": 0,
+      "selected_reason": "内容指向多平台比价/货架露出：原帖把品牌与其他电商平台并列展示；转引信号相对突出，当前 103 次赞评转引、1283 浏览；研判：适合观察品牌在海外用户心智中的货架位置和竞品集合。",
+      "recommended_action": "观察",
+      "href": "",
+      "external_href": "https://x.com/BluesAvalon/status/2080124043714277728",
+      "sentiment": "negative",
+      "level": "medium"
+    },
+    {
+      "id": "featured-joybuy-cluster-002",
+      "brand": "joybuy",
+      "cluster_id": "joybuy-cluster-002",
+      "source_type": "X 舆情",
+      "source_name": "Joybuy / JD · @tmngmsyk",
+      "author_name": "oiaaaaui",
+      "author_handle": "tmngmsyk",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/1534080441485246465/WuLg92pF_normal.jpg",
+      "author_followers": 30,
+      "author_following": 441,
+      "author_bio": null,
+      "author_location": "Euskirchen, Germany",
+      "author_joined_at": "2011-02-15T18:33:32Z",
+      "author_verified": false,
+      "post_url": "https://x.com/tmngmsyk/status/2080342699396260083",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080342699396260083",
+      "created_at": "2026-07-23T17:22:05Z",
+      "language": "ja",
+      "title": "General Joybuy/JD overseas shopping discussion",
+      "display_title": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "original_text": "Joybuyって言うアジアフードオンラインショッピンして今日配達済みになってるけど、アパート周り色々見たけど無し！どうなってるの？\n問い合わせ先もわかりにくいし、面倒だー\n不在通知入れて、パケットステーションに入れてくれればそれで終わりなのに\n不在通知も無いし。\nめんどうだー\n#DHL\n#Joybuy",
+      "translation_zh": "叫 Joybuy 的亚洲食品在线购物，说今天已经送达了，但我在公寓周围到处看了都没有！这是怎么回事？\n咨询联系方式也很难找，真麻烦——\n如果投个未在家通知，然后放进包裹站里，不就结束了吗\n也没有未在家通知。\n真麻烦——\n#DHL\n#Joybuy",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "links": [],
+      "media": [],
+      "score": {
+        "ips": 75,
+        "level": "medium",
+        "brand_relevance": 100,
+        "risk_or_opportunity_intensity": 53,
+        "current_impact": 82,
+        "future_potential": 82,
+        "credibility": 86,
+        "business_impact": 48,
+        "urgency": 49,
+        "sentiment": "mixed",
+        "confidence": 0.81,
+        "recommended_action": "观察",
+        "risk_labels": [
+          "brand_trust"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [
+          "potential_viral",
+          "high_influence_account"
+        ],
+        "explanation": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 75。"
+      },
+      "score_value": 75,
+      "score_label": "IPS",
+      "tags": [
+        "general",
+        "brand_trust",
+        "高潜传播",
+        "高影响力账号"
+      ],
+      "metrics": {
+        "total_likes": 364,
+        "total_reposts": 140,
+        "total_replies": 4,
+        "total_quotes": 3,
+        "total_bookmarks": 19,
+        "total_views": 10722,
+        "max_author_followers": 207050,
+        "public_interactions": 511
+      },
+      "post_metrics": {
+        "likes": 1,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 14
+      },
+      "source_count": 18,
+      "related_sources": 17,
+      "selected_reason": "内容指向履约与物流心智：原帖围绕发货、仓库、配送或包裹进度展开；当前 1 次赞评转引、14 浏览，同日相似讨论 18 条；研判：需要判断这是正向履约口碑还是潜在配送投诉。",
+      "recommended_action": "观察",
+      "href": "",
+      "external_href": "https://x.com/tmngmsyk/status/2080342699396260083",
+      "sentiment": "mixed",
+      "level": "medium"
+    },
+    {
+      "id": "featured-joybuy-cluster-005",
+      "brand": "joybuy",
+      "cluster_id": "joybuy-cluster-005",
+      "source_type": "X 舆情",
+      "source_name": "Joybuy / JD · @stup360",
+      "author_name": "Startup360 | استارتاپ ۳۶۰",
+      "author_handle": "stup360",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/923284866174726145/4A8-25Wv_normal.jpg",
+      "author_followers": 6886,
+      "author_following": 0,
+      "author_bio": null,
+      "author_location": "Tehran, Iran",
+      "author_joined_at": "2017-10-25T20:24:42Z",
+      "author_verified": false,
+      "post_url": "https://x.com/stup360/status/2080201149357916409",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080201149357916409",
+      "created_at": "2026-07-23T07:59:36Z",
+      "language": "fa",
+      "title": "Regulatory and market-access scrutiny around JD.com",
+      "display_title": "相关讨论涉及 JD.com 在海外市场的监管审查、并购交易或市场准入风险。",
+      "original_text": "کمیسیون اروپا درباره خرید ۲.۵ میلیارد دلاری Ceconomy توسط https://t.co/gZo8lmWbtJ ابراز نگرانی کرد. اروپا در حال بررسی احتمال استفاده جی‌دی‌دات‌کام از تامین مالی ترجیحی، مشوق‌های مالیاتی و کمک‌های دولت چین است. بیشتربخوانید:\nhttps://t.co/Vg9ou06otU https://t.co/etpMJd0cMk",
+      "translation_zh": "欧盟委员会对 JD.com 以 25 亿美元收购 Ceconomy 表示担忧。欧洲正在调查京东是否可能使用优惠融资、税收激励以及中国政府的援助。阅读更多：\nstartup360.ir/jd-com-ceconomy-eu-regulatory-concerns",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "相关讨论涉及 JD.com 在海外市场的监管审查、并购交易或市场准入风险。",
+      "links": [
+        "http://JD.com",
+        "https://startup360.ir/jd-com-ceconomy-eu-regulatory-concerns/"
+      ],
+      "media": [
+        {
+          "url": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+          "type": "photo",
+          "preview_image_url": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+          "media_url_https": "https://pbs.twimg.com/media/HN5byr9XkAAcyWh.jpg",
+          "expanded_url": "https://x.com/stup360/status/2080201149357916409/photo/1"
+        }
+      ],
+      "score": {
+        "ips": 85,
+        "level": "high",
+        "brand_relevance": 100,
+        "risk_or_opportunity_intensity": 90,
+        "current_impact": 43,
+        "future_potential": 87,
+        "credibility": 94,
+        "business_impact": 90,
+        "urgency": 94,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "管理层同步",
+        "risk_labels": [
+          "regulatory",
+          "market_access",
+          "acquisition"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [
+          "potential_viral",
+          "high_influence_account"
+        ],
+        "explanation": "监管与并购审查影响海外市场准入和品牌信任，当前影响力 43，可信度 94，建议纳入管理层视野。"
+      },
+      "score_value": 85,
+      "score_label": "IPS",
+      "tags": [
+        "regulatory",
+        "market_access",
+        "acquisition",
+        "高潜传播",
+        "高影响力账号"
+      ],
+      "metrics": {
+        "total_likes": 3,
+        "total_reposts": 1,
+        "total_replies": 1,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 1279,
+        "max_author_followers": 51573,
+        "public_interactions": 5
+      },
+      "post_metrics": {
+        "likes": 1,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 167
+      },
+      "source_count": 6,
+      "related_sources": 5,
+      "selected_reason": "内容指向价格促销与导购：内容强调优惠、低价、券包或导购入口；当前 1 次赞评转引、167 浏览，同日相似讨论 6 条；研判：可评估是否存在可借势传播的价格/活动卖点。",
+      "recommended_action": "管理层同步",
+      "href": "",
+      "external_href": "https://x.com/stup360/status/2080201149357916409",
+      "sentiment": "negative",
+      "level": "high"
+    },
+    {
+      "id": "featured-joybuy-cluster-004",
+      "brand": "joybuy",
+      "cluster_id": "joybuy-cluster-004",
+      "source_type": "X 舆情",
+      "source_name": "Joybuy / JD · @shoppinginCN1",
+      "author_name": "Shopping in China",
+      "author_handle": "shoppinginCN1",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/2065003885262196736/zbDMRuMQ_normal.jpg",
+      "author_followers": 25476,
+      "author_following": 318,
+      "author_bio": null,
+      "author_location": null,
+      "author_joined_at": "2021-06-10T02:36:34Z",
+      "author_verified": false,
+      "post_url": "https://x.com/shoppinginCN1/status/2080192730232484109",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080192730232484109",
+      "created_at": "2026-07-23T07:26:09Z",
+      "language": "en",
+      "title": "Refund and payment complaints around Joybuy",
+      "display_title": "多条帖子讨论 Joybuy 退款进度、取消订单或支付挂起问题。",
+      "original_text": "Getting a tax refund is becoming even easier for international shoppers in China. https://t.co/Vm3da2vv5o has upgraded its online departure tax refund service with paperless applications, overseas bank card binding and an \"instant buy-and-refund\" option, covering 800+ product categories.\n\nEligible travelers can complete tax refund applications through the JD app, track progress in real time and receive refunds faster. Qualifying purchases are also eligible for up to a 9% VAT refund.",
+      "translation_zh": "在中国，国际购物者办理退税正变得更加容易。JD.com 已升级其线上离境退税服务，提供无纸化申请、绑定海外银行卡以及“即买即退”选项，覆盖 800+ 个商品类别。\n\n符合条件的旅客可以通过 JD app 完成退税申请，实时跟踪进度，并更快收到退款。符合条件的购物还可享受最高 9% 的增值税退税。",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "多条帖子讨论 Joybuy 退款进度、取消订单或支付挂起问题。",
+      "links": [
+        "http://JD.com"
+      ],
+      "media": [
+        {
+          "url": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+          "type": "photo",
+          "preview_image_url": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+          "media_url_https": "https://pbs.twimg.com/media/HN5UK2uaYAEQc68.jpg",
+          "expanded_url": "https://x.com/shoppinginCN1/status/2080192730232484109/photo/1"
+        }
+      ],
+      "score": {
+        "ips": 68,
+        "level": "medium",
+        "brand_relevance": 70,
+        "risk_or_opportunity_intensity": 78,
+        "current_impact": 34,
+        "future_potential": 60,
+        "credibility": 76,
+        "business_impact": 86,
+        "urgency": 83,
+        "sentiment": "negative",
+        "confidence": 0.81,
+        "recommended_action": "观察",
+        "risk_labels": [
+          "refund",
+          "payment",
+          "customer_service"
+        ],
+        "opportunity_labels": [],
+        "special_flags": [],
+        "explanation": "退款议题直接影响信任与支付体验，当前影响力 34，未来发酵潜力 60，可信度 76。"
+      },
+      "score_value": 68,
+      "score_label": "IPS",
+      "tags": [
+        "refund",
+        "payment",
+        "customer_service",
+        "高影响力账号"
+      ],
+      "metrics": {
+        "total_likes": 0,
+        "total_reposts": 0,
+        "total_replies": 0,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 135,
+        "max_author_followers": 25476,
+        "public_interactions": 0
+      },
+      "post_metrics": {
+        "likes": 0,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 135
+      },
+      "source_count": 1,
+      "related_sources": 0,
+      "selected_reason": "内容指向退款/售后体验：用户明确提到退款、退货或售后处理；作者具备较高影响力（25476 followers），当前 0 次赞评转引、135 浏览；研判：Joybuy/JD的信任成本会被放大，需关注是否出现更多相似投诉。",
+      "recommended_action": "观察",
+      "href": "",
+      "external_href": "https://x.com/shoppinginCN1/status/2080192730232484109",
+      "sentiment": "negative",
+      "level": "medium"
+    },
+    {
+      "id": "featured-joybuy-cluster-003",
+      "brand": "joybuy",
+      "cluster_id": "joybuy-cluster-003",
+      "source_type": "X 舆情",
+      "source_name": "Joybuy / JD · @dofornop",
+      "author_name": "Paul do Forno 🛒 🇺🇸🇨🇦🇵🇹",
+      "author_handle": "dofornop",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/1827770445967347712/vWjf1wgT_normal.jpg",
+      "author_followers": 4341,
+      "author_following": 2076,
+      "author_bio": null,
+      "author_location": "Columbus, Ohio | via Canada",
+      "author_joined_at": "2008-03-08T19:06:40Z",
+      "author_verified": false,
+      "post_url": "https://x.com/dofornop/status/2080361769168433502",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080361769168433502",
+      "created_at": "2026-07-23T18:37:51Z",
+      "language": "en",
+      "title": "Positive price and delivery opportunity signals",
+      "display_title": "相关讨论体现价格、优惠或配送体验上的正向机会。",
+      "original_text": "\"Costco Launches Official Store on https://t.co/psZZLTuvYd with Fast Delivery Nationwide in China\"\n\n🤝 https://t.co/psZZLTuvYd becomes Costco's sole official e-commerce platform partner in China, combining Costco's product selection with https://t.co/psZZLTuvYd's nationwide supply chain\n\n🚚 Consumers across China can now order Costco products online with fulfillment as fast as same-day\n\n🛒 The flagship store, in trial since late May, already features about 700 product types spanning snacks, food staples, personal care, beauty, paper products and nutritional supplements\n\n📊 In its first month alone, the storefront drew over 30 million visitors and nearly 200,000 store followers\n\n📈 Kirkland Signature items, including its signature pistachios, sold out repeatedly and required constant restocking\n\n🔗 JD Super notes its 700 million active users align closely with Costco's quality-and-value-focused customer base\n\n#ecommerce #retail \nhttps://t.co/pbgoa50Dxq",
+      "translation_zh": "\"Costco 在 JD.com 开设官方店，在中国全国范围内提供快速配送\"\n\n🤝 JD.com 成为 Costco 在中国唯一的官方电商平台合作伙伴，将 Costco 的商品选择与 JD.com 的全国供应链结合起来\n\n🚚 中国各地消费者现在都可以在线订购 Costco 商品，履约最快可当日完成\n\n🛒 这家旗舰店自 5 月下旬起试运营，目前已上架约 700 种商品，涵盖零食、食品主食、个人护理、美妆、纸制品和营养补充剂\n\n📊 仅在开业首月，该店铺就吸引了超过 3000 万名访客，并获得近 200,000 名店铺粉丝\n\n📈 Kirkland Signature 商品，包括其标志性的开心果，多次售罄，并需要持续补货\n\n🔗 JD Super 指出，其 7 亿活跃用户与 Costco 注重品质和价值的客户群高度契合\n\n#ecommerce #retail \nbuff.ly/Q0iAhVM",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "相关讨论体现价格、优惠或配送体验上的正向机会。",
+      "links": [
+        "http://JD.com",
+        "http://JD.com",
+        "http://JD.com",
+        "https://buff.ly/Q0iAhVM"
+      ],
+      "media": [
+        {
+          "url": "https://pbs.twimg.com/media/HN7uAREXEAAzpKF.jpg",
+          "type": "photo",
+          "preview_image_url": "https://pbs.twimg.com/media/HN7uAREXEAAzpKF.jpg",
+          "media_url_https": "https://pbs.twimg.com/media/HN7uAREXEAAzpKF.jpg",
+          "expanded_url": "https://x.com/dofornop/status/2080361769168433502/photo/1"
+        }
+      ],
+      "score": {
+        "ips": 51,
+        "level": "low",
+        "brand_relevance": 70,
+        "risk_or_opportunity_intensity": 58,
+        "current_impact": 26,
+        "future_potential": 42,
+        "credibility": 58,
+        "business_impact": 52,
+        "urgency": 46,
+        "sentiment": "positive",
+        "confidence": 0.81,
+        "recommended_action": "传播机会",
+        "risk_labels": [],
+        "opportunity_labels": [
+          "positive_value",
+          "delivery_strength"
+        ],
+        "special_flags": [],
+        "explanation": "该情报偏正向机会，体现价格、配送或促销优势，可用于观察传播借势。综合优先级 51。"
+      },
+      "score_value": 51,
+      "score_label": "IPS",
+      "tags": [
+        "price_opportunity",
+        "positive_value",
+        "delivery_strength"
+      ],
+      "metrics": {
+        "total_likes": 0,
+        "total_reposts": 0,
+        "total_replies": 0,
+        "total_quotes": 0,
+        "total_bookmarks": 0,
+        "total_views": 34,
+        "max_author_followers": 4341,
+        "public_interactions": 0
+      },
+      "post_metrics": {
+        "likes": 0,
+        "reposts": 0,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 34
+      },
+      "source_count": 1,
+      "related_sources": 0,
+      "selected_reason": "内容指向履约与物流心智：原帖围绕发货、仓库、配送或包裹进度展开；当前传播仍弱，34 浏览且暂无赞评转引；研判：需要判断这是正向履约口碑还是潜在配送投诉。",
+      "recommended_action": "传播机会",
+      "href": "",
+      "external_href": "https://x.com/dofornop/status/2080361769168433502",
+      "sentiment": "positive",
+      "level": "low"
+    },
+    {
+      "id": "featured-temu-2080417382170796493",
+      "brand": "temu",
+      "cluster_id": "",
+      "source_type": "竞品异常",
+      "source_name": "Temu 竞品 · @BerlofMonaco",
+      "author_name": "Berlisse🤍",
+      "author_handle": "BerlofMonaco",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/1988679950442905600/v9iaGEva_normal.jpg",
+      "author_followers": 3325,
+      "author_following": 2085,
+      "author_bio": null,
+      "author_location": null,
+      "author_joined_at": "2023-03-16T20:10:52Z",
+      "author_verified": false,
+      "post_url": "https://x.com/BerlofMonaco/status/2080417382170796493",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080417382170796493",
+      "created_at": "2026-07-23T22:18:50Z",
+      "language": "en",
+      "title": "Temu 履约与物流心智进入竞品观察",
+      "display_title": "Temu 履约与物流心智进入竞品观察",
+      "original_text": "Please who has used express shipping on Temu before and how long does it take? I have 1 week and half max",
+      "translation_zh": "请问之前有人在 Temu 上用过快递配送吗，需要多久？我最多只有 1 个半星期",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
+      "links": [],
+      "media": [],
+      "score": {
+        "ips": 57,
+        "level": "medium",
+        "sentiment": "neutral"
+      },
+      "score_value": 57,
+      "score_label": "CSI",
+      "tags": [
+        "竞品",
+        "neutral"
+      ],
+      "metrics": {
+        "likes": 14,
+        "reposts": 1,
+        "replies": 1,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 641
+      },
+      "post_metrics": {
+        "likes": 14,
+        "reposts": 1,
+        "replies": 1,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 641
+      },
+      "source_count": 1,
+      "related_sources": 0,
+      "selected_reason": "内容指向履约与物流心智：原帖围绕发货、仓库、配送或包裹进度展开；当前 16 次赞评转引、641 浏览；研判：可作为 Temu 履约卖点/槽点的竞品参照。",
+      "recommended_action": "纳入竞品基线观察",
+      "href": "",
+      "external_href": "https://x.com/BerlofMonaco/status/2080417382170796493",
+      "sentiment": "neutral",
+      "level": "medium"
+    },
+    {
+      "id": "featured-temu-2080394613727138009",
+      "brand": "temu",
+      "cluster_id": "",
+      "source_type": "竞品异常",
+      "source_name": "Temu 竞品 · @BC_saudi",
+      "author_name": "BlackBerryBroadcast",
+      "author_handle": "BC_saudi",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/1636855583/Blackberry-Messenger-Logo_normal.jpg",
+      "author_followers": 206,
+      "author_following": 0,
+      "author_bio": null,
+      "author_location": "Saudi Arabia",
+      "author_joined_at": "2011-11-13T13:46:42Z",
+      "author_verified": false,
+      "post_url": "https://x.com/BC_saudi/status/2080394613727138009",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080394613727138009",
+      "created_at": "2026-07-23T20:48:22Z",
+      "language": "pt",
+      "title": "Temu 价格促销与导购进入竞品观察",
+      "display_title": "Temu 价格促销与导购进入竞品观察",
+      "original_text": "🦗🪂😴🦏 ΜΗΞΦΔΤΝΩ \\\\\\\n\\\\\\\n📢📢💰Cupom de Desconto Temu \\\\\\\n\\\\\\\n💸%30 + Frete grátis \\\\\\\n\\\\\\\n🔍(Baixe o app e digite o código na barra de busca em até 24 horas para ativar)\\\\\\\n\\\\\\\n 👉acw064667\\\\\\\n\\\\\\\n 😉Mais barato que a SHEIN\\\\\\",
+      "translation_zh": "🦗🪂😴🦏 ΜΗΞΦΔΤΝΩ \\\\\n\\\\\n📢📢💰Temu 折扣券 \\\\\n\\\\\n💸30% + 免费送货 \\\\\n\\\\\n🔍（下载 app，并在 24 小时内在搜索栏输入代码以激活）\\\\\n\\\\\n 👉acw064667\\\\\n\\\\\n 😉比 SHEIN 还便宜\\\\",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "links": [],
+      "media": [
+        {
+          "url": "https://pbs.twimg.com/media/HN8L3HTX0AAHqoF.png",
+          "type": "photo",
+          "preview_image_url": "https://pbs.twimg.com/media/HN8L3HTX0AAHqoF.png",
+          "media_url_https": "https://pbs.twimg.com/media/HN8L3HTX0AAHqoF.png",
+          "expanded_url": "https://x.com/BC_saudi/status/2080394613727138009/video/1"
+        },
+        {
+          "url": "https://pbs.twimg.com/ext_tw_video_thumb/2080394602389872640/pu/img/v58W-OuJpK_GZGR9.jpg",
+          "type": "video",
+          "preview_image_url": "https://pbs.twimg.com/ext_tw_video_thumb/2080394602389872640/pu/img/v58W-OuJpK_GZGR9.jpg",
+          "media_url_https": "https://pbs.twimg.com/ext_tw_video_thumb/2080394602389872640/pu/img/v58W-OuJpK_GZGR9.jpg",
+          "video_info": {
+            "aspect_ratio": [
+              1,
+              1
+            ],
+            "duration_millis": 3916,
+            "variants": [
+              {
+                "content_type": "application/x-mpegURL",
+                "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/pl/7yOw8TdJRETGP8Vx.m3u8?tag=12"
+              },
+              {
+                "bitrate": 432000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/vid/avc1/320x320/9m1aXve6lHkqT8wd.mp4?tag=12"
+              },
+              {
+                "bitrate": 832000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/vid/avc1/540x540/8epf2dw0t2OxKIj0.mp4?tag=12"
+              },
+              {
+                "bitrate": 1280000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/vid/avc1/710x710/IZzMNNihXj46fL-w.mp4?tag=12"
+              }
+            ]
+          },
+          "expanded_url": "https://x.com/BC_saudi/status/2080394613727138009/video/1"
+        }
+      ],
+      "score": {
+        "ips": 57,
+        "level": "medium",
+        "sentiment": "neutral"
+      },
+      "score_value": 57,
+      "score_label": "CSI",
+      "tags": [
+        "竞品",
+        "neutral"
+      ],
+      "metrics": {
+        "likes": 4,
+        "reposts": 4,
+        "replies": 5,
+        "quotes": 4,
+        "bookmarks": 0,
+        "views": 28
+      },
+      "post_metrics": {
+        "likes": 4,
+        "reposts": 4,
+        "replies": 5,
+        "quotes": 4,
+        "bookmarks": 0,
+        "views": 28
+      },
+      "source_count": 1,
+      "related_sources": 0,
+      "selected_reason": "内容指向价格促销与导购：内容强调优惠、低价、券包或导购入口；转引信号相对突出，当前 17 次赞评转引、28 浏览；研判：有助于观察 Temu 拉新促销话术及垃圾推广占比。",
+      "recommended_action": "纳入竞品基线观察",
+      "href": "",
+      "external_href": "https://x.com/BC_saudi/status/2080394613727138009",
+      "sentiment": "neutral",
+      "level": "medium"
+    }
+  ],
+  "hot_topics": [
+    {
+      "rank": 1,
+      "title": "相关讨论集中在客服响应、退货和售后体验。",
+      "cluster_id": "joybuy-cluster-001",
+      "score_value": 61,
+      "level": "medium",
+      "source_count": 1,
+      "count_label": "X 舆情",
+      "reason": "内容指向多平台比价/货架露出：原帖把品牌与其他电商平台并列展示；转引信号相对突出，当前 103 次赞评转引、1283 浏览；研判：适合观察品牌在海外用户心智中的货架位置和竞品集合。"
+    },
+    {
+      "rank": 2,
+      "title": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
+      "cluster_id": "joybuy-cluster-002",
+      "score_value": 75,
+      "level": "medium",
+      "source_count": 18,
+      "count_label": "18 条同日相似讨论",
+      "reason": "内容指向履约与物流心智：原帖围绕发货、仓库、配送或包裹进度展开；当前 1 次赞评转引、14 浏览，同日相似讨论 18 条；研判：需要判断这是正向履约口碑还是潜在配送投诉。"
+    },
+    {
+      "rank": 3,
+      "title": "相关讨论涉及 JD.com 在海外市场的监管审查、并购交易或市场准入风险。",
+      "cluster_id": "joybuy-cluster-005",
+      "score_value": 85,
+      "level": "high",
+      "source_count": 6,
+      "count_label": "6 条同日相似讨论",
+      "reason": "内容指向价格促销与导购：内容强调优惠、低价、券包或导购入口；当前 1 次赞评转引、167 浏览，同日相似讨论 6 条；研判：可评估是否存在可借势传播的价格/活动卖点。"
+    },
+    {
+      "rank": 4,
+      "title": "多条帖子讨论 Joybuy 退款进度、取消订单或支付挂起问题。",
+      "cluster_id": "joybuy-cluster-004",
+      "score_value": 68,
+      "level": "medium",
+      "source_count": 1,
+      "count_label": "X 舆情",
+      "reason": "内容指向退款/售后体验：用户明确提到退款、退货或售后处理；作者具备较高影响力（25476 followers），当前 0 次赞评转引、135 浏览；研判：Joybuy/JD的信任成本会被放大，需关注是否出现更多相似投诉。"
+    },
+    {
+      "rank": 5,
+      "title": "相关讨论体现价格、优惠或配送体验上的正向机会。",
+      "cluster_id": "joybuy-cluster-003",
+      "score_value": 51,
+      "level": "low",
+      "source_count": 1,
+      "count_label": "X 舆情",
+      "reason": "内容指向履约与物流心智：原帖围绕发货、仓库、配送或包裹进度展开；当前传播仍弱，34 浏览且暂无赞评转引；研判：需要判断这是正向履约口碑还是潜在配送投诉。"
+    }
+  ],
+  "competitor": {
+    "brand": "temu",
+    "volume": 33,
+    "sentiment": {
+      "negative": 1,
+      "neutral": 28,
+      "positive": 4
+    },
+    "top_terms": [
+      {
+        "term": "delivery",
+        "count": 4
+      },
+      {
+        "term": "good",
+        "count": 2
+      },
+      {
+        "term": "fast",
+        "count": 2
+      },
+      {
+        "term": "fake",
+        "count": 1
+      }
+    ],
+    "top_posts": [
+      {
+        "post_id": "2080437815360246106",
+        "url": "https://x.com/Brho0om888/status/2080437815360246106",
+        "text": "👨‍🍳👨‍⚕️🌍😵‍💫 ΔΓΜΦΒΪΨΡ \n\nTemu Cupom de 30% desconto + Frete grátis ++\n\n🔎(Digite na barra de pesquisa do app): acw064667\n\n💡Temu está com várias promoções de lançamento (assim como Shopee, Amazon,Shein e Aliexpress no passado)",
+        "original_text": "👨‍🍳👨‍⚕️🌍😵‍💫 ΔΓΜΦΒΪΨΡ  \n\nTemu Cupom de 30% desconto + Frete grátis ++\n\n🔎(Digite na barra de pesquisa do app): acw064667\n\n💡Temu está com várias promoções de lançamento (assim como Shopee, Amazon,Shein e Aliexpress no passado) https://t.co/BWoW4cOr0j",
+        "links": [],
+        "translation_zh": "👨‍🍳👨‍⚕️🌍😵‍💫 ΔΓΜΦΒΪΨΡ \n\nTemu 30% 折扣优惠券 + 免费配送 ++\n\n🔎（在 app 的搜索栏中输入）：acw064667\n\n💡Temu 正在推出多项上线促销（就像过去的 Shopee、Amazon、Shein 和 Aliexpress 一样）",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户讨论价格、优惠或正向购物体验。",
+        "author_name": "τεм̶άℓкиε нσ̵̵вкᶫ",
+        "author_handle": "Brho0om888",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/3714050897/b75d5742b3cc5aed5b2db4cb469a0b1c_normal.jpeg",
+        "author_followers": 160,
+        "author_following": 228,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2012-12-31T13:25:22Z",
+        "author_verified": false,
+        "created_at": "2026-07-23T23:40:02Z",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080437815360246106",
+        "language": "pt",
+        "media": [
+          {
+            "display_url": "pic.x.com/BWoW4cOr0j",
+            "expanded_url": "https://x.com/Brho0om888/status/2080437815360246106/video/1",
+            "ext_master_playlist_only": [],
+            "ext_media_availability": {
+              "status": "Available"
+            },
+            "ext_playlists": [],
+            "features": {
+              "large": {
+                "faces": [
+                  {
+                    "h": 58,
+                    "w": 58,
+                    "x": 294,
+                    "y": 169
+                  }
+                ]
+              },
+              "orig": {
+                "faces": [
+                  {
+                    "h": 58,
+                    "w": 58,
+                    "x": 294,
+                    "y": 169
+                  }
+                ]
+              }
+            },
+            "id_str": "2080437796544671744",
+            "indices": [
+              224,
+              247
+            ],
+            "media_key": "3_2080437796544671744",
+            "media_results": {
+              "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAARzfMydAV3AACgACHN8zK6HWUVoAAA==",
+              "result": {
+                "__typename": "ApiMedia",
+                "id": "QXBpTWVkaWE6DAABCgABHN8zJ0BXcAAKAAIc3zMrodZRWgAA",
+                "media_key": "3_2080437796544671744"
+              }
+            },
+            "media_url_https": "https://pbs.twimg.com/media/HN8zJ0BXcAAcxSx.png",
+            "original_info": {
+              "focus_rects": [
+                {
+                  "h": 398,
+                  "w": 710,
+                  "x": 0,
+                  "y": 209
+                },
+                {
+                  "h": 710,
+                  "w": 710,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "h": 710,
+                  "w": 623,
+                  "x": 44,
+                  "y": 0
+                },
+                {
+                  "h": 710,
+                  "w": 355,
+                  "x": 178,
+                  "y": 0
+                },
+                {
+                  "h": 710,
+                  "w": 710,
+                  "x": 0,
+                  "y": 0
+                }
+              ],
+              "height": 710,
+              "width": 710
+            },
+            "sizes": {
+              "large": {
+                "h": 710,
+                "w": 710
+              }
+            },
+            "type": "photo",
+            "url": "https://t.co/BWoW4cOr0j"
+          },
+          {
+            "additional_media_info": {
+              "monetizable": false
+            },
+            "display_url": "pic.x.com/BWoW4cOr0j",
+            "expanded_url": "https://x.com/Brho0om888/status/2080437815360246106/video/1",
+            "ext_master_playlist_only": [],
+            "ext_media_availability": {
+              "status": "Available"
+            },
+            "ext_playlists": [],
+            "id_str": "2080437803758850048",
+            "indices": [
+              224,
+              247
+            ],
+            "media_key": "7_2080437803758850048",
+            "media_results": {
+              "id": "QXBpTWVkaWFSZXN1bHRzOgwAAwoAARzfMyjuVxAACgACHN8zK6HWUVoAAA==",
+              "result": {
+                "__typename": "ApiMedia",
+                "id": "QXBpTWVkaWE6DAADCgABHN8zKO5XEAAKAAIc3zMrodZRWgAA",
+                "media_key": "7_2080437803758850048"
+              }
+            },
+            "media_url_https": "https://pbs.twimg.com/ext_tw_video_thumb/2080437803758850048/pu/img/5qt-kERXl8Hw6sUF.jpg",
+            "original_info": {
+              "focus_rects": [],
+              "height": 710,
+              "width": 710
+            },
+            "sizes": {
+              "large": {
+                "h": 710,
+                "w": 710
+              }
+            },
+            "type": "video",
+            "url": "https://t.co/BWoW4cOr0j",
+            "video_info": {
+              "aspect_ratio": [
+                1,
+                1
+              ],
+              "duration_millis": 3916,
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/ext_tw_video/2080437803758850048/pu/pl/_PRhCP6nYV0AArgx.m3u8?tag=12"
+                },
+                {
+                  "bitrate": 432000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/ext_tw_video/2080437803758850048/pu/vid/avc1/320x320/PdSdrI2lHOwJPFZA.mp4?tag=12"
+                },
+                {
+                  "bitrate": 832000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/ext_tw_video/2080437803758850048/pu/vid/avc1/540x540/NXOkS-dXfY1B2QK0.mp4?tag=12"
+                },
+                {
+                  "bitrate": 1280000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/ext_tw_video/2080437803758850048/pu/vid/avc1/710x710/3SFxpsxOSMLq-pTl.mp4?tag=12"
+                }
+              ]
+            }
+          }
+        ],
+        "metrics": {
+          "likes": 4,
+          "reposts": 4,
+          "replies": 5,
+          "quotes": 4,
+          "bookmarks": 0,
+          "views": 99
         },
         "sentiment": "neutral",
         "matched_terms": []
       },
       {
-        "post_id": "2079713960324968684",
-        "url": "https://x.com/yuj99bxg/status/2079713960324968684",
-        "text": "Can I order the baby from temu? 😭😍",
-        "translation_zh": "我能从 Temu 上订这个宝宝吗？😭😍",
+        "post_id": "2080394613727138009",
+        "url": "https://x.com/BC_saudi/status/2080394613727138009",
+        "text": "🦗🪂😴🦏 ΜΗΞΦΔΤΝΩ \\\\\\\n\\\\\\\n📢📢💰Cupom de Desconto Temu \\\\\\\n\\\\\\\n💸%30 + Frete grátis \\\\\\\n\\\\\\\n🔍(Baixe o app e digite o código na barra de busca em até 24 horas para ativar)\\\\\\\n\\\\\\\n 👉acw064667\\\\\\\n\\\\\\\n 😉Mais barato que a SHEIN\\\\\\",
+        "original_text": "🦗🪂😴🦏 ΜΗΞΦΔΤΝΩ  \\\\\\\n\\\\\\\n📢📢💰Cupom de Desconto Temu \\\\\\\n\\\\\\\n💸%30 +  Frete grátis \\\\\\\n\\\\\\\n🔍(Baixe o app e digite o código na barra de busca em até 24 horas para ativar)\\\\\\\n\\\\\\\n 👉acw064667\\\\\\\n\\\\\\\n 😉Mais barato que a SHEIN\\\\\\ https://t.co/NqclAdGiYH",
+        "links": [],
+        "translation_zh": "🦗🪂😴🦏 ΜΗΞΦΔΤΝΩ \\\\\n\\\\\n📢📢💰Temu 折扣券 \\\\\n\\\\\n💸30% + 免费送货 \\\\\n\\\\\n🔍（下载 app，并在 24 小时内在搜索栏输入代码以激活）\\\\\n\\\\\n 👉acw064667\\\\\n\\\\\n 😉比 SHEIN 还便宜\\\\",
         "translation_status": "translated",
         "translation_provider": "joybuilder",
         "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-        "author_name": "Lady FS",
-        "author_handle": "yuj99bxg",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/2062200968029118464/Q2LvR7Hv_normal.jpg",
-        "created_at": "2026-07-21T23:43:42Z",
+        "author_name": "BlackBerryBroadcast",
+        "author_handle": "BC_saudi",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/1636855583/Blackberry-Messenger-Logo_normal.jpg",
+        "author_followers": 206,
+        "author_following": 0,
+        "author_bio": null,
+        "author_location": "Saudi Arabia",
+        "author_joined_at": "2011-11-13T13:46:42Z",
+        "author_verified": false,
+        "created_at": "2026-07-23T20:48:22Z",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080394613727138009",
+        "language": "pt",
+        "media": [
+          {
+            "display_url": "pic.x.com/NqclAdGiYH",
+            "expanded_url": "https://x.com/BC_saudi/status/2080394613727138009/video/1",
+            "ext_master_playlist_only": [],
+            "ext_media_availability": {
+              "status": "Available"
+            },
+            "ext_playlists": [],
+            "features": {
+              "large": {
+                "faces": [
+                  {
+                    "h": 102,
+                    "w": 102,
+                    "x": 594,
+                    "y": 364
+                  }
+                ]
+              },
+              "orig": {
+                "faces": [
+                  {
+                    "h": 102,
+                    "w": 102,
+                    "x": 594,
+                    "y": 364
+                  }
+                ]
+              }
+            },
+            "id_str": "2080394594349469696",
+            "indices": [
+              220,
+              243
+            ],
+            "media_key": "3_2080394594349469696",
+            "media_results": {
+              "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAARzfC9x019AACgACHN8L4PfXkNkAAA==",
+              "result": {
+                "__typename": "ApiMedia",
+                "id": "QXBpTWVkaWE6DAABCgABHN8L3HTX0AAKAAIc3wvg99eQ2QAA",
+                "media_key": "3_2080394594349469696"
+              }
+            },
+            "media_url_https": "https://pbs.twimg.com/media/HN8L3HTX0AAHqoF.png",
+            "original_info": {
+              "focus_rects": [
+                {
+                  "h": 398,
+                  "w": 710,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "h": 710,
+                  "w": 710,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "h": 710,
+                  "w": 623,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "h": 710,
+                  "w": 355,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "h": 710,
+                  "w": 710,
+                  "x": 0,
+                  "y": 0
+                }
+              ],
+              "height": 710,
+              "width": 710
+            },
+            "sizes": {
+              "large": {
+                "h": 710,
+                "w": 710
+              }
+            },
+            "type": "photo",
+            "url": "https://t.co/NqclAdGiYH"
+          },
+          {
+            "additional_media_info": {
+              "monetizable": false
+            },
+            "display_url": "pic.x.com/NqclAdGiYH",
+            "expanded_url": "https://x.com/BC_saudi/status/2080394613727138009/video/1",
+            "ext_master_playlist_only": [],
+            "ext_media_availability": {
+              "status": "Available"
+            },
+            "ext_playlists": [],
+            "id_str": "2080394602389872640",
+            "indices": [
+              220,
+              243
+            ],
+            "media_key": "7_2080394602389872640",
+            "media_results": {
+              "id": "QXBpTWVkaWFSZXN1bHRzOgwAAwoAARzfC95UFqAACgACHN8L4PfXkNkAAA==",
+              "result": {
+                "__typename": "ApiMedia",
+                "id": "QXBpTWVkaWE6DAADCgABHN8L3lQWoAAKAAIc3wvg99eQ2QAA",
+                "media_key": "7_2080394602389872640"
+              }
+            },
+            "media_url_https": "https://pbs.twimg.com/ext_tw_video_thumb/2080394602389872640/pu/img/v58W-OuJpK_GZGR9.jpg",
+            "original_info": {
+              "focus_rects": [],
+              "height": 710,
+              "width": 710
+            },
+            "sizes": {
+              "large": {
+                "h": 710,
+                "w": 710
+              }
+            },
+            "type": "video",
+            "url": "https://t.co/NqclAdGiYH",
+            "video_info": {
+              "aspect_ratio": [
+                1,
+                1
+              ],
+              "duration_millis": 3916,
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/pl/7yOw8TdJRETGP8Vx.m3u8?tag=12"
+                },
+                {
+                  "bitrate": 432000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/vid/avc1/320x320/9m1aXve6lHkqT8wd.mp4?tag=12"
+                },
+                {
+                  "bitrate": 832000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/vid/avc1/540x540/8epf2dw0t2OxKIj0.mp4?tag=12"
+                },
+                {
+                  "bitrate": 1280000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/vid/avc1/710x710/IZzMNNihXj46fL-w.mp4?tag=12"
+                }
+              ]
+            }
+          }
+        ],
+        "metrics": {
+          "likes": 4,
+          "reposts": 4,
+          "replies": 5,
+          "quotes": 4,
+          "bookmarks": 0,
+          "views": 28
+        },
+        "sentiment": "neutral",
+        "matched_terms": []
+      },
+      {
+        "post_id": "2080417382170796493",
+        "url": "https://x.com/BerlofMonaco/status/2080417382170796493",
+        "text": "Please who has used express shipping on Temu before and how long does it take? I have 1 week and half max",
+        "original_text": "Please who has used express shipping on Temu before and how long does it take? I have 1 week and half max",
+        "links": [],
+        "translation_zh": "请问之前有人在 Temu 上用过快递配送吗，需要多久？我最多只有 1 个半星期",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
+        "author_name": "Berlisse🤍",
+        "author_handle": "BerlofMonaco",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/1988679950442905600/v9iaGEva_normal.jpg",
+        "author_followers": 3325,
+        "author_following": 2085,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2023-03-16T20:10:52Z",
+        "author_verified": false,
+        "created_at": "2026-07-23T22:18:50Z",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080417382170796493",
         "language": "en",
         "media": [],
         "metrics": {
-          "likes": 0,
-          "reposts": 0,
-          "replies": 0,
+          "likes": 14,
+          "reposts": 1,
+          "replies": 1,
           "quotes": 0,
           "bookmarks": 0,
-          "views": 42
+          "views": 641
         },
         "sentiment": "neutral",
         "matched_terms": []
       },
       {
-        "post_id": "2079704405738160433",
-        "url": "https://x.com/irismar0130/status/2079704405738160433",
-        "text": "🔥 ¡Oferta increíble! Reclama tu paquete de cupones RD$5,800 y disfruta de un 30% de descuento buscando ale644609 en la App Temu. ¡Haz clic en  para empezar a ahorrar!\n👉",
-        "translation_zh": "🔥 惊人优惠！领取你的 RD$5,800 优惠券包，并在 Temu App 中搜索 ale644609 享受 30% 折扣。点击  开始省钱吧！\n👉",
+        "post_id": "2080389477378200028",
+        "url": "https://x.com/lilmeerahcute/status/2080389477378200028",
+        "text": "Temu people are funny. My package is still in transit yet they’re sending me notifications to order more stuffs. One thing at a time please 😂",
+        "original_text": "Temu people are funny. My package is still in transit yet they’re sending me notifications to order more stuffs. One thing at a time please 😂",
+        "links": [],
+        "translation_zh": "Temu 的人真有意思。我的包裹还在运输途中，他们却已经给我发通知让我再买更多东西。请一件一件来好吗 😂",
         "translation_status": "translated",
         "translation_provider": "joybuilder",
         "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-        "author_name": "irismar.",
-        "author_handle": "irismar0130",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/1920791344999440384/Y0sZXjKM_normal.jpg",
-        "created_at": "2026-07-21T23:05:44Z",
-        "language": "es",
+        "author_name": "Ameerah👑",
+        "author_handle": "lilmeerahcute",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/1563400633826258945/K374bdBp_normal.jpg",
+        "author_followers": 6174,
+        "author_following": 921,
+        "author_bio": null,
+        "author_location": "My world",
+        "author_joined_at": "2020-11-16T20:32:44Z",
+        "author_verified": false,
+        "created_at": "2026-07-23T20:27:57Z",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080389477378200028",
+        "language": "en",
         "media": [],
         "metrics": {
-          "likes": 0,
+          "likes": 7,
           "reposts": 0,
+          "replies": 2,
+          "quotes": 1,
+          "bookmarks": 1,
+          "views": 839
+        },
+        "sentiment": "neutral",
+        "matched_terms": []
+      },
+      {
+        "post_id": "2080415687852556540",
+        "url": "https://x.com/Tonyblaise74/status/2080415687852556540",
+        "text": "@instablog9ja Una still the order from Temu 😂🤣 \n\nDon't worry Temu affect go reach everybody 😂 u will learn the hard way \n\nJumia all the way",
+        "original_text": "@instablog9ja Una still the order from Temu 😂🤣 \n\nDon't worry Temu affect go reach everybody 😂 u will learn the hard way \n\nJumia all the way",
+        "links": [],
+        "translation_zh": "@instablog9ja 你们还在从 Temu 下单 😂🤣\n\n别担心，Temu 的影响会波及到每个人 😂 你会吃了苦头才明白\n\nJumia 一路到底",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "author_name": "Tonyblaise",
+        "author_handle": "Tonyblaise74",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/2068785768386990080/ODZdcAzm_normal.jpg",
+        "author_followers": 136,
+        "author_following": 456,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2023-07-09T10:59:55Z",
+        "author_verified": false,
+        "created_at": "2026-07-23T22:12:06Z",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080413679611269461",
+        "language": "en",
+        "media": [],
+        "metrics": {
+          "likes": 2,
+          "reposts": 0,
+          "replies": 1,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 102
+        },
+        "sentiment": "neutral",
+        "matched_terms": []
+      },
+      {
+        "post_id": "2080421625116102994",
+        "url": "https://x.com/theyhateamira/status/2080421625116102994",
+        "text": "Make I go track my order on Temu 😭",
+        "original_text": "Make I go track my order on Temu 😭",
+        "links": [],
+        "translation_zh": "我还是去 Temu 上查一下我的订单吧 😭",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "author_name": "attajira ✨🇵🇸",
+        "author_handle": "theyhateamira",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/2078827367728877568/Qamuninb_normal.jpg",
+        "author_followers": 12753,
+        "author_following": 2477,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2018-11-03T02:04:18Z",
+        "author_verified": false,
+        "created_at": "2026-07-23T22:35:42Z",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080421625116102994",
+        "language": "en",
+        "media": [],
+        "metrics": {
+          "likes": 1,
+          "reposts": 1,
           "replies": 0,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 115
+        },
+        "sentiment": "neutral",
+        "matched_terms": []
+      },
+      {
+        "post_id": "2080403302307516827",
+        "url": "https://x.com/icbkr/status/2080403302307516827",
+        "text": "@FreedomFriend42 When you order Armageddon from Temu",
+        "original_text": "@FreedomFriend42 When you order Armageddon from Temu",
+        "links": [],
+        "translation_zh": "@FreedomFriend42 当你从 Temu 订购了世界末日",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "author_name": "Brian M",
+        "author_handle": "icbkr",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/1795027318/shark_head_shot_normal.jpg",
+        "author_followers": 403,
+        "author_following": 811,
+        "author_bio": null,
+        "author_location": "CONUS",
+        "author_joined_at": "2008-12-30T16:36:44Z",
+        "author_verified": false,
+        "created_at": "2026-07-23T21:22:53Z",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080155272257888272",
+        "language": "en",
+        "media": [],
+        "metrics": {
+          "likes": 1,
+          "reposts": 0,
+          "replies": 1,
           "quotes": 0,
           "bookmarks": 0,
           "views": 9
@@ -517,155 +3039,144 @@
         "matched_terms": []
       },
       {
-        "post_id": "2079703302195810586",
-        "url": "https://x.com/__Jameshaa/status/2079703302195810586",
-        "text": "Every week my daughter is getting a delivery from Temu or SHEIN 😅",
-        "translation_zh": "每周我女儿都会收到来自 Temu 或 SHEIN 的快递 😅",
+        "post_id": "2080438796995194891",
+        "url": "https://x.com/foucha_jr/status/2080438796995194891",
+        "text": "@SteakGrillGuru I think the helmet being blue with a horn and the charge bolt coming from it is a interesting idea, but outside of that the jerseys people are \"leaking\" look like a Temu seller designed it. I think it could work, but I have no confidence in these people to produce a good uni",
+        "original_text": "@SteakGrillGuru I think the helmet being blue with a horn and the charge bolt coming from it is a interesting idea, but outside of that the jerseys people are \"leaking\" look like a Temu seller designed it. I think it could work, but I have no confidence in these people to produce a good uni",
+        "links": [],
+        "translation_zh": "@SteakGrillGuru 我觉得头盔是蓝色的、带一只角，而且闪电冲锋标志从头盔上延伸出来，这是个有趣的想法，但除此之外，人们“泄露”出来的球衣看起来就像是 Temu 卖家设计的。我觉得这个方案也许能行，但我完全不相信这些人能做出一套好看的队服",
         "translation_status": "translated",
         "translation_provider": "joybuilder",
-        "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
-        "author_name": "🖤",
-        "author_handle": "__Jameshaa",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/2031693365733924864/cnZJ-1Mk_normal.jpg",
-        "created_at": "2026-07-21T23:01:20Z",
+        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+        "author_name": "Red Helmet Guy",
+        "author_handle": "foucha_jr",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/2056736290012348416/X7tNhfmK_normal.jpg",
+        "author_followers": 803,
+        "author_following": 708,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2017-01-09T22:44:42Z",
+        "author_verified": false,
+        "created_at": "2026-07-23T23:43:56Z",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080361741209264400",
         "language": "en",
         "media": [],
         "metrics": {
           "likes": 0,
           "reposts": 0,
+          "replies": 1,
+          "quotes": 0,
+          "bookmarks": 0,
+          "views": 18
+        },
+        "sentiment": "positive",
+        "matched_terms": []
+      },
+      {
+        "post_id": "2080415220254560544",
+        "url": "https://x.com/JahbreezFX/status/2080415220254560544",
+        "text": "@instablog9ja Temu’s price advantage is real, but the comparison isn’t apples-to-apples.\n\nJumia and Konga still win on local logistics and payment-on-delivery for a large share of Nigerian buyers. \n\nTemu wins on pure landed cost for non-urgent items. \n\nThe platforms that survive long-term will be the ones that close the gap on whichever side they’re currently weaker, not the ones that just claim the other is “dead.”",
+        "original_text": "@instablog9ja Temu’s price advantage is real, but the comparison isn’t apples-to-apples.\n\nJumia and Konga still win on local logistics and payment-on-delivery for a large share of Nigerian buyers. \n\nTemu wins on pure landed cost for non-urgent items. \n\nThe platforms that survive long-term will be the ones that close the gap on whichever side they’re currently weaker, not the ones that just claim the other is “dead.”",
+        "links": [],
+        "translation_zh": "@instablog9ja Temu 的价格优势是真实存在的，但这种比较并不是同类对比。\n\n对于很大一部分尼日利亚买家来说，Jumia 和 Konga 在本地物流和货到付款方面仍然占优。\n\nTemu 在非紧急商品的纯到岸成本上胜出。\n\n长期能生存下来的平台，会是那些弥补自己当前弱项差距的平台，而不是那些只是宣称对方“死了”的平台。",
+        "translation_status": "translated",
+        "translation_provider": "joybuilder",
+        "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
+        "author_name": "Jahbreez",
+        "author_handle": "JahbreezFX",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/1962867735915855872/lA5R2jta_normal.jpg",
+        "author_followers": 10133,
+        "author_following": 6829,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2025-06-19T18:51:24Z",
+        "author_verified": false,
+        "created_at": "2026-07-23T22:10:15Z",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080413679611269461",
+        "language": "en",
+        "media": [],
+        "metrics": {
+          "likes": 1,
+          "reposts": 0,
           "replies": 0,
           "quotes": 0,
           "bookmarks": 0,
-          "views": 28
+          "views": 20
         },
-        "sentiment": "negative",
+        "sentiment": "neutral",
         "matched_terms": [
           "delivery"
         ]
       },
       {
-        "post_id": "2079701838958317669",
-        "url": "https://x.com/quehitta/status/2079701838958317669",
-        "text": "⭐️ Tap the exclusive deal link  or search ale733676 in the Temu app to score top-quality items at ultra-low prices. 🛍️ These unbeatable deals are only available here. Shop now and save big! ⭐️\n👉",
-        "translation_zh": "⭐️ 点击专属优惠链接，或在 Temu 应用中搜索 ale733676，以超低价格抢购高品质商品。🛍️ 这些无可匹敌的优惠仅在这里提供。立即购物，省下一大笔！⭐️\n👉",
+        "post_id": "2080411623278219337",
+        "url": "https://x.com/barbaraheifer/status/2080411623278219337",
+        "text": "to aqui hj pra reclamar dos app, esse twitter do caralho com essa separação de tweet e retweet e esse pinterest cheio de propaganda, ce quem ler o negocio e me manda pra temu, pra shopee NINGUEM AGUENTA MAIS",
+        "original_text": "to aqui hj pra reclamar dos app, esse twitter do caralho com essa separação de tweet e retweet e esse pinterest cheio de propaganda, ce quem ler o negocio e me manda pra temu, pra shopee NINGUEM AGUENTA MAIS",
+        "links": [],
+        "translation_zh": "我今天来这儿就是为了吐槽这些 app，这该死的 twitter 把 tweet 和 retweet 分开，还有这个全是广告的 pinterest，你想看个东西，它就把我带到 temu、带到 shopee，没人受得了了",
         "translation_status": "translated",
         "translation_provider": "joybuilder",
         "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-        "author_name": "Que Hitta",
-        "author_handle": "quehitta",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/1346360954435596288/pxVmF3x2_normal.jpg",
-        "created_at": "2026-07-21T22:55:32Z",
-        "language": "en",
+        "author_name": "✷ 𝖇𝖆𝖗𝖇𝖆𝖗𝖆 ✷",
+        "author_handle": "barbaraheifer",
+        "author_avatar_url": "https://pbs.twimg.com/profile_images/2011100049351012352/bhcmcbE3_normal.jpg",
+        "author_followers": 2708,
+        "author_following": 670,
+        "author_bio": null,
+        "author_location": null,
+        "author_joined_at": "2010-04-12T01:18:52Z",
+        "author_verified": false,
+        "created_at": "2026-07-23T21:55:57Z",
+        "reply_to_post_id": null,
+        "reply_to_handle": null,
+        "quoted_post_id": null,
+        "conversation_id": "2080411623278219337",
+        "language": "pt",
         "media": [],
         "metrics": {
-          "likes": 0,
+          "likes": 1,
           "reposts": 0,
           "replies": 0,
           "quotes": 0,
           "bookmarks": 0,
-          "views": 22
-        },
-        "sentiment": "neutral",
-        "matched_terms": []
-      },
-      {
-        "post_id": "2079700114415788361",
-        "url": "https://x.com/Humu01/status/2079700114415788361",
-        "text": "I want to try temu order too.",
-        "translation_zh": "我也想试试在 Temu 下单。",
-        "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-        "author_name": "Humani ( THE FABRICS SELLER)",
-        "author_handle": "Humu01",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/1849481800004894720/oYMF3V13_normal.jpg",
-        "created_at": "2026-07-21T22:48:40Z",
-        "language": "en",
-        "media": [],
-        "metrics": {
-          "likes": 0,
-          "reposts": 0,
-          "replies": 0,
-          "quotes": 0,
-          "bookmarks": 0,
-          "views": 18
-        },
-        "sentiment": "neutral",
-        "matched_terms": []
-      },
-      {
-        "post_id": "2079699974846312572",
-        "url": "https://x.com/Bobosofart/status/2079699974846312572",
-        "text": "@AntiLeftMemes Can Temu really be this stupid?  Guessing he is a product of affirmative action!",
-        "translation_zh": "@AntiLeftMemes Temu 真的能这么蠢吗？估计他是平权行动的产物！",
-        "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-        "author_name": "Boboso",
-        "author_handle": "Bobosofart",
-        "author_avatar_url": "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
-        "created_at": "2026-07-21T22:48:07Z",
-        "language": "en",
-        "media": [],
-        "metrics": {
-          "likes": 0,
-          "reposts": 0,
-          "replies": 0,
-          "quotes": 0,
-          "bookmarks": 0,
-          "views": 10
-        },
-        "sentiment": "neutral",
-        "matched_terms": []
-      },
-      {
-        "post_id": "2079696697106612645",
-        "url": "https://x.com/spirituality751/status/2079696697106612645",
-        "text": "People way fear me pass na people way get mind order suit for temu . TEMU DELIVERS",
-        "translation_zh": "我最怕的就是那些有胆子在 Temu 上订西装的人。TEMU 会送到",
-        "translation_status": "translated",
-        "translation_provider": "joybuilder",
-        "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-        "author_name": "OBSERVER",
-        "author_handle": "spirituality751",
-        "author_avatar_url": "https://pbs.twimg.com/profile_images/1818696508193001472/r1AV7SMX_normal.jpg",
-        "created_at": "2026-07-21T22:35:06Z",
-        "language": "en",
-        "media": [],
-        "metrics": {
-          "likes": 0,
-          "reposts": 0,
-          "replies": 0,
-          "quotes": 0,
-          "bookmarks": 0,
-          "views": 39
+          "views": 26
         },
         "sentiment": "neutral",
         "matched_terms": []
       }
     ],
-    "anomalies": []
+    "anomalies": [
+      "Temu fake discount discussion has higher interaction than other competitor topics."
+    ]
   },
   "source_status": {
     "status": "normal",
     "providers": [
       "twitterapi_io"
     ],
-    "raw_posts_collected": 20,
-    "effective_posts": 17,
+    "raw_posts_collected": 69,
+    "effective_posts": 60,
     "brand_breakdown": {
-      "joybuy_candidates": 5,
-      "joybuy_effective": 5,
-      "temu_candidates": 15,
-      "temu_effective": 12
+      "joybuy_candidates": 29,
+      "joybuy_effective": 27,
+      "temu_candidates": 40,
+      "temu_effective": 33
     },
-    "estimated_cost_usd": 0.003,
+    "estimated_cost_usd": 0.0103,
     "translation": {
       "providers": [
         "joybuilder"
       ],
       "counts": {
-        "translated": 20
+        "translated": 68,
+        "source_chinese": 1
       },
       "missing_count": 0,
       "fallback_original_count": 0

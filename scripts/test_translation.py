@@ -84,6 +84,14 @@ def test_translation_need_detection() -> None:
     assert needs_translation({"language": "fr", "clean_text": "Le remboursement Joybuy est lent."})
     assert not needs_translation({"language": "zh", "clean_text": "Joybuy 退款很慢。"})
     assert not needs_translation({"language": "und", "clean_text": "Joybuy 退款很慢。"})
+    assert needs_translation(
+        {
+            "language": "ja",
+            "clean_text": "Joybuyって今日配達済みになってるけど、アパート周り色々見たけど無し！",
+        }
+    )
+    assert needs_translation({"language": "und", "clean_text": "I tried 京东 Joybuy refund and support is slow."})
+    assert not needs_translation({"language": "und", "clean_text": "京东海外 Joybuy 的客服回复很慢，退款也还没到账。"})
 
 
 def test_joybuilder_response_text_parsing() -> None:

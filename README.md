@@ -46,10 +46,10 @@ Automation status:
 - The Mac local automation runs daily at Beijing time 08:00 through launchd.
 - GitHub Actions no longer collects X data, calls translation services, or holds company GPT keys.
 - GitHub Actions only publishes already committed static dashboard files to GitHub Pages.
-- Daily guardrail caps are 60 total X posts per day: up to 45 Joybuy/JD/京东 posts, up to 15 Temu posts and up to 6 X API requests per run.
+- Daily guardrail caps are 240 total X posts per day: up to 160 Joybuy/JD/京东 posts, up to 80 Temu posts and up to 12 X API requests per run.
 - Each successful Mac run commits the public dashboard JSON archive back to Git, then the GitHub publish workflow deploys Pages. This keeps historical daily reports browsable without pulling old data from Pages.
 - If the X API budget is exhausted or the request cap is reached, the daily run publishes a partial report with collection warnings instead of failing the whole dashboard deployment.
-- The dashboard information architecture follows a clearer intelligence-product hierarchy: `舆情焦点`, `全部舆情`, `舆情日报`, `发酵追踪`, and `设置`. `舆情日报` contains both Joybuy Radar and the Temu competitor baseline, with signals shown on a publish-time vertical timeline.
+- The dashboard information architecture follows a clearer intelligence-product hierarchy: `舆情焦点`, `全部舆情`, `舆情日报`, and `设置`. `舆情日报` contains both Joybuy Radar and the Temu competitor baseline, with signals shown on a publish-time vertical timeline.
 
 Current seeded public archive:
 
@@ -130,14 +130,16 @@ export X_BAKEOFF_POST_LIMIT=20
 python3 scripts/bakeoff_twitterapi_io.py
 ```
 
-After the bake-off, run a capped local daily test:
+After the bake-off, run a capped local daily test. The default local daily
+profile collects up to 240 posts: 160 Joybuy/JD and 80 Temu, across Latest and
+Top search lanes.
 
 ```bash
 export X_SOURCE_PROVIDER=twitterapi_io
-export X_DAILY_LIMIT=60
-export X_JOYBUY_DAILY_LIMIT=45
-export X_TEMU_DAILY_LIMIT=15
-export X_MAX_API_REQUESTS=6
+export X_DAILY_LIMIT=240
+export X_JOYBUY_DAILY_LIMIT=160
+export X_TEMU_DAILY_LIMIT=80
+export X_MAX_API_REQUESTS=12
 npm run local:daily
 ```
 

@@ -1,30 +1,41 @@
 {
   "status": "ok",
-  "generated_at": "2026-07-22T07:32:58Z",
-  "window_start": "2026-07-21T00:00:00Z",
-  "window_end": "2026-07-22T00:00:00Z",
-  "window_label": "2026-07-21 08:00 BJT - 2026-07-22 08:00 BJT",
+  "generated_at": "2026-07-24T01:28:20Z",
+  "window_start": "2026-07-23T00:00:00Z",
+  "window_end": "2026-07-24T00:00:00Z",
+  "window_label": "2026-07-23 08:00 BJT - 2026-07-24 08:00 BJT",
   "provider": "twitterapi_io",
-  "raw_posts": 20,
-  "normalized_posts": 20,
-  "joybuy_clusters": 2,
+  "raw_posts": 69,
+  "normalized_posts": 69,
+  "joybuy_clusters": 5,
   "collection_status": {
     "status": "complete",
     "warnings": [],
     "limits": {
-      "max_posts": 60,
-      "max_joybuy_posts": 45,
-      "max_temu_posts": 15,
-      "max_api_requests": 6
+      "max_posts": 240,
+      "max_joybuy_posts": 160,
+      "max_temu_posts": 80,
+      "max_api_requests": 12
     },
-    "api_requests_used": 4,
-    "max_api_requests": 6,
+    "search_modes": [
+      {
+        "query_type": "Latest",
+        "ratio": 1.0
+      },
+      {
+        "query_type": "Top",
+        "ratio": 1.0
+      }
+    ],
+    "api_requests_used": 9,
+    "max_api_requests": 12,
     "request_budget_exhausted": false,
     "translation": {
       "provider": "joybuilder",
       "configured": true,
       "counts": {
-        "translated": 20
+        "translated": 68,
+        "source_chinese": 1
       },
       "missing_count": 0,
       "fallback_original_count": 0,
@@ -36,7 +47,8 @@
     "provider": "joybuilder",
     "configured": true,
     "counts": {
-      "translated": 20
+      "translated": 68,
+      "source_chinese": 1
     },
     "missing_count": 0,
     "fallback_original_count": 0,
@@ -44,13 +56,13 @@
     "error": ""
   },
   "dashboard_metrics": {
-    "effective_intelligence": 2,
-    "high_risk": 0,
-    "fermenting": 0,
+    "effective_intelligence": 5,
+    "high_risk": 1,
+    "fermenting": 2,
     "needs_review": 0,
-    "joybuy_volume": 5,
-    "joybuy_candidate_volume": 5,
-    "temu_volume": 12,
-    "negative_share": 0
+    "joybuy_volume": 27,
+    "joybuy_candidate_volume": 29,
+    "temu_volume": 33,
+    "negative_share": 60
   }
 }

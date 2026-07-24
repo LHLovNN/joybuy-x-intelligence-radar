@@ -352,7 +352,7 @@
       "score_value": 61,
       "level": "medium",
       "source_count": 4,
-      "count_label": "4 条相关原帖",
+      "count_label": "4 条同日相似讨论",
       "reason": "该情报与 Joybuy/JD 海外购物相关，当前综合优先级为 61。"
     },
     {
@@ -362,7 +362,7 @@
       "score_value": 51,
       "level": "low",
       "source_count": 1,
-      "count_label": "1 条相关原帖",
+      "count_label": "1 条原帖",
       "reason": "该情报偏正向机会，体现价格、配送或促销优势，可用于观察传播借势。综合优先级 51。"
     }
   ],

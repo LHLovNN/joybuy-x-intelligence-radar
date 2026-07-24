@@ -78,7 +78,7 @@ def main() -> None:
 
     print("Dashboard data verification passed.")
     print(f"Providers: {', '.join(sorted(providers))}")
-    print(f"Clusters: {len(clusters)}")
+    print(f"Joybuy signals: {len(clusters)}")
     print(f"Tracked: {len(tracked)}")
     print(f"Temu posts: {competitor['volume']}")
 

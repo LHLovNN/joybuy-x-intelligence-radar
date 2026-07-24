@@ -7,6 +7,7 @@ RISK_TOPIC_MAP = {
     "delivery": ["delivery", "shipping", "tracking", "parcel", "missing order"],
     "customer_service": ["customer service", "support", "客服"],
     "quality": ["damaged", "broken", "fake"],
+    "regulatory": ["regulator", "regulatory", "investigation", "foreign subsidies", "subsidy", "charge sheet", "european commission", "ceconomy", "takeover", "acquisition", "antitrust", "欧盟", "监管", "收购", "并购", "补贴", "反垄断"],
     "price_opportunity": ["discount", "good deal", "promo", "fast delivery", "arrived early"],
 }
 
@@ -95,6 +96,7 @@ def title_for_topic(topic: str) -> str:
         "delivery": "Delivery, tracking and parcel experience discussion",
         "customer_service": "Customer service and return response concerns",
         "quality": "Damaged item or product quality reports",
+        "regulatory": "Regulatory and market-access scrutiny around JD.com",
         "price_opportunity": "Positive price and delivery opportunity signals",
         "general": "General Joybuy/JD overseas shopping discussion",
     }
@@ -108,6 +110,7 @@ def summary_for_topic(topic: str, posts: list[dict[str, Any]]) -> str:
         "delivery": f"{count} related posts discuss delivery speed, tracking status or missing parcels.",
         "customer_service": f"{count} related posts mention customer service response and returns.",
         "quality": f"{count} related posts mention damaged packaging or product condition.",
+        "regulatory": f"{count} related posts discuss regulatory review, acquisition scrutiny or market-access risk.",
         "price_opportunity": f"{count} related posts mention fast delivery, discounts or positive value signals.",
         "general": f"{count} related posts discuss Joybuy/JD overseas shopping context.",
     }
@@ -120,6 +123,7 @@ def summary_zh_for_topic(topic: str, posts: list[dict[str, Any]]) -> str:
         "delivery": "多条帖子讨论 Joybuy 配送速度、包裹追踪或未收到包裹问题。",
         "customer_service": "相关讨论集中在客服响应、退货和售后体验。",
         "quality": "相关讨论提到包装损坏或商品状态问题。",
+        "regulatory": "相关讨论涉及 JD.com 在海外市场的监管审查、并购交易或市场准入风险。",
         "price_opportunity": "相关讨论体现价格、优惠或配送体验上的正向机会。",
         "general": "相关讨论涉及 Joybuy/JD 海外购物的一般体验和认知问题。",
     }
@@ -132,6 +136,7 @@ def risk_types_for_topic(topic: str) -> list[str]:
         "delivery": ["delivery", "tracking"],
         "customer_service": ["customer_service", "returns"],
         "quality": ["product_quality"],
+        "regulatory": ["regulatory", "market_access", "acquisition"],
         "price_opportunity": [],
         "general": ["brand_trust"],
     }

@@ -1,136 +1,600 @@
 {
   "brand": "temu",
-  "volume": 12,
+  "volume": 33,
   "sentiment": {
     "negative": 1,
-    "neutral": 11,
-    "positive": 0
+    "neutral": 28,
+    "positive": 4
   },
   "top_terms": [
     {
       "term": "delivery",
+      "count": 4
+    },
+    {
+      "term": "good",
+      "count": 2
+    },
+    {
+      "term": "fast",
+      "count": 2
+    },
+    {
+      "term": "fake",
       "count": 1
     }
   ],
   "top_posts": [
     {
-      "post_id": "2079695285857505346",
-      "url": "https://x.com/Handbeetle/status/2079695285857505346",
-      "text": "@Skelegoat486 At least order a polyester jumpsuit off of Temu if you're going to do a lazy cosplay😪",
-      "translation_zh": "@Skelegoat486 如果你要敷衍地 cosplay，至少从 Temu 上订一件聚酯连体服吧😪",
+      "post_id": "2080437815360246106",
+      "url": "https://x.com/Brho0om888/status/2080437815360246106",
+      "text": "👨‍🍳👨‍⚕️🌍😵‍💫 ΔΓΜΦΒΪΨΡ \n\nTemu Cupom de 30% desconto + Frete grátis ++\n\n🔎(Digite na barra de pesquisa do app): acw064667\n\n💡Temu está com várias promoções de lançamento (assim como Shopee, Amazon,Shein e Aliexpress no passado)",
+      "original_text": "👨‍🍳👨‍⚕️🌍😵‍💫 ΔΓΜΦΒΪΨΡ  \n\nTemu Cupom de 30% desconto + Frete grátis ++\n\n🔎(Digite na barra de pesquisa do app): acw064667\n\n💡Temu está com várias promoções de lançamento (assim como Shopee, Amazon,Shein e Aliexpress no passado) https://t.co/BWoW4cOr0j",
+      "links": [],
+      "translation_zh": "👨‍🍳👨‍⚕️🌍😵‍💫 ΔΓΜΦΒΪΨΡ \n\nTemu 30% 折扣优惠券 + 免费配送 ++\n\n🔎（在 app 的搜索栏中输入）：acw064667\n\n💡Temu 正在推出多项上线促销（就像过去的 Shopee、Amazon、Shein 和 Aliexpress 一样）",
       "translation_status": "translated",
       "translation_provider": "joybuilder",
-      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-      "author_name": "Yeashura",
-      "author_handle": "Handbeetle",
-      "author_avatar_url": "https://pbs.twimg.com/profile_images/2078609046056103936/ksSih1ho_normal.jpg",
-      "created_at": "2026-07-21T22:29:29Z",
-      "language": "en",
-      "media": [],
+      "summary_zh": "用户讨论价格、优惠或正向购物体验。",
+      "author_name": "τεм̶άℓкиε нσ̵̵вкᶫ",
+      "author_handle": "Brho0om888",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/3714050897/b75d5742b3cc5aed5b2db4cb469a0b1c_normal.jpeg",
+      "author_followers": 160,
+      "author_following": 228,
+      "author_bio": null,
+      "author_location": null,
+      "author_joined_at": "2012-12-31T13:25:22Z",
+      "author_verified": false,
+      "created_at": "2026-07-23T23:40:02Z",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080437815360246106",
+      "language": "pt",
+      "media": [
+        {
+          "display_url": "pic.x.com/BWoW4cOr0j",
+          "expanded_url": "https://x.com/Brho0om888/status/2080437815360246106/video/1",
+          "ext_master_playlist_only": [],
+          "ext_media_availability": {
+            "status": "Available"
+          },
+          "ext_playlists": [],
+          "features": {
+            "large": {
+              "faces": [
+                {
+                  "h": 58,
+                  "w": 58,
+                  "x": 294,
+                  "y": 169
+                }
+              ]
+            },
+            "orig": {
+              "faces": [
+                {
+                  "h": 58,
+                  "w": 58,
+                  "x": 294,
+                  "y": 169
+                }
+              ]
+            }
+          },
+          "id_str": "2080437796544671744",
+          "indices": [
+            224,
+            247
+          ],
+          "media_key": "3_2080437796544671744",
+          "media_results": {
+            "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAARzfMydAV3AACgACHN8zK6HWUVoAAA==",
+            "result": {
+              "__typename": "ApiMedia",
+              "id": "QXBpTWVkaWE6DAABCgABHN8zJ0BXcAAKAAIc3zMrodZRWgAA",
+              "media_key": "3_2080437796544671744"
+            }
+          },
+          "media_url_https": "https://pbs.twimg.com/media/HN8zJ0BXcAAcxSx.png",
+          "original_info": {
+            "focus_rects": [
+              {
+                "h": 398,
+                "w": 710,
+                "x": 0,
+                "y": 209
+              },
+              {
+                "h": 710,
+                "w": 710,
+                "x": 0,
+                "y": 0
+              },
+              {
+                "h": 710,
+                "w": 623,
+                "x": 44,
+                "y": 0
+              },
+              {
+                "h": 710,
+                "w": 355,
+                "x": 178,
+                "y": 0
+              },
+              {
+                "h": 710,
+                "w": 710,
+                "x": 0,
+                "y": 0
+              }
+            ],
+            "height": 710,
+            "width": 710
+          },
+          "sizes": {
+            "large": {
+              "h": 710,
+              "w": 710
+            }
+          },
+          "type": "photo",
+          "url": "https://t.co/BWoW4cOr0j"
+        },
+        {
+          "additional_media_info": {
+            "monetizable": false
+          },
+          "display_url": "pic.x.com/BWoW4cOr0j",
+          "expanded_url": "https://x.com/Brho0om888/status/2080437815360246106/video/1",
+          "ext_master_playlist_only": [],
+          "ext_media_availability": {
+            "status": "Available"
+          },
+          "ext_playlists": [],
+          "id_str": "2080437803758850048",
+          "indices": [
+            224,
+            247
+          ],
+          "media_key": "7_2080437803758850048",
+          "media_results": {
+            "id": "QXBpTWVkaWFSZXN1bHRzOgwAAwoAARzfMyjuVxAACgACHN8zK6HWUVoAAA==",
+            "result": {
+              "__typename": "ApiMedia",
+              "id": "QXBpTWVkaWE6DAADCgABHN8zKO5XEAAKAAIc3zMrodZRWgAA",
+              "media_key": "7_2080437803758850048"
+            }
+          },
+          "media_url_https": "https://pbs.twimg.com/ext_tw_video_thumb/2080437803758850048/pu/img/5qt-kERXl8Hw6sUF.jpg",
+          "original_info": {
+            "focus_rects": [],
+            "height": 710,
+            "width": 710
+          },
+          "sizes": {
+            "large": {
+              "h": 710,
+              "w": 710
+            }
+          },
+          "type": "video",
+          "url": "https://t.co/BWoW4cOr0j",
+          "video_info": {
+            "aspect_ratio": [
+              1,
+              1
+            ],
+            "duration_millis": 3916,
+            "variants": [
+              {
+                "content_type": "application/x-mpegURL",
+                "url": "https://video.twimg.com/ext_tw_video/2080437803758850048/pu/pl/_PRhCP6nYV0AArgx.m3u8?tag=12"
+              },
+              {
+                "bitrate": 432000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/ext_tw_video/2080437803758850048/pu/vid/avc1/320x320/PdSdrI2lHOwJPFZA.mp4?tag=12"
+              },
+              {
+                "bitrate": 832000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/ext_tw_video/2080437803758850048/pu/vid/avc1/540x540/NXOkS-dXfY1B2QK0.mp4?tag=12"
+              },
+              {
+                "bitrate": 1280000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/ext_tw_video/2080437803758850048/pu/vid/avc1/710x710/3SFxpsxOSMLq-pTl.mp4?tag=12"
+              }
+            ]
+          }
+        }
+      ],
       "metrics": {
-        "likes": 3,
-        "reposts": 0,
-        "replies": 0,
-        "quotes": 0,
+        "likes": 4,
+        "reposts": 4,
+        "replies": 5,
+        "quotes": 4,
         "bookmarks": 0,
-        "views": 2299
+        "views": 99
       },
       "sentiment": "neutral",
       "matched_terms": []
     },
     {
-      "post_id": "2079707608093470902",
-      "url": "https://x.com/MrTraze/status/2079707608093470902",
-      "text": "Let me order different nonsense from Temu, nothing my daughter never add for cart",
-      "translation_zh": "让我在 Temu 上订些不同的乱七八糟的东西吧，没什么是我女儿不会加进购物车的",
+      "post_id": "2080394613727138009",
+      "url": "https://x.com/BC_saudi/status/2080394613727138009",
+      "text": "🦗🪂😴🦏 ΜΗΞΦΔΤΝΩ \\\\\\\n\\\\\\\n📢📢💰Cupom de Desconto Temu \\\\\\\n\\\\\\\n💸%30 + Frete grátis \\\\\\\n\\\\\\\n🔍(Baixe o app e digite o código na barra de busca em até 24 horas para ativar)\\\\\\\n\\\\\\\n 👉acw064667\\\\\\\n\\\\\\\n 😉Mais barato que a SHEIN\\\\\\",
+      "original_text": "🦗🪂😴🦏 ΜΗΞΦΔΤΝΩ  \\\\\\\n\\\\\\\n📢📢💰Cupom de Desconto Temu \\\\\\\n\\\\\\\n💸%30 +  Frete grátis \\\\\\\n\\\\\\\n🔍(Baixe o app e digite o código na barra de busca em até 24 horas para ativar)\\\\\\\n\\\\\\\n 👉acw064667\\\\\\\n\\\\\\\n 😉Mais barato que a SHEIN\\\\\\ https://t.co/NqclAdGiYH",
+      "links": [],
+      "translation_zh": "🦗🪂😴🦏 ΜΗΞΦΔΤΝΩ \\\\\n\\\\\n📢📢💰Temu 折扣券 \\\\\n\\\\\n💸30% + 免费送货 \\\\\n\\\\\n🔍（下载 app，并在 24 小时内在搜索栏输入代码以激活）\\\\\n\\\\\n 👉acw064667\\\\\n\\\\\n 😉比 SHEIN 还便宜\\\\",
       "translation_status": "translated",
       "translation_provider": "joybuilder",
       "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-      "author_name": "TRAZE 🐅",
-      "author_handle": "MrTraze",
-      "author_avatar_url": "https://pbs.twimg.com/profile_images/1851763511958876160/yFrLG-s-_normal.jpg",
-      "created_at": "2026-07-21T23:18:27Z",
+      "author_name": "BlackBerryBroadcast",
+      "author_handle": "BC_saudi",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/1636855583/Blackberry-Messenger-Logo_normal.jpg",
+      "author_followers": 206,
+      "author_following": 0,
+      "author_bio": null,
+      "author_location": "Saudi Arabia",
+      "author_joined_at": "2011-11-13T13:46:42Z",
+      "author_verified": false,
+      "created_at": "2026-07-23T20:48:22Z",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080394613727138009",
+      "language": "pt",
+      "media": [
+        {
+          "display_url": "pic.x.com/NqclAdGiYH",
+          "expanded_url": "https://x.com/BC_saudi/status/2080394613727138009/video/1",
+          "ext_master_playlist_only": [],
+          "ext_media_availability": {
+            "status": "Available"
+          },
+          "ext_playlists": [],
+          "features": {
+            "large": {
+              "faces": [
+                {
+                  "h": 102,
+                  "w": 102,
+                  "x": 594,
+                  "y": 364
+                }
+              ]
+            },
+            "orig": {
+              "faces": [
+                {
+                  "h": 102,
+                  "w": 102,
+                  "x": 594,
+                  "y": 364
+                }
+              ]
+            }
+          },
+          "id_str": "2080394594349469696",
+          "indices": [
+            220,
+            243
+          ],
+          "media_key": "3_2080394594349469696",
+          "media_results": {
+            "id": "QXBpTWVkaWFSZXN1bHRzOgwAAQoAARzfC9x019AACgACHN8L4PfXkNkAAA==",
+            "result": {
+              "__typename": "ApiMedia",
+              "id": "QXBpTWVkaWE6DAABCgABHN8L3HTX0AAKAAIc3wvg99eQ2QAA",
+              "media_key": "3_2080394594349469696"
+            }
+          },
+          "media_url_https": "https://pbs.twimg.com/media/HN8L3HTX0AAHqoF.png",
+          "original_info": {
+            "focus_rects": [
+              {
+                "h": 398,
+                "w": 710,
+                "x": 0,
+                "y": 0
+              },
+              {
+                "h": 710,
+                "w": 710,
+                "x": 0,
+                "y": 0
+              },
+              {
+                "h": 710,
+                "w": 623,
+                "x": 0,
+                "y": 0
+              },
+              {
+                "h": 710,
+                "w": 355,
+                "x": 0,
+                "y": 0
+              },
+              {
+                "h": 710,
+                "w": 710,
+                "x": 0,
+                "y": 0
+              }
+            ],
+            "height": 710,
+            "width": 710
+          },
+          "sizes": {
+            "large": {
+              "h": 710,
+              "w": 710
+            }
+          },
+          "type": "photo",
+          "url": "https://t.co/NqclAdGiYH"
+        },
+        {
+          "additional_media_info": {
+            "monetizable": false
+          },
+          "display_url": "pic.x.com/NqclAdGiYH",
+          "expanded_url": "https://x.com/BC_saudi/status/2080394613727138009/video/1",
+          "ext_master_playlist_only": [],
+          "ext_media_availability": {
+            "status": "Available"
+          },
+          "ext_playlists": [],
+          "id_str": "2080394602389872640",
+          "indices": [
+            220,
+            243
+          ],
+          "media_key": "7_2080394602389872640",
+          "media_results": {
+            "id": "QXBpTWVkaWFSZXN1bHRzOgwAAwoAARzfC95UFqAACgACHN8L4PfXkNkAAA==",
+            "result": {
+              "__typename": "ApiMedia",
+              "id": "QXBpTWVkaWE6DAADCgABHN8L3lQWoAAKAAIc3wvg99eQ2QAA",
+              "media_key": "7_2080394602389872640"
+            }
+          },
+          "media_url_https": "https://pbs.twimg.com/ext_tw_video_thumb/2080394602389872640/pu/img/v58W-OuJpK_GZGR9.jpg",
+          "original_info": {
+            "focus_rects": [],
+            "height": 710,
+            "width": 710
+          },
+          "sizes": {
+            "large": {
+              "h": 710,
+              "w": 710
+            }
+          },
+          "type": "video",
+          "url": "https://t.co/NqclAdGiYH",
+          "video_info": {
+            "aspect_ratio": [
+              1,
+              1
+            ],
+            "duration_millis": 3916,
+            "variants": [
+              {
+                "content_type": "application/x-mpegURL",
+                "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/pl/7yOw8TdJRETGP8Vx.m3u8?tag=12"
+              },
+              {
+                "bitrate": 432000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/vid/avc1/320x320/9m1aXve6lHkqT8wd.mp4?tag=12"
+              },
+              {
+                "bitrate": 832000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/vid/avc1/540x540/8epf2dw0t2OxKIj0.mp4?tag=12"
+              },
+              {
+                "bitrate": 1280000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/ext_tw_video/2080394602389872640/pu/vid/avc1/710x710/IZzMNNihXj46fL-w.mp4?tag=12"
+              }
+            ]
+          }
+        }
+      ],
+      "metrics": {
+        "likes": 4,
+        "reposts": 4,
+        "replies": 5,
+        "quotes": 4,
+        "bookmarks": 0,
+        "views": 28
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2080417382170796493",
+      "url": "https://x.com/BerlofMonaco/status/2080417382170796493",
+      "text": "Please who has used express shipping on Temu before and how long does it take? I have 1 week and half max",
+      "original_text": "Please who has used express shipping on Temu before and how long does it take? I have 1 week and half max",
+      "links": [],
+      "translation_zh": "请问之前有人在 Temu 上用过快递配送吗，需要多久？我最多只有 1 个半星期",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
+      "author_name": "Berlisse🤍",
+      "author_handle": "BerlofMonaco",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/1988679950442905600/v9iaGEva_normal.jpg",
+      "author_followers": 3325,
+      "author_following": 2085,
+      "author_bio": null,
+      "author_location": null,
+      "author_joined_at": "2023-03-16T20:10:52Z",
+      "author_verified": false,
+      "created_at": "2026-07-23T22:18:50Z",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080417382170796493",
+      "language": "en",
+      "media": [],
+      "metrics": {
+        "likes": 14,
+        "reposts": 1,
+        "replies": 1,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 641
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2080389477378200028",
+      "url": "https://x.com/lilmeerahcute/status/2080389477378200028",
+      "text": "Temu people are funny. My package is still in transit yet they’re sending me notifications to order more stuffs. One thing at a time please 😂",
+      "original_text": "Temu people are funny. My package is still in transit yet they’re sending me notifications to order more stuffs. One thing at a time please 😂",
+      "links": [],
+      "translation_zh": "Temu 的人真有意思。我的包裹还在运输途中，他们却已经给我发通知让我再买更多东西。请一件一件来好吗 😂",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_name": "Ameerah👑",
+      "author_handle": "lilmeerahcute",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/1563400633826258945/K374bdBp_normal.jpg",
+      "author_followers": 6174,
+      "author_following": 921,
+      "author_bio": null,
+      "author_location": "My world",
+      "author_joined_at": "2020-11-16T20:32:44Z",
+      "author_verified": false,
+      "created_at": "2026-07-23T20:27:57Z",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080389477378200028",
+      "language": "en",
+      "media": [],
+      "metrics": {
+        "likes": 7,
+        "reposts": 0,
+        "replies": 2,
+        "quotes": 1,
+        "bookmarks": 1,
+        "views": 839
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2080415687852556540",
+      "url": "https://x.com/Tonyblaise74/status/2080415687852556540",
+      "text": "@instablog9ja Una still the order from Temu 😂🤣 \n\nDon't worry Temu affect go reach everybody 😂 u will learn the hard way \n\nJumia all the way",
+      "original_text": "@instablog9ja Una still the order from Temu 😂🤣 \n\nDon't worry Temu affect go reach everybody 😂 u will learn the hard way \n\nJumia all the way",
+      "links": [],
+      "translation_zh": "@instablog9ja 你们还在从 Temu 下单 😂🤣\n\n别担心，Temu 的影响会波及到每个人 😂 你会吃了苦头才明白\n\nJumia 一路到底",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_name": "Tonyblaise",
+      "author_handle": "Tonyblaise74",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/2068785768386990080/ODZdcAzm_normal.jpg",
+      "author_followers": 136,
+      "author_following": 456,
+      "author_bio": null,
+      "author_location": null,
+      "author_joined_at": "2023-07-09T10:59:55Z",
+      "author_verified": false,
+      "created_at": "2026-07-23T22:12:06Z",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080413679611269461",
+      "language": "en",
+      "media": [],
+      "metrics": {
+        "likes": 2,
+        "reposts": 0,
+        "replies": 1,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 102
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2080421625116102994",
+      "url": "https://x.com/theyhateamira/status/2080421625116102994",
+      "text": "Make I go track my order on Temu 😭",
+      "original_text": "Make I go track my order on Temu 😭",
+      "links": [],
+      "translation_zh": "我还是去 Temu 上查一下我的订单吧 😭",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_name": "attajira ✨🇵🇸",
+      "author_handle": "theyhateamira",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/2078827367728877568/Qamuninb_normal.jpg",
+      "author_followers": 12753,
+      "author_following": 2477,
+      "author_bio": null,
+      "author_location": null,
+      "author_joined_at": "2018-11-03T02:04:18Z",
+      "author_verified": false,
+      "created_at": "2026-07-23T22:35:42Z",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080421625116102994",
+      "language": "en",
+      "media": [],
+      "metrics": {
+        "likes": 1,
+        "reposts": 1,
+        "replies": 0,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 115
+      },
+      "sentiment": "neutral",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2080403302307516827",
+      "url": "https://x.com/icbkr/status/2080403302307516827",
+      "text": "@FreedomFriend42 When you order Armageddon from Temu",
+      "original_text": "@FreedomFriend42 When you order Armageddon from Temu",
+      "links": [],
+      "translation_zh": "@FreedomFriend42 当你从 Temu 订购了世界末日",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_name": "Brian M",
+      "author_handle": "icbkr",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/1795027318/shark_head_shot_normal.jpg",
+      "author_followers": 403,
+      "author_following": 811,
+      "author_bio": null,
+      "author_location": "CONUS",
+      "author_joined_at": "2008-12-30T16:36:44Z",
+      "author_verified": false,
+      "created_at": "2026-07-23T21:22:53Z",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080155272257888272",
       "language": "en",
       "media": [],
       "metrics": {
         "likes": 1,
         "reposts": 0,
-        "replies": 0,
-        "quotes": 0,
-        "bookmarks": 0,
-        "views": 378
-      },
-      "sentiment": "neutral",
-      "matched_terms": []
-    },
-    {
-      "post_id": "2079714920044855787",
-      "url": "https://x.com/cok34ngel_/status/2079714920044855787",
-      "text": "me when my temu order says 'ships from local warehouse'",
-      "translation_zh": "当我的 temu 订单显示“从本地仓库发货”时的我",
-      "translation_status": "translated",
-      "translation_provider": "joybuilder",
-      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-      "author_name": "Gabriel Held Impersonator🍒",
-      "author_handle": "cok34ngel_",
-      "author_avatar_url": "https://pbs.twimg.com/profile_images/2079713628714840064/zTWl6vlK_normal.jpg",
-      "created_at": "2026-07-21T23:47:30Z",
-      "language": "en",
-      "media": [],
-      "metrics": {
-        "likes": 0,
-        "reposts": 0,
-        "replies": 0,
-        "quotes": 0,
-        "bookmarks": 0,
-        "views": 5
-      },
-      "sentiment": "neutral",
-      "matched_terms": []
-    },
-    {
-      "post_id": "2079713960324968684",
-      "url": "https://x.com/yuj99bxg/status/2079713960324968684",
-      "text": "Can I order the baby from temu? 😭😍",
-      "translation_zh": "我能从 Temu 上订这个宝宝吗？😭😍",
-      "translation_status": "translated",
-      "translation_provider": "joybuilder",
-      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-      "author_name": "Lady FS",
-      "author_handle": "yuj99bxg",
-      "author_avatar_url": "https://pbs.twimg.com/profile_images/2062200968029118464/Q2LvR7Hv_normal.jpg",
-      "created_at": "2026-07-21T23:43:42Z",
-      "language": "en",
-      "media": [],
-      "metrics": {
-        "likes": 0,
-        "reposts": 0,
-        "replies": 0,
-        "quotes": 0,
-        "bookmarks": 0,
-        "views": 42
-      },
-      "sentiment": "neutral",
-      "matched_terms": []
-    },
-    {
-      "post_id": "2079704405738160433",
-      "url": "https://x.com/irismar0130/status/2079704405738160433",
-      "text": "🔥 ¡Oferta increíble! Reclama tu paquete de cupones RD$5,800 y disfruta de un 30% de descuento buscando ale644609 en la App Temu. ¡Haz clic en  para empezar a ahorrar!\n👉",
-      "translation_zh": "🔥 惊人优惠！领取你的 RD$5,800 优惠券包，并在 Temu App 中搜索 ale644609 享受 30% 折扣。点击  开始省钱吧！\n👉",
-      "translation_status": "translated",
-      "translation_provider": "joybuilder",
-      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-      "author_name": "irismar.",
-      "author_handle": "irismar0130",
-      "author_avatar_url": "https://pbs.twimg.com/profile_images/1920791344999440384/Y0sZXjKM_normal.jpg",
-      "created_at": "2026-07-21T23:05:44Z",
-      "language": "es",
-      "media": [],
-      "metrics": {
-        "likes": 0,
-        "reposts": 0,
-        "replies": 0,
+        "replies": 1,
         "quotes": 0,
         "bookmarks": 0,
         "views": 9
@@ -139,132 +603,120 @@
       "matched_terms": []
     },
     {
-      "post_id": "2079703302195810586",
-      "url": "https://x.com/__Jameshaa/status/2079703302195810586",
-      "text": "Every week my daughter is getting a delivery from Temu or SHEIN 😅",
-      "translation_zh": "每周我女儿都会收到来自 Temu 或 SHEIN 的快递 😅",
+      "post_id": "2080438796995194891",
+      "url": "https://x.com/foucha_jr/status/2080438796995194891",
+      "text": "@SteakGrillGuru I think the helmet being blue with a horn and the charge bolt coming from it is a interesting idea, but outside of that the jerseys people are \"leaking\" look like a Temu seller designed it. I think it could work, but I have no confidence in these people to produce a good uni",
+      "original_text": "@SteakGrillGuru I think the helmet being blue with a horn and the charge bolt coming from it is a interesting idea, but outside of that the jerseys people are \"leaking\" look like a Temu seller designed it. I think it could work, but I have no confidence in these people to produce a good uni",
+      "links": [],
+      "translation_zh": "@SteakGrillGuru 我觉得头盔是蓝色的、带一只角，而且闪电冲锋标志从头盔上延伸出来，这是个有趣的想法，但除此之外，人们“泄露”出来的球衣看起来就像是 Temu 卖家设计的。我觉得这个方案也许能行，但我完全不相信这些人能做出一套好看的队服",
       "translation_status": "translated",
       "translation_provider": "joybuilder",
-      "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
-      "author_name": "🖤",
-      "author_handle": "__Jameshaa",
-      "author_avatar_url": "https://pbs.twimg.com/profile_images/2031693365733924864/cnZJ-1Mk_normal.jpg",
-      "created_at": "2026-07-21T23:01:20Z",
+      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
+      "author_name": "Red Helmet Guy",
+      "author_handle": "foucha_jr",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/2056736290012348416/X7tNhfmK_normal.jpg",
+      "author_followers": 803,
+      "author_following": 708,
+      "author_bio": null,
+      "author_location": null,
+      "author_joined_at": "2017-01-09T22:44:42Z",
+      "author_verified": false,
+      "created_at": "2026-07-23T23:43:56Z",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080361741209264400",
       "language": "en",
       "media": [],
       "metrics": {
         "likes": 0,
         "reposts": 0,
+        "replies": 1,
+        "quotes": 0,
+        "bookmarks": 0,
+        "views": 18
+      },
+      "sentiment": "positive",
+      "matched_terms": []
+    },
+    {
+      "post_id": "2080415220254560544",
+      "url": "https://x.com/JahbreezFX/status/2080415220254560544",
+      "text": "@instablog9ja Temu’s price advantage is real, but the comparison isn’t apples-to-apples.\n\nJumia and Konga still win on local logistics and payment-on-delivery for a large share of Nigerian buyers. \n\nTemu wins on pure landed cost for non-urgent items. \n\nThe platforms that survive long-term will be the ones that close the gap on whichever side they’re currently weaker, not the ones that just claim the other is “dead.”",
+      "original_text": "@instablog9ja Temu’s price advantage is real, but the comparison isn’t apples-to-apples.\n\nJumia and Konga still win on local logistics and payment-on-delivery for a large share of Nigerian buyers. \n\nTemu wins on pure landed cost for non-urgent items. \n\nThe platforms that survive long-term will be the ones that close the gap on whichever side they’re currently weaker, not the ones that just claim the other is “dead.”",
+      "links": [],
+      "translation_zh": "@instablog9ja Temu 的价格优势是真实存在的，但这种比较并不是同类对比。\n\n对于很大一部分尼日利亚买家来说，Jumia 和 Konga 在本地物流和货到付款方面仍然占优。\n\nTemu 在非紧急商品的纯到岸成本上胜出。\n\n长期能生存下来的平台，会是那些弥补自己当前弱项差距的平台，而不是那些只是宣称对方“死了”的平台。",
+      "translation_status": "translated",
+      "translation_provider": "joybuilder",
+      "summary_zh": "用户讨论物流、配送或包裹追踪体验。",
+      "author_name": "Jahbreez",
+      "author_handle": "JahbreezFX",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/1962867735915855872/lA5R2jta_normal.jpg",
+      "author_followers": 10133,
+      "author_following": 6829,
+      "author_bio": null,
+      "author_location": null,
+      "author_joined_at": "2025-06-19T18:51:24Z",
+      "author_verified": false,
+      "created_at": "2026-07-23T22:10:15Z",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080413679611269461",
+      "language": "en",
+      "media": [],
+      "metrics": {
+        "likes": 1,
+        "reposts": 0,
         "replies": 0,
         "quotes": 0,
         "bookmarks": 0,
-        "views": 28
+        "views": 20
       },
-      "sentiment": "negative",
+      "sentiment": "neutral",
       "matched_terms": [
         "delivery"
       ]
     },
     {
-      "post_id": "2079701838958317669",
-      "url": "https://x.com/quehitta/status/2079701838958317669",
-      "text": "⭐️ Tap the exclusive deal link  or search ale733676 in the Temu app to score top-quality items at ultra-low prices. 🛍️ These unbeatable deals are only available here. Shop now and save big! ⭐️\n👉",
-      "translation_zh": "⭐️ 点击专属优惠链接，或在 Temu 应用中搜索 ale733676，以超低价格抢购高品质商品。🛍️ 这些无可匹敌的优惠仅在这里提供。立即购物，省下一大笔！⭐️\n👉",
+      "post_id": "2080411623278219337",
+      "url": "https://x.com/barbaraheifer/status/2080411623278219337",
+      "text": "to aqui hj pra reclamar dos app, esse twitter do caralho com essa separação de tweet e retweet e esse pinterest cheio de propaganda, ce quem ler o negocio e me manda pra temu, pra shopee NINGUEM AGUENTA MAIS",
+      "original_text": "to aqui hj pra reclamar dos app, esse twitter do caralho com essa separação de tweet e retweet e esse pinterest cheio de propaganda, ce quem ler o negocio e me manda pra temu, pra shopee NINGUEM AGUENTA MAIS",
+      "links": [],
+      "translation_zh": "我今天来这儿就是为了吐槽这些 app，这该死的 twitter 把 tweet 和 retweet 分开，还有这个全是广告的 pinterest，你想看个东西，它就把我带到 temu、带到 shopee，没人受得了了",
       "translation_status": "translated",
       "translation_provider": "joybuilder",
       "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-      "author_name": "Que Hitta",
-      "author_handle": "quehitta",
-      "author_avatar_url": "https://pbs.twimg.com/profile_images/1346360954435596288/pxVmF3x2_normal.jpg",
-      "created_at": "2026-07-21T22:55:32Z",
-      "language": "en",
+      "author_name": "✷ 𝖇𝖆𝖗𝖇𝖆𝖗𝖆 ✷",
+      "author_handle": "barbaraheifer",
+      "author_avatar_url": "https://pbs.twimg.com/profile_images/2011100049351012352/bhcmcbE3_normal.jpg",
+      "author_followers": 2708,
+      "author_following": 670,
+      "author_bio": null,
+      "author_location": null,
+      "author_joined_at": "2010-04-12T01:18:52Z",
+      "author_verified": false,
+      "created_at": "2026-07-23T21:55:57Z",
+      "reply_to_post_id": null,
+      "reply_to_handle": null,
+      "quoted_post_id": null,
+      "conversation_id": "2080411623278219337",
+      "language": "pt",
       "media": [],
       "metrics": {
-        "likes": 0,
+        "likes": 1,
         "reposts": 0,
         "replies": 0,
         "quotes": 0,
         "bookmarks": 0,
-        "views": 22
-      },
-      "sentiment": "neutral",
-      "matched_terms": []
-    },
-    {
-      "post_id": "2079700114415788361",
-      "url": "https://x.com/Humu01/status/2079700114415788361",
-      "text": "I want to try temu order too.",
-      "translation_zh": "我也想试试在 Temu 下单。",
-      "translation_status": "translated",
-      "translation_provider": "joybuilder",
-      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-      "author_name": "Humani ( THE FABRICS SELLER)",
-      "author_handle": "Humu01",
-      "author_avatar_url": "https://pbs.twimg.com/profile_images/1849481800004894720/oYMF3V13_normal.jpg",
-      "created_at": "2026-07-21T22:48:40Z",
-      "language": "en",
-      "media": [],
-      "metrics": {
-        "likes": 0,
-        "reposts": 0,
-        "replies": 0,
-        "quotes": 0,
-        "bookmarks": 0,
-        "views": 18
-      },
-      "sentiment": "neutral",
-      "matched_terms": []
-    },
-    {
-      "post_id": "2079699974846312572",
-      "url": "https://x.com/Bobosofart/status/2079699974846312572",
-      "text": "@AntiLeftMemes Can Temu really be this stupid?  Guessing he is a product of affirmative action!",
-      "translation_zh": "@AntiLeftMemes Temu 真的能这么蠢吗？估计他是平权行动的产物！",
-      "translation_status": "translated",
-      "translation_provider": "joybuilder",
-      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-      "author_name": "Boboso",
-      "author_handle": "Bobosofart",
-      "author_avatar_url": "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
-      "created_at": "2026-07-21T22:48:07Z",
-      "language": "en",
-      "media": [],
-      "metrics": {
-        "likes": 0,
-        "reposts": 0,
-        "replies": 0,
-        "quotes": 0,
-        "bookmarks": 0,
-        "views": 10
-      },
-      "sentiment": "neutral",
-      "matched_terms": []
-    },
-    {
-      "post_id": "2079696697106612645",
-      "url": "https://x.com/spirituality751/status/2079696697106612645",
-      "text": "People way fear me pass na people way get mind order suit for temu . TEMU DELIVERS",
-      "translation_zh": "我最怕的就是那些有胆子在 Temu 上订西装的人。TEMU 会送到",
-      "translation_status": "translated",
-      "translation_provider": "joybuilder",
-      "summary_zh": "用户在 X 上讨论与品牌相关的购物体验。",
-      "author_name": "OBSERVER",
-      "author_handle": "spirituality751",
-      "author_avatar_url": "https://pbs.twimg.com/profile_images/1818696508193001472/r1AV7SMX_normal.jpg",
-      "created_at": "2026-07-21T22:35:06Z",
-      "language": "en",
-      "media": [],
-      "metrics": {
-        "likes": 0,
-        "reposts": 0,
-        "replies": 0,
-        "quotes": 0,
-        "bookmarks": 0,
-        "views": 39
+        "views": 26
       },
       "sentiment": "neutral",
       "matched_terms": []
     }
   ],
-  "anomalies": []
+  "anomalies": [
+    "Temu fake discount discussion has higher interaction than other competitor topics."
+  ]
 }

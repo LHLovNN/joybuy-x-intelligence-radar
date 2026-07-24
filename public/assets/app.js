@@ -4,26 +4,26 @@ const state = {
   dailyIndex: null,
   dailyArchive: [],
   selectedDaily: null,
-  fermentation: null,
   competitor: null,
   sourceStatus: null,
-  currentEvidenceTab: "origin",
-  detailLanguage: "zh",
   allBrandFilter: "all",
   allTypeFilter: "all",
   allSearchQuery: "",
   allExpandedDates: new Set(),
   featuredFilter: "all",
   featuredExpandedDates: new Set(),
+  lastRouteKey: "",
 };
+
+const USE_X_EMBED_FOR_VIDEO = false;
+const X_WIDGET_SCRIPT_URL = "https://platform.twitter.com/widgets.js";
+const DEFAULT_TIMELINE_EXPANDED_DAYS = 3;
 
 const routeTitles = {
   overview: "舆情焦点",
   all: "全部舆情",
   daily: "舆情日报",
-  fermentation: "发酵追踪",
   settings: "设置",
-  detail: "舆情详情",
 };
 
 async function loadJson(path) {
@@ -47,10 +47,9 @@ async function init() {
   state.dailyIndex = await loadJson("./dashboard-data/daily/index.json");
   state.dailyArchive = await loadDailyArchive();
   if (!state.dailyArchive.length) state.dailyArchive = [state.daily];
-  state.featuredExpandedDates = new Set(state.dailyArchive.slice(0, 1).map((daily) => daily.date).filter(Boolean));
-  state.allExpandedDates = new Set(state.dailyArchive.slice(0, 3).map((daily) => daily.date).filter(Boolean));
+  state.featuredExpandedDates = new Set(state.dailyArchive.slice(0, DEFAULT_TIMELINE_EXPANDED_DAYS).map((daily) => daily.date).filter(Boolean));
+  state.allExpandedDates = new Set(state.dailyArchive.slice(0, DEFAULT_TIMELINE_EXPANDED_DAYS).map((daily) => daily.date).filter(Boolean));
   state.selectedDaily = state.daily;
-  state.fermentation = await loadJson("./dashboard-data/fermentation.json");
   state.competitor = await loadJson("./dashboard-data/competitor.json");
   state.sourceStatus = await loadJson("./dashboard-data/source-status.json");
   window.addEventListener("hashchange", render);
@@ -74,7 +73,8 @@ async function loadDailyArchive() {
 function route() {
   const hash = window.location.hash || "#/";
   const parts = hash.replace(/^#\/?/, "").split("/").filter(Boolean);
-  if (parts[0] === "intel") return { name: "detail", id: parts[1] };
+  if (parts[0] === "intel") return { name: "overview" };
+  if (parts[0] === "fermentation") return { name: "overview" };
   if (parts[0] === "source-status") return { name: "settings" };
   if (parts[0] === "competitor") return { name: "daily" };
   return { name: parts[0] || "overview" };
@@ -82,6 +82,8 @@ function route() {
 
 function render() {
   const current = route();
+  const routeKey = current.name;
+  const shouldResetScroll = state.lastRouteKey && state.lastRouteKey !== routeKey;
   document.getElementById("page-title").textContent = routeTitles[current.name] || "舆情焦点";
   document.getElementById("generated-at").textContent = state.overview.generated_at_label;
   const health = document.getElementById("health-pill");
@@ -89,17 +91,23 @@ function render() {
   health.textContent = sampleMode ? "Sample data" : state.overview.health === "normal" ? "Data healthy" : state.overview.health;
   health.className = `status-pill ${sampleMode ? "sample" : state.overview.health}`;
   document.querySelectorAll(".nav-list a").forEach((link) => {
-    link.classList.toggle("active", link.dataset.route === current.name || (current.name === "detail" && link.dataset.route === "daily"));
+    link.classList.toggle("active", link.dataset.route === current.name);
   });
 
   const content = document.getElementById("content");
   if (current.name === "all") content.innerHTML = allIntelligencePage();
   else if (current.name === "daily") content.innerHTML = dailyPage();
-  else if (current.name === "fermentation") content.innerHTML = fermentationPage();
   else if (current.name === "settings") content.innerHTML = settingsPage();
-  else if (current.name === "detail") renderDetail(current.id);
   else content.innerHTML = overviewPage();
+  if (shouldResetScroll) resetMainScroll(content);
+  state.lastRouteKey = routeKey;
   bindPageEvents();
+  hydrateXVideoEmbeds();
+}
+
+function resetMainScroll(content) {
+  if (content) content.scrollTop = 0;
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 }
 
 function overviewPage() {
@@ -107,31 +115,31 @@ function overviewPage() {
   const latest = archive[0] || state.daily;
   const latestMetrics = latest.metrics || state.overview.metrics;
   const allFeaturedCount = archive.reduce((sum, daily) => sum + featuredItemsForDaily(daily, false).length, 0);
-  const visibleGroups = archive.map((daily) => ({
-    daily,
-    items: featuredItemsForDaily(daily, true),
-  })).filter((group) => group.items.length);
+  const latestFeaturedItems = featuredItemsForDaily(latest, false);
+  const visibleGroups = featuredVisibleGroups();
+  const openDates = featuredOpenDates(visibleGroups);
   return `
     ${pageHero({
       eyebrow: "舆情雷达",
       title: "舆情焦点",
-      subtitle: `${formatDateLong(latest.date)} · AI 自动识别需要优先关注的 Joybuy / 竞品舆情`,
+      subtitle: `${formatDateLong(latest.date)} · 按传播风险、品牌相关度、业务价值筛出的优先关注舆情`,
       stats: [
-        [allFeaturedCount, "焦点舆情"],
+        [latestFeaturedItems.length, "今日焦点"],
+        [allFeaturedCount, "归档焦点"],
         [topIps(latest), "最高 IPS"],
-        [formatApiUsage(latest.collection_status), "API 消耗"],
       ],
     })}
     ${sampleDataNotice(latest)}
     <div class="featured-status-row">
+      <span>Joybuy 焦点 ${escapeHtml(String(latestFeaturedItems.filter((item) => item.brand !== "temu").length))}</span>
+      <span>竞品焦点 ${escapeHtml(String(latestFeaturedItems.filter((item) => item.brand === "temu").length))}</span>
       <span>Joybuy 有效 ${escapeHtml(String(latestMetrics.joybuy_volume || 0))}</span>
-      <span>高风险 ${escapeHtml(String(latestMetrics.high_risk || 0))}</span>
       <span>Temu 基线 ${escapeHtml(String(latestMetrics.temu_volume || 0))}</span>
       <span>${escapeHtml(latest.window_label || "Past 24 hours")}</span>
     </div>
     ${featuredFilterBar()}
     <section class="featured-feed">
-      ${visibleGroups.length ? visibleGroups.map(featuredDateGroup).join("") : empty("暂无匹配焦点舆情，请调整筛选条件。")}
+      ${visibleGroups.length ? visibleGroups.map((group) => featuredDateGroup(group, openDates)).join("") : featuredEmptyState()}
     </section>
   `;
 }
@@ -167,7 +175,7 @@ function featuredFilterBar() {
             .map(
               ([value, label]) => `
                 <button class="filter-chip ${state.featuredFilter === value ? "active" : ""}" type="button" data-featured-filter="${value}">
-                  ${escapeHtml(label)}
+                  ${escapeHtml(label)} <span>${escapeHtml(String(featuredFilterCount(value)))}</span>
                 </button>
               `
             )
@@ -178,10 +186,70 @@ function featuredFilterBar() {
   `;
 }
 
-function featuredDateGroup(group) {
+function featuredFilterCount(filter) {
+  const archive = state.dailyArchive.length ? state.dailyArchive : [state.daily];
+  return archive.reduce((sum, daily) => {
+    return sum + featuredItemsForDaily(daily, false).filter((item) => itemMatchesFeaturedFilter(item, filter)).length;
+  }, 0);
+}
+
+function featuredVisibleGroups() {
+  const archive = state.dailyArchive.length ? state.dailyArchive : [state.daily];
+  const groups = archive.map((daily) => ({
+    daily,
+    items: featuredItemsForDaily(daily, true),
+  }));
+  if (state.featuredFilter === "all") return groups;
+  return groups.filter((group) => group.items.length);
+}
+
+function featuredOpenDates(groups) {
+  const dates = groups.map((group) => group.daily.date).filter(Boolean);
+  const currentOpen = dates.filter((date) => state.featuredExpandedDates.has(date));
+  if (currentOpen.length) return new Set(currentOpen);
+  return new Set(dates.slice(0, DEFAULT_TIMELINE_EXPANDED_DAYS));
+}
+
+function syncFeaturedExpandedDatesForFilter() {
+  const groups = featuredVisibleGroups();
+  const dates = groups.map((group) => group.daily.date).filter(Boolean);
+  state.featuredExpandedDates = new Set(dates.slice(0, DEFAULT_TIMELINE_EXPANDED_DAYS));
+}
+
+function featuredEmptyState() {
+  const label = featuredFilterLabel(state.featuredFilter);
+  return `
+    <div class="featured-empty-state">
+      <strong>${escapeHtml(label)}暂无焦点舆情</strong>
+      <p>${escapeHtml(featuredEmptyCopy(state.featuredFilter))}</p>
+      <button class="text-button primary" type="button" data-featured-filter="all">查看全部焦点</button>
+    </div>
+  `;
+}
+
+function featuredEmptyCopy(filter) {
+  if (filter === "risk") return "当前归档中没有达到风险筛选条件的焦点内容，可以切回全部视图查看完整舆情。";
+  if (filter === "opportunity") return "当前归档中没有明显机会信号，后续若出现正向传播或可借势内容会自动进入这里。";
+  if (filter === "watch") return "当前没有达到高潜传播阈值的舆情，说明暂未识别到明显二次扩散风险。";
+  if (filter === "competitor") return "当前没有竞品焦点内容，可以继续关注后续日报归档。";
+  return "当前暂无焦点舆情，后续日报生成后会自动更新。";
+}
+
+function featuredFilterLabel(value) {
+  const labels = {
+    all: "全部",
+    risk: "风险",
+    opportunity: "机会",
+    competitor: "竞品",
+    watch: "高潜传播",
+  };
+  return labels[value] || "当前筛选";
+}
+
+function featuredDateGroup(group, openDates = state.featuredExpandedDates) {
   const daily = group.daily;
   const items = group.items;
-  const open = state.featuredExpandedDates.has(daily.date);
+  const open = openDates.has(daily.date);
   return `
     <article class="featured-date-group">
       ${timelineDateButton(daily.date, `${items.length} 条焦点`, open, "featured")}
@@ -204,7 +272,7 @@ function featuredTimeline(daily, items) {
 function featuredTimelineCard(item) {
   const translation = chineseSignalText(item);
   const media = item.media || [];
-  const sourceCount = Number(item.source_count || 1);
+  const languageId = languageSwitchId(item, "featured");
   return `
     <div class="publish-item featured-item">
       <div class="publish-time">${escapeHtml(item.timeLabel || formatEventTime(item.time))}</div>
@@ -215,9 +283,9 @@ function featuredTimelineCard(item) {
             ${avatarNode(item)}
             <div>
               <div class="source-line">
-                <span>${escapeHtml(item.author_name || item.source_name || "Unknown source")}</span>
+                ${authorNameNode(item, item.author_name || item.source_name || "Unknown source")}
                 ${item.author_handle ? `<em>@${escapeHtml(item.author_handle)}</em>` : ""}
-                <strong>${escapeHtml(item.brand === "temu" ? "竞品" : "焦点")}</strong>
+                ${sourceBadge(item.brand === "temu" ? "竞品" : "焦点", item.brand === "temu" ? "competitor" : "focus")}
               </div>
               <div class="source-subline">${escapeHtml(sourceTypeLabel(item))}${item.author_followers ? ` · ${escapeHtml(formatCompactNumber(item.author_followers))} followers` : ""}</div>
             </div>
@@ -228,13 +296,10 @@ function featuredTimelineCard(item) {
           </div>
         </div>
         <section class="x-signal-block">
-          <div class="block-heading">
-            <span>X 原帖内容</span>
-            ${translationStateBadge(item)}
-            <em>${escapeHtml(sourceCount > 1 ? `${sourceCount} 条相关原帖` : "1 条原帖")}</em>
-          </div>
-          ${translation ? `<p class="featured-translation">${escapeHtml(translation)}</p>` : ""}
-          ${media.length ? `<div class="featured-media-grid">${media.map(mediaNode).join("")}</div>` : ""}
+          <div class="post-language-toolbar">${languageToggleNode(item, languageId)}</div>
+          ${postLanguageTextNode(item, translation, "featured-translation", languageId)}
+          ${contextRelationNode(item)}
+          ${mediaGridNode(media, item)}
           <div class="metric-inline card-metrics">
             ${metricInline("赞", item.post_metrics?.likes ?? item.metrics?.total_likes)}
             ${metricInline("评", item.post_metrics?.replies ?? item.metrics?.total_replies)}
@@ -243,13 +308,11 @@ function featuredTimelineCard(item) {
             ${metricInline("浏览", item.post_metrics?.views ?? item.metrics?.total_views)}
           </div>
           <div class="tag-row">${(item.tags || []).slice(0, 8).map((tag) => `<span class="plain-tag">#${escapeHtml(tag)}</span>`).join("")}</div>
-          <div class="reason-line">关注原因：${escapeHtml(item.selected_reason || item.reason || "该舆情达到焦点阈值，建议结合原帖证据持续观察。")}</div>
-          ${item.related_sources ? `<div class="source-count-line">另有 ${escapeHtml(String(item.related_sources))} 条相关原帖可在详情页溯源</div>` : ""}
+          ${reasonLine(item)}
         </section>
         <div class="featured-card-bottom">
           ${cardFootnote(item.brand === "temu" ? "竞品基线信号" : "Joybuy / JD 相关舆情", item)}
           <div class="button-row">
-            ${item.href ? `<a class="text-button primary" href="${escapeHtml(item.href)}">详情</a>` : ""}
             ${cardExternalAction(item.external_href, item)}
           </div>
         </div>
@@ -260,8 +323,8 @@ function featuredTimelineCard(item) {
 
 function featuredItemsForDaily(daily, applyFilter = true) {
   const dailySample = isDailySample(daily);
-  const nativeItems = daily.featured_items?.length ? daily.featured_items.map((item) => ({ ...normalizeFeaturedItem(item), is_sample: dailySample })) : fallbackFeaturedItems(daily).map((item) => ({ ...item, is_sample: dailySample }));
-  const filtered = applyFilter ? nativeItems.filter(itemMatchesFeaturedFilter) : nativeItems;
+  const nativeItems = daily.featured_items?.length ? finalizeFocusItems(daily.featured_items.map((item) => ({ ...normalizeFeaturedItem(item), is_sample: dailySample }))) : fallbackFeaturedItems(daily).map((item) => ({ ...item, is_sample: dailySample }));
+  const filtered = applyFilter ? nativeItems.filter((item) => itemMatchesFeaturedFilter(item)) : nativeItems;
   return filtered.sort(compareEvents);
 }
 
@@ -272,13 +335,27 @@ function normalizeFeaturedItem(item) {
     scoreValue: item.score_value,
     scoreLabel: item.score_label || "IPS",
     source: item.source_name || item.source_type || "X 舆情",
-    summary: item.translation_zh || item.summary_zh || item.original_text || "",
+    summary: firstSourceText(item.translation_zh, item.original_text, item.body_zh, item.text, item.summary),
     reason: item.selected_reason,
   };
 }
 
 function chineseSignalText(item) {
-  return item.translation_zh || item.summary_zh || item.original_text || item.summary || "";
+  return firstSourceText(item.translation_zh, item.original_text, item.body_zh, item.text, item.summary, item.summary_zh);
+}
+
+function firstSourceText(...values) {
+  return values.map((value) => String(value || "").trim()).find((value) => value && !isGeneratedSummaryText(value)) || "";
+}
+
+function isGeneratedSummaryText(value) {
+  const text = String(value || "").trim();
+  if (!text) return false;
+  return [
+    "用户在 X 上讨论与品牌相关的购物体验。",
+    "用户讨论价格、优惠或正向购物体验。",
+    "用户讨论物流、配送或包裹追踪体验。",
+  ].includes(text);
 }
 
 function translationStatusKind(item) {
@@ -306,6 +383,233 @@ function translationStateBadge(item) {
 function translationStateInline(item) {
   const badge = translationStateBadge(item);
   return badge ? ` · ${badge}` : "";
+}
+
+function languageSwitchId(item, prefix = "post") {
+  const seed = String(item?.id || item?.post_id || item?.post_url || item?.external_href || item?.externalHref || item?.url || Math.random());
+  return `${prefix}-${seed.replace(/[^a-zA-Z0-9_-]+/g, "-").slice(0, 80)}`;
+}
+
+function postTextVariants(item, preferredText = "") {
+  const zh = firstSourceText(item?.translation_zh, item?.body_zh, preferredText, item?.summary, item?.summary_zh);
+  const original = firstSourceText(item?.original_text, item?.originalText, item?.text, item?.clean_text);
+  const hasOriginal = Boolean(original && zh && !sameDisplayText(original, zh));
+  return { zh: zh || original || "", original, hasOriginal };
+}
+
+function languageToggleNode(item, id) {
+  const variants = postTextVariants(item);
+  if (!variants.hasOriginal) return translationStateBadge(item);
+  return `
+    <span class="language-toggle" role="group" aria-label="正文语言切换">
+      <button type="button" class="active" data-language-toggle="${escapeHtml(id)}" data-language="zh">中文译文</button>
+      <button type="button" data-language-toggle="${escapeHtml(id)}" data-language="original">原文</button>
+    </span>
+  `;
+}
+
+function postLanguageTextNode(item, preferredText, className = "", id = languageSwitchId(item)) {
+  const variants = postTextVariants(item, preferredText);
+  if (!variants.hasOriginal) return richPostTextNode(item, variants.zh || preferredText, className);
+  const extraClass = className ? ` ${escapeHtml(className)}` : "";
+  return `
+    <div class="post-language-content" data-language-content="${escapeHtml(id)}">
+      <div class="post-language-panel active" data-language-panel="zh">
+        ${richPostTextNode(item, variants.zh, className)}
+      </div>
+      <div class="post-language-panel" data-language-panel="original">
+        ${richPostTextNode(item, variants.original, `${className} original-text`.trim())}
+      </div>
+    </div>
+  `;
+}
+
+function postTextWithInlineLanguageToggle(item, preferredText, className = "", prefix = "post") {
+  const id = languageSwitchId(item, prefix);
+  const variants = postTextVariants(item, preferredText);
+  if (!variants.hasOriginal) return richPostTextNode(item, variants.zh || preferredText, className);
+  return `
+    <div class="inline-language-switch">
+      ${languageToggleNode(item, id)}
+    </div>
+    ${postLanguageTextNode(item, preferredText, className, id)}
+  `;
+}
+
+function insightReason(item, fallback = "") {
+  const generated = generatedInsightReason(item);
+  const existing = String(item?.selected_reason || item?.reason || item?.score?.explanation || fallback || "").trim();
+  if (existing && !isGenericInsightText(existing)) return existing;
+  return generated;
+}
+
+function reasonLine(item, className = "", fallback = "") {
+  const reason = insightReason(item, fallback);
+  if (!reason) return "";
+  const extraClass = className ? ` ${escapeHtml(className)}` : "";
+  return `<div class="reason-line${extraClass}">关注原因：${escapeHtml(reason)}</div>`;
+}
+
+function generatedInsightReason(item) {
+  if (item?.source_type === "摘要级归档" || item?.channel === "archive" || item?.type === "summary") return "";
+  const text = firstSourceText(item?.translation_zh, item?.body_zh, item?.summary, item?.original_text, item?.originalText, item?.text);
+  if (!text) return "";
+  const topic = inferSignalTopic(text, item);
+  const stats = signalStats(item);
+  const sourceCount = Number(item?.source_count || item?.postCount || 0);
+  const ips = item?.score_label === "IPS" || item?.score?.ips ? Number(item?.score?.ips || item?.score_value || 0) : 0;
+  const competitorSignal = item?.brand === "temu";
+  const competitorFocus = competitorSignal ? competitorFocusSignal(text, item) : null;
+  if (competitorSignal && !competitorFocus.central) return "";
+  const sensitiveEnough = topic.sensitive && (!competitorSignal || stats.views >= 50 || stats.interactions > 0);
+  const topicHasEnoughEvidence = topic.useful && (!competitorSignal || stats.notable || sensitiveEnough || (stats.interactions > 0 && stats.views >= 50));
+  const competitorHasBasis = competitorSignal
+    ? (topicHasEnoughEvidence || (competitorFocus.strong && (stats.notable || stats.interactions >= 3 || stats.views >= 1000)) || sensitiveEnough)
+    : false;
+  const hasUsefulBasis = competitorSignal
+    ? competitorHasBasis
+    : topicHasEnoughEvidence || stats.notable || sourceCount > 1 || item?.tracking_eligible || ips >= 65;
+  if (!hasUsefulBasis) return "";
+  const impact = propagationPhrase(item, stats);
+  const similarDiscussionPhrase = sourceCount > 1 ? `，同日相似讨论 ${sourceCount} 条` : "";
+  return `内容指向${topic.name}：${topic.angle}；${impact}${similarDiscussionPhrase}；研判：${topic.implication}`;
+}
+
+function isGenericInsightText(value) {
+  const text = String(value || "").trim();
+  if (!text) return true;
+  return [
+    "竞品基线内容，用于观察 Temu 当日讨论主题和互动强度。",
+    "用于对照 Joybuy 当日声量和风险语境。",
+    "进入当日情报归档。",
+    "该舆情达到焦点阈值，建议结合原帖证据持续观察。",
+    "Backfilled from summary metrics only.",
+  ].some((needle) => text.includes(needle)) || /^该情报与 Joybuy\/JD 海外购物相关，当前综合优先级/.test(text) || /^该情报偏正向机会，体现价格、配送或促销优势/.test(text);
+}
+
+function inferSignalTopic(text, item = {}) {
+  const lower = String(text || "").toLowerCase();
+  const brand = item.brand === "temu" ? "竞品侧" : "Joybuy/JD";
+  const hasAny = (terms) => terms.some((term) => lower.includes(term.toLowerCase()) || String(text).includes(term));
+  if (hasAny(["refund", "退款", "退货", "售后", "chargeback"])) {
+    return {
+      name: "退款/售后体验",
+      angle: "用户明确提到退款、退货或售后处理",
+      implication: `${brand}的信任成本会被放大，需关注是否出现更多相似投诉。`,
+      useful: true,
+      sensitive: true,
+    };
+  }
+  if (hasAny(["delivery", "shipping", "parcel", "warehouse", "ships from", "发货", "配送", "物流", "包裹", "本地仓", "仓库", "transporteur", "commande"])) {
+    return {
+      name: "履约与物流心智",
+      angle: "原帖围绕发货、仓库、配送或包裹进度展开",
+      implication: item.brand === "temu" ? "可作为 Temu 履约卖点/槽点的竞品参照。" : "需要判断这是正向履约口碑还是潜在配送投诉。",
+      useful: true,
+    };
+  }
+  if (hasAny(["coupon", "discount", "promo", "deal", "save", "ultra-low", "优惠", "折扣", "券", "低价", "省钱", "促销"])) {
+    return {
+      name: "价格促销与导购",
+      angle: "内容强调优惠、低价、券包或导购入口",
+      implication: item.brand === "temu" ? "有助于观察 Temu 拉新促销话术及可能的垃圾推广占比。" : "可评估是否存在可借势传播的价格/活动卖点。",
+      useful: true,
+    };
+  }
+  if (hasAny(["regulator", "regulatory", "investigation", "foreign subsidies", "subsidy", "charge sheet", "european commission", "ceconomy", "takeover", "acquisition", "antitrust", "欧盟", "监管", "收购", "并购", "补贴", "反垄断"])) {
+    return {
+      name: "监管/并购风险",
+      angle: "内容涉及海外监管审查、并购交易或市场准入风险",
+      implication: "这类舆情可能影响管理层判断、市场信任和欧洲业务推进，应从普通消费体验中单独拎出。",
+      useful: true,
+      sensitive: true,
+    };
+  }
+  if (hasAny(["amazon", "fnac", "cdiscount", "micromania", "shein", "jd.com", "京东"])) {
+    return {
+      name: "多平台比价/货架露出",
+      angle: "原帖把品牌与其他电商平台并列展示",
+      implication: "适合观察品牌在海外用户心智中的货架位置和竞品集合。",
+      useful: true,
+    };
+  }
+  if (item.brand === "temu" && hasAny(["cheap", "low quality", "knockoff", "lazy", "temu version", "temu-looking", "temu looking", "敷衍", "低质", "山寨", "乱七八糟"])) {
+    return {
+      name: "竞品低价/低质心智",
+      angle: "原帖把 Temu 作为低价、低质或山寨感的表达符号",
+      implication: "这类内容可作为竞品品牌心智参照，但只有出现较高传播时才需要进入焦点。",
+      useful: true,
+      sensitive: true,
+    };
+  }
+  if (hasAny(["order", "cart", "shop", "buy", "下单", "订单", "购物车", "购买", "想试试"])) {
+    return {
+      name: "购买意向与日常购物",
+      angle: "用户表达下单、加购或尝试购买意向",
+      implication: item.brand === "temu" ? "可作为竞品自然需求与用户使用场景样本，需结合互动与浏览判断是否异常。" : "可用于判断 Joybuy/JD 是否被真实用户纳入购买选择。",
+      useful: true,
+    };
+  }
+  if (hasAny(["scam", "fake", "damaged", "stupid", "lazy", "nonsense", "蠢", "假", "坏了", "差", "敷衍", "乱七八糟"])) {
+    return {
+      name: "负向情绪/玩梗表达",
+      angle: "文本带有吐槽、嘲讽或低信任表达",
+      implication: "短期未必是正式投诉，但容易在高互动场景下转化为品牌负面语境。",
+      useful: true,
+      sensitive: true,
+    };
+  }
+  if (hasAny(["😭", "😅", "😍", "cosplay", "baby", "meme"])) {
+    return {
+      name: "轻量玩梗/社交表达",
+      angle: "内容更像日常调侃或情绪化表达",
+      implication: "建议按话题热度样本观察，不宜直接升级为风险事件。",
+      useful: false,
+    };
+  }
+  return {
+    name: item.brand === "temu" ? "竞品日常声量" : "品牌日常声量",
+    angle: "原帖没有明显投诉或处置线索，主要体现日常提及",
+    implication: "适合进入声量基线，用于和后续异常波动做对照。",
+    useful: false,
+  };
+}
+
+function propagationPhrase(item, stats = signalStats(item)) {
+  const { replies, reposts, quotes, views, interactions, followers } = stats;
+  const base = views ? `${formatCompactNumber(interactions)} 次赞评转引、${formatCompactNumber(views)} 浏览` : `${formatCompactNumber(interactions)} 次赞评转引`;
+  if (followers >= 20000) return `作者具备较高影响力（${formatCompactNumber(followers)} followers），当前 ${base}`;
+  if (quotes + reposts >= 5) return `转引信号相对突出，当前 ${base}`;
+  if (replies >= 3) return `评论参与高于普通样本，当前 ${base}`;
+  if (views >= 1000 && interactions <= 3) return `已有千级浏览但互动偏低，当前 ${base}`;
+  if (interactions === 0) return views ? `当前传播仍弱，${formatCompactNumber(views)} 浏览且暂无赞评转引` : "当前尚未形成可见互动";
+  return `当前 ${base}`;
+}
+
+function signalStats(item) {
+  const metrics = item?.post_metrics || item?.metrics || {};
+  const likes = metricNumber(metrics.likes ?? metrics.total_likes);
+  const replies = metricNumber(metrics.replies ?? metrics.total_replies);
+  const reposts = metricNumber(metrics.reposts ?? metrics.total_reposts);
+  const quotes = metricNumber(metrics.quotes ?? metrics.total_quotes);
+  const views = metricNumber(metrics.views ?? metrics.total_views);
+  const interactions = likes + replies + reposts + quotes;
+  const followers = metricNumber(item?.author_followers);
+  return {
+    likes,
+    replies,
+    reposts,
+    quotes,
+    views,
+    interactions,
+    followers,
+    notable: followers >= 20000 || views >= 1000 || interactions >= 3 || replies >= 2 || reposts + quotes >= 2,
+  };
+}
+
+function metricNumber(value) {
+  const number = Number(value || 0);
+  return Number.isFinite(number) ? number : 0;
 }
 
 function detailBodyLabel(item, language) {
@@ -393,9 +697,13 @@ function leadPostFromCluster(cluster) {
   return cluster?.lead_post || {};
 }
 
+function sourcePostBody(post, fallback = "") {
+  return firstSourceText(post?.translation_zh, post?.clean_text, post?.text, post?.original_text, fallback);
+}
+
 function leadPostText(cluster) {
   const post = leadPostFromCluster(cluster);
-  return post.translation_zh || post.summary_zh || post.clean_text || cluster?.summary_zh || cluster?.summary || "";
+  return sourcePostBody(post, cluster?.summary_zh || cluster?.summary || "");
 }
 
 function leadPostSourceName(post, fallback = "Joybuy / JD") {
@@ -420,8 +728,8 @@ function safeExternalUrl(href) {
 }
 
 function fallbackFeaturedItems(daily) {
+  if (daily.summary_only) return [];
   const clusterItems = (daily.clusters || [])
-    .filter((cluster) => daily.summary_only || isFeaturedClusterFallback(cluster))
     .map((cluster) => {
       const score = cluster.score || {};
       const post = leadPostFromCluster(cluster);
@@ -438,15 +746,23 @@ function fallbackFeaturedItems(daily) {
         author_avatar_url: post.author_avatar_url || post.author?.avatar_url || "",
         author_followers: post.author_followers ?? post.author?.followers ?? 0,
         author_verified: post.author_verified ?? post.author?.verified ?? false,
+        author_following: post.author_following ?? post.author?.following ?? 0,
+        author_bio: post.author_bio || post.author_description || post.author?.bio || post.author?.description || "",
+        author_location: post.author_location || post.author?.location || "",
+        author_joined_at: post.author_joined_at || post.author?.joined_at || "",
         post_url: post.url || "",
+        reply_to_post_id: post.reply_to_post_id || "",
+        reply_to_handle: post.reply_to_handle || post.in_reply_to_screen_name || "",
+        quoted_post_id: post.quoted_post_id || "",
         created_at: post.created_at || cluster.first_seen_at || cluster.last_seen_at,
         title: generatedOpinionTitle({ brand: "joybuy", tags, topic: cluster.topic, sentiment: score.sentiment || "neutral" }),
         display_title: "",
-        original_text: post.clean_text || cluster.summary || "",
+        original_text: post.text || post.clean_text || cluster.summary || "",
         translation_zh: text,
         translation_status: post.translation_status || "unknown",
         translation_provider: post.translation_provider || "none",
         summary_zh: cluster.summary_zh || "",
+        links: post.links || [],
         media: post.media || [],
         score,
         score_value: score.ips ?? "n/a",
@@ -458,12 +774,13 @@ function fallbackFeaturedItems(daily) {
         related_sources: Math.max(0, Number(cluster.post_count || 1) - 1),
         selected_reason: score.explanation || cluster.tracking_reason || "摘要级归档保留了当日主题和指标，原帖级焦点舆情将在完整日报中展示。",
         recommended_action: score.recommended_action || "持续监测",
-        href: cluster.cluster_id && !String(cluster.cluster_id).startsWith("archive-") ? `#/intel/${cluster.cluster_id}` : "",
+        href: "",
         external_href: post.url || "",
         sentiment: score.sentiment || "neutral",
         level: score.level || "low",
       });
-    });
+    })
+    .filter(isJoybuyFocusItem);
   const competitorItems = buildCompetitorEvents(daily)
     .filter((event) => event.brand === "temu")
     .map((event, index) =>
@@ -472,49 +789,150 @@ function fallbackFeaturedItems(daily) {
         brand: "temu",
         source_type: "竞品基线",
         source_name: event.source,
-        author_name: "Temu Radar",
+        author_name: event.author_name || "Temu Source",
+        author_handle: event.author_handle || "",
+        author_avatar_url: event.author_avatar_url || "",
+        author_followers: event.author_followers || 0,
+        author_following: event.author_following || 0,
+        author_bio: event.author_bio || "",
         created_at: event.time,
         timeLabel: event.timeLabel,
         title: event.title,
-        original_text: event.title,
+        original_text: event.originalText || event.summary || "",
         translation_zh: event.summary,
-        summary_zh: event.summary,
-        media: [],
+        summary_zh: "",
+        translation_status: event.translation_status || "unknown",
+        translation_provider: event.translation_provider || "none",
+        links: event.links || [],
+        media: event.media || [],
         score_value: event.scoreValue,
         score_label: event.scoreLabel,
         tags: event.tags || ["竞品"],
         metrics: {},
-        post_metrics: {},
+        post_metrics: event.metrics || {},
         source_count: 1,
         related_sources: 0,
         selected_reason: event.reason,
         recommended_action: "纳入竞品基线观察",
         href: "",
         external_href: event.href || "",
+        reply_to_post_id: event.reply_to_post_id || "",
+        reply_to_handle: event.reply_to_handle || "",
+        quoted_post_id: event.quoted_post_id || "",
         sentiment: "neutral",
         level: "low",
       })
-    );
-  return [...clusterItems, ...competitorItems];
+    )
+    .filter(isCompetitorFocusItem);
+  return finalizeFocusItems([...clusterItems, ...competitorItems]);
 }
 
-function isFeaturedClusterFallback(cluster) {
-  const score = cluster.score || {};
+function finalizeFocusItems(items) {
+  const sourceItems = items.filter((item) => {
+    return item?.source_type !== "摘要级归档" && item?.channel !== "archive" && (item.external_href || item.post_url) && chineseSignalText(item);
+  });
+  const joybuy = sourceItems
+    .filter((item) => item.brand !== "temu" && isJoybuyFocusItem(item))
+    .sort(compareFocusPriority)
+    .slice(0, 5);
+  const competitorLimit = joybuy.length ? 2 : 3;
+  const competitor = sourceItems
+    .filter((item) => item.brand === "temu" && isCompetitorFocusItem(item))
+    .sort(compareFocusPriority)
+    .slice(0, competitorLimit);
+  return [...joybuy, ...competitor].sort(compareFocusPriority).slice(0, 7);
+}
+
+function isJoybuyFocusItem(item) {
+  if (!item || item.brand === "temu" || item.source_type === "摘要级归档") return false;
+  if (!item.external_href && !item.post_url) return false;
+  const text = chineseSignalText(item);
+  if (!text) return false;
+  const score = item.score || {};
+  const stats = signalStats(item);
+  const topic = inferSignalTopic(text, item);
+  const sourceCount = Number(item.source_count || item.postCount || 0);
   return (
-    Number(score.ips || 0) >= 70 ||
-    ["urgent", "high"].includes(score.level) ||
-    Number(score.future_potential || 0) >= 75 ||
-    Number(score.current_impact || 0) >= 70 ||
-    Number(cluster.metrics?.max_author_followers || 0) >= 20000
+    ["urgent", "high", "medium"].includes(score.level) ||
+    Number(score.ips || item.score_value || 0) >= 55 ||
+    Number(score.future_potential || 0) >= 65 ||
+    Number(score.current_impact || 0) >= 50 ||
+    Number(item.author_followers || 0) >= 20000 ||
+    sourceCount > 1 ||
+    topic.useful ||
+    item.sentiment === "positive" ||
+    stats.notable
   );
 }
 
-function itemMatchesFeaturedFilter(item) {
-  if (state.featuredFilter === "all") return true;
-  if (state.featuredFilter === "competitor") return item.brand === "temu";
-  if (state.featuredFilter === "opportunity") return item.sentiment === "positive" || (item.tags || []).some((tag) => String(tag).includes("opportunity") || String(tag).includes("机会"));
-  if (state.featuredFilter === "watch") return Number(item.score?.future_potential || 0) >= 75 || (item.tags || []).includes("高潜传播");
-  if (state.featuredFilter === "risk") return item.brand !== "temu" && item.sentiment !== "positive";
+function isCompetitorFocusItem(item) {
+  if (!item || item.brand !== "temu") return false;
+  if (!item.external_href && !item.post_url) return false;
+  const text = chineseSignalText(item);
+  if (!text) return false;
+  const focus = competitorFocusSignal(text, item);
+  if (!focus.central) return false;
+  const topic = inferSignalTopic(text, item);
+  const stats = signalStats(item);
+  const reason = insightReason(item);
+  if (!reason && !focus.strong) return false;
+  return Boolean(
+    (topic.sensitive && !focus.negativeTrope && (stats.views >= 50 || stats.interactions > 0)) ||
+      (focus.negativeTrope && (stats.views >= 1000 || stats.interactions >= 5 || stats.followers >= 20000)) ||
+      (focus.strong && (stats.views >= 1000 || stats.interactions >= 5 || stats.followers >= 20000)) ||
+      stats.views >= 2000 ||
+      stats.interactions >= 8
+  );
+}
+
+function competitorFocusSignal(text, item = {}) {
+  const raw = String(text || "");
+  const lower = raw.toLowerCase();
+  const tags = (item.tags || []).map((tag) => String(tag).toLowerCase());
+  const hasTemu = /\btemu\b/i.test(raw);
+  const hasAnyTerm = (terms) => terms.some((term) => lower.includes(term.toLowerCase()) || raw.includes(term));
+  const platformPhrases =
+    /\b(order(?:ed|ing)?|buy|bought|shop|shopping|cart|coupon|discount|deal|gift|delivery|shipping|warehouse|app|ads?|haul|refund|return)\b.{0,36}\btemu\b/i.test(raw) ||
+    /\btemu\b.{0,36}\b(order(?:ed|ing)?|buy|bought|shop|shopping|cart|coupon|discount|deal|gift|delivery|shipping|warehouse|app|ads?|haul|refund|return)\b/i.test(raw) ||
+    /\b(from|off|on|via|through)\s+temu\b/i.test(raw) ||
+    hasAnyTerm(["Temu 上", "Temu下", "Temu 订单", "Temu订单", "Temu 快递", "Temu快递", "Temu 配送", "Temu配送", "Temu 优惠", "Temu优惠", "Temu 折扣", "Temu折扣", "Temu App", "Temu 广告", "Temu广告", "Temu 购物车", "Temu购物车", "本地仓", "来自 Temu", "从 Temu"]);
+  const negativeBrandTrope = hasAnyTerm(["cheap", "low quality", "knockoff", "fake", "lazy", "stupid", "temu version", "temu-looking", "temu looking", "敷衍", "低质", "山寨", "假", "蠢", "乱七八糟"]);
+  const matchedTopic = tags.some((tag) => ["delivery", "refund", "return", "scam", "fake", "damaged", "slow", "missing", "customer service"].includes(tag));
+  return {
+    central: hasTemu && (platformPhrases || matchedTopic || negativeBrandTrope),
+    strong: hasTemu && (platformPhrases || matchedTopic || negativeBrandTrope),
+    negativeTrope: hasTemu && negativeBrandTrope,
+  };
+}
+
+function compareFocusPriority(a, b) {
+  return focusPriorityScore(b) - focusPriorityScore(a);
+}
+
+function focusPriorityScore(item) {
+  const stats = signalStats(item);
+  const topic = inferSignalTopic(chineseSignalText(item), item);
+  const score = item.score || {};
+  const sourceCount = Number(item.source_count || item.postCount || 0);
+  let value = 0;
+  if (item.brand !== "temu") value += 40;
+  if (topic.sensitive) value += 24;
+  else if (topic.useful) value += 12;
+  value += Math.min(40, Number(score.ips || 0));
+  value += Math.min(20, sourceCount * 4);
+  value += Math.min(24, stats.interactions * 3);
+  value += Math.min(16, Math.log10(Math.max(1, stats.views)) * 5);
+  value += Math.min(16, Math.log10(Math.max(1, stats.followers)) * 3);
+  if (item.sentiment === "positive" && item.brand !== "temu") value += 8;
+  return value;
+}
+
+function itemMatchesFeaturedFilter(item, filter = state.featuredFilter) {
+  if (filter === "all") return true;
+  if (filter === "competitor") return item.brand === "temu";
+  if (filter === "opportunity") return item.brand !== "temu" && (item.sentiment === "positive" || (item.tags || []).some((tag) => String(tag).includes("opportunity") || String(tag).includes("机会")));
+  if (filter === "watch") return Number(item.score?.future_potential || 0) >= 75 || Number(item.author_followers || 0) >= 20000 || (item.tags || []).includes("高潜传播");
+  if (filter === "risk") return item.brand !== "temu" && item.sentiment !== "positive";
   return true;
 }
 
@@ -527,6 +945,81 @@ function needsChineseTranslation(item) {
 }
 
 function avatarNode(item) {
+  const avatarUrl = safeExternalUrl(item?.author_avatar_url);
+  const name = item?.author_name || item?.author_handle || item?.source_name || "X Source";
+  const avatar = avatarUrl
+    ? `<img class="source-avatar" src="${escapeHtml(avatarUrl)}" alt="" loading="lazy" />`
+    : `<span class="source-avatar fallback">${escapeHtml(initials(name || "JX"))}</span>`;
+  return `
+    <span class="author-hover" tabindex="0">
+      ${avatar}
+      ${authorPopover(item)}
+    </span>
+  `;
+}
+
+function authorNameNode(item = {}, fallback = "X Source") {
+  const name = String(fallback || item.author_name || item.author_handle || item.source_name || "X Source").trim();
+  return `<span class="author-name">${escapeHtml(name)}${verifiedBadge(item)}</span>`;
+}
+
+function sourceBadge(label, kind = "") {
+  const normalized = String(kind || label || "").toLowerCase();
+  const className = normalized.includes("竞品") || normalized.includes("competitor") ? "competitor" : "focus";
+  return `<strong class="source-badge ${escapeHtml(className)}">${escapeHtml(label || "舆情")}</strong>`;
+}
+
+function verifiedBadge(item = {}) {
+  return item.author_verified || item.author?.verified
+    ? `<span class="verified-badge" title="X 认证用户" aria-label="X 认证用户">✓</span>`
+    : "";
+}
+
+function authorPopover(item = {}) {
+  const handle = cleanHandle(item.author_handle || "");
+  const name = item.author_name || handle || item.source_name || "X Source";
+  const avatarUrl = safeExternalUrl(item.author_avatar_url);
+  const profileUrl = handle ? `https://x.com/${handle}` : "";
+  const bio = String(item.author_bio || item.author_description || "").trim();
+  const location = String(item.author_location || item.authorLocation || "").trim();
+  const joined = formatJoinedDate(item.author_joined_at || item.authorJoinedAt || item.author_created_at || item.authorCreatedAt || "");
+  const followers = Number(item.author_followers || 0);
+  const following = Number(item.author_following || 0);
+  const hasProfileData = handle || bio || location || joined || followers || following || item.author_verified;
+  if (!hasProfileData) return "";
+  return `
+    <span class="author-popover" role="tooltip">
+      <span class="author-popover-head">
+        ${avatarUrl ? `<img src="${escapeHtml(avatarUrl)}" alt="" loading="lazy" />` : `<span class="source-avatar fallback">${escapeHtml(initials(name))}</span>`}
+        ${profileUrl ? `<a href="${escapeHtml(profileUrl)}" target="_blank" rel="noreferrer">查看主页</a>` : ""}
+      </span>
+      <strong>${escapeHtml(name)}${verifiedBadge(item)}</strong>
+      ${handle ? `<span class="author-popover-handle">@${escapeHtml(handle)}</span>` : ""}
+      ${bio ? `<p>${escapeHtml(bio)}</p>` : ""}
+      ${(location || joined) ? `<span class="author-popover-profile-meta">
+        ${location ? `<span>定位 ${escapeHtml(location)}</span>` : ""}
+        ${joined ? `<span>加入 ${escapeHtml(joined)}</span>` : ""}
+      </span>` : ""}
+      <span class="author-popover-stats">
+        ${following ? `<b>${escapeHtml(formatCompactNumber(following))}</b> Following` : ""}
+        ${followers ? `<b>${escapeHtml(formatCompactNumber(followers))}</b> Followers` : ""}
+      </span>
+    </span>
+  `;
+}
+
+function formatJoinedDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "long",
+    timeZone: "Asia/Shanghai",
+  });
+}
+
+function legacyAvatarNode(item) {
   const avatarUrl = safeExternalUrl(item.author_avatar_url);
   if (avatarUrl) {
     return `<img class="source-avatar" src="${escapeHtml(avatarUrl)}" alt="" loading="lazy" />`;
@@ -542,11 +1035,331 @@ function initials(value) {
   return text.slice(0, 2).toUpperCase();
 }
 
-function mediaNode(item) {
-  const url = typeof item === "string" ? item : item?.url || item?.media_url_https || item?.media_url || item?.preview_image_url || "";
+function mediaGridNode(media = [], owner = {}) {
+  const items = Array.isArray(media) ? media.filter(Boolean) : [];
+  if (!items.length) return "";
+  const hasVideo = items.some(isVideoMedia);
+  const xVideoEmbed = USE_X_EMBED_FOR_VIDEO && !owner?.is_sample && hasVideo ? xVideoEmbedNode(owner, items.find(isVideoMedia)) : "";
+  const nodes = [];
+  items.forEach((mediaItem, index) => {
+    if (xVideoEmbed && isVideoMedia(mediaItem)) return;
+    const node = mediaNode(mediaItem, owner, { mediaIndex: index + 1 });
+    if (node) nodes.push(node);
+  });
+  if (xVideoEmbed) nodes.push(xVideoEmbed);
+  return nodes.length ? `<div class="featured-media-grid${xVideoEmbed ? " has-x-embed" : ""}">${nodes.join("")}</div>` : "";
+}
+
+function mediaNode(item, owner = {}, options = {}) {
+  if (typeof item === "string") {
+    const safeUrl = safeExternalUrl(item);
+    return safeUrl ? imageMediaNode(safeUrl) : "";
+  }
+  const imageUrl = safeExternalUrl(item?.media_url_https || item?.media_url || item?.preview_image_url || item?.previewImageUrl || item?.url || "");
+  if (isVideoMedia(item)) {
+    const originalUrl = tweetVideoOpenUrl(owner, item, options.mediaIndex) || bestVideoUrl(item);
+    if (!originalUrl) return imageUrl ? imageMediaNode(imageUrl) : "";
+    const posterNode = imageUrl
+      ? `<img class="media-video-thumb" src="${escapeHtml(imageUrl)}" alt="" loading="lazy" />`
+      : `<span class="media-video-thumb fallback" aria-hidden="true"></span>`;
+    return `
+      <div class="media-video-shell">
+        <a class="media-video-link" href="${escapeHtml(originalUrl)}" target="_blank" rel="noreferrer" aria-label="在 X 播放视频">
+          ${posterNode}
+          <span class="media-play-button" aria-hidden="true"><span></span></span>
+        </a>
+      </div>
+    `;
+  }
+  return imageUrl ? imageMediaNode(imageUrl) : "";
+}
+
+function isVideoMedia(item) {
+  if (!item || typeof item === "string") return false;
+  const mediaType = String(item?.type || item?.media_type || "").toLowerCase();
+  const variants = item?.video_info?.variants || item?.videoInfo?.variants || [];
+  return mediaType.includes("video") || mediaType.includes("gif") || Boolean(variants.length);
+}
+
+function xVideoEmbedNode(owner = {}, mediaItem = {}) {
+  const embedUrl = canonicalTweetEmbedUrl(owner, mediaItem);
+  if (!embedUrl) return "";
+  const openUrl = tweetOpenUrl(owner, mediaItem) || embedUrl;
+  return `
+    <div class="x-video-embed-card" data-x-video-embed="true">
+      <blockquote class="twitter-tweet" data-dnt="true" data-theme="light" data-conversation="none">
+        <a href="${escapeHtml(embedUrl)}">在 X 查看视频</a>
+      </blockquote>
+      <a class="x-video-fallback" href="${escapeHtml(openUrl)}" target="_blank" rel="noreferrer">播放器未加载时打开 X 原帖</a>
+    </div>
+  `;
+}
+
+function canonicalTweetEmbedUrl(owner = {}, mediaItem = {}) {
+  const directUrl = tweetOpenUrl(owner, mediaItem);
+  const parsed = parseTweetUrl(directUrl);
+  if (parsed) return `https://twitter.com/${encodeURIComponent(parsed.handle)}/status/${encodeURIComponent(parsed.id)}`;
+  const handle = cleanHandle(firstTextValue(owner.author_handle, owner.handle, owner.username));
+  const id = firstTextValue(owner.post_id, owner.postId, owner.status_id, owner.statusId);
+  if (handle && id) return `https://twitter.com/${encodeURIComponent(handle)}/status/${encodeURIComponent(id)}`;
+  return "";
+}
+
+function tweetOpenUrl(owner = {}, mediaItem = {}) {
+  const candidates = [
+    owner.external_href,
+    owner.externalHref,
+    owner.post_url,
+    owner.postUrl,
+    owner.url,
+    owner.href,
+    mediaItem.expanded_url,
+    mediaItem.expandedUrl,
+  ];
+  return candidates.map(safeExternalUrl).find(Boolean) || "";
+}
+
+function tweetVideoOpenUrl(owner = {}, mediaItem = {}, mediaIndex = 1) {
+  const statusUrl = tweetOwnerStatusUrl(owner) || tweetOpenUrl(owner, mediaItem);
+  const parsed = parseTweetUrl(statusUrl);
+  const index = Math.max(1, Number(mediaIndex) || 1);
+  if (parsed) {
+    return `https://x.com/${encodeURIComponent(parsed.handle)}/status/${encodeURIComponent(parsed.id)}/video/${index}`;
+  }
+  const expanded = safeExternalUrl(mediaItem.expanded_url || mediaItem.expandedUrl || "");
+  if (expanded && /\/video\/\d+/i.test(expanded)) {
+    return expanded.replace(/\/video\/\d+/i, `/video/${index}`);
+  }
+  return expanded || "";
+}
+
+function tweetOwnerStatusUrl(owner = {}) {
+  const candidates = [owner.external_href, owner.externalHref, owner.post_url, owner.postUrl, owner.url, owner.href];
+  return candidates.map(safeExternalUrl).find((url) => parseTweetUrl(url)) || "";
+}
+
+function parseTweetUrl(url) {
+  const safeUrl = safeExternalUrl(url);
+  if (!safeUrl) return null;
+  const match = safeUrl.match(/^https:\/\/(?:www\.)?(?:x|twitter)\.com\/([^/?#]+)\/status\/(\d+)/i);
+  if (!match) return null;
+  return { handle: cleanHandle(match[1]), id: match[2] };
+}
+
+function imageMediaNode(url) {
   const safeUrl = safeExternalUrl(url);
   if (!safeUrl) return "";
-  return `<img src="${escapeHtml(safeUrl)}" alt="" loading="lazy" />`;
+  return `
+    <button type="button" class="media-image-button" data-media-lightbox="${escapeHtml(safeUrl)}" aria-label="查看大图">
+      <img src="${escapeHtml(safeUrl)}" alt="" loading="lazy" />
+    </button>
+  `;
+}
+
+function bestVideoUrl(item) {
+  const variants = item?.video_info?.variants || item?.videoInfo?.variants || [];
+  const mp4 = variants
+    .filter((variant) => String(variant?.content_type || variant?.contentType || "").includes("mp4") && safeExternalUrl(variant?.url || ""))
+    .sort((a, b) => Number(b.bitrate || 0) - Number(a.bitrate || 0));
+  return safeExternalUrl(mp4[0]?.url || "");
+}
+
+function hydrateXVideoEmbeds() {
+  if (!USE_X_EMBED_FOR_VIDEO) return;
+  if (!document.querySelector("[data-x-video-embed]")) return;
+  const content = document.getElementById("content") || document.body;
+  if (window.twttr?.widgets?.load) {
+    window.twttr.widgets.load(content);
+    return;
+  }
+  if (document.querySelector("script[data-x-widgets]")) return;
+  const script = document.createElement("script");
+  script.src = X_WIDGET_SCRIPT_URL;
+  script.async = true;
+  script.charset = "utf-8";
+  script.dataset.xWidgets = "true";
+  script.onload = () => window.twttr?.widgets?.load?.(content);
+  document.head.appendChild(script);
+}
+
+function richPostTextNode(item, text, className = "") {
+  const content = richPostTextHtml(item, text);
+  if (!content) return "";
+  const extraClass = className ? ` ${escapeHtml(className)}` : "";
+  return `<div class="tweet-rich-text${extraClass}">${content}</div>`;
+}
+
+function richPostTextHtml(item, text) {
+  const displayText = String(text || "").trim();
+  if (!displayText) return "";
+  const links = normalizedLinks(item?.links || item?.source_links || item?.urls || []);
+  const sourceLineLinks = sourceLineLinksForItem(item, links);
+  const sourceHasLinks = sourceLineLinks.some((lineLinks) => lineLinks.length);
+  const used = new Set();
+  let inlineUrlCursor = 0;
+  let fallbackCursor = 0;
+  const lines = displayText.split(/\r?\n/);
+  const rendered = lines
+    .map((line, index) => {
+      if (!line.trim()) return `<div class="tweet-rich-line blank" aria-hidden="true"></div>`;
+      const { html, urls } = linkifiedLine(line, links, inlineUrlCursor);
+      inlineUrlCursor += urls.length;
+      urls.forEach((url) => used.add(url));
+      let appendedLinks = [];
+      if (!urls.length) {
+        appendedLinks = sourceHasLinks ? sourceLineLinks[index] || [] : heuristicLineLinks(line, links, fallbackCursor);
+        if (!sourceHasLinks && appendedLinks.length) fallbackCursor += appendedLinks.length;
+        appendedLinks = appendedLinks.filter((url) => !used.has(url));
+        appendedLinks.forEach((url) => used.add(url));
+      }
+      return `<div class="tweet-rich-line">${html}${inlineLinkGroup(appendedLinks)}</div>`;
+    })
+    .join("");
+  const leftovers = links.filter((url) => !used.has(url));
+  return `${rendered}${leftovers.length ? `<div class="tweet-link-list"><span>链接</span>${leftovers.map((url) => richLink(url)).join("")}</div>` : ""}`;
+}
+
+function normalizedLinks(value) {
+  const source = Array.isArray(value) ? value : [];
+  const result = [];
+  source.forEach((item) => {
+    const url =
+      typeof item === "string"
+        ? item
+        : item?.expanded_url || item?.expandedUrl || item?.url || item?.display_url || item?.displayUrl || "";
+    const safeUrl = safeExternalUrl(url);
+    if (safeUrl && !result.includes(safeUrl)) result.push(safeUrl);
+  });
+  return result;
+}
+
+function sourceLineLinksForItem(item, links) {
+  const source = String(item?.original_text || item?.originalText || item?.text || item?.clean_text || "");
+  if (!source || !links.length) return [];
+  let cursor = 0;
+  return source.split(/\r?\n/).map((line) => {
+    const urls = [...line.matchAll(/https?:\/\/\S+/g)].map(() => links[cursor++]).filter(Boolean);
+    return urls;
+  });
+}
+
+function linkifiedLine(line, links, cursorStart = 0) {
+  const urls = [];
+  let cursor = cursorStart;
+  let lastIndex = 0;
+  let html = "";
+  const regex = /https?:\/\/\S+/g;
+  let match;
+  while ((match = regex.exec(line))) {
+    html += escapeHtml(line.slice(lastIndex, match.index));
+    const expanded = links[cursor] || safeExternalUrl(match[0]) || match[0];
+    cursor += 1;
+    urls.push(expanded);
+    html += richLink(expanded);
+    lastIndex = match.index + match[0].length;
+  }
+  html += escapeHtml(line.slice(lastIndex));
+  return { html, urls };
+}
+
+function heuristicLineLinks(line, links, cursor = 0) {
+  if (!links[cursor]) return [];
+  const text = String(line || "").trim();
+  const isLinkLine =
+    /[:：]\s*$/.test(text) ||
+    /^(amazon|fnac|joybuy|cdiscount|micromania|infos?|信息|亚马逊)\b/i.test(text);
+  return isLinkLine ? [links[cursor]] : [];
+}
+
+function inlineLinkGroup(links) {
+  if (!links.length) return "";
+  return `<span class="tweet-inline-links">${links.map((url) => richLink(url)).join("")}</span>`;
+}
+
+function richLink(url) {
+  const safeUrl = safeExternalUrl(url);
+  if (!safeUrl) return "";
+  return `<a href="${escapeHtml(safeUrl)}" target="_blank" rel="noreferrer">${escapeHtml(shortUrlLabel(safeUrl))}</a>`;
+}
+
+function contextRelationNode(item) {
+  const relation = contextRelation(item);
+  if (!relation) return "";
+  const target = relation.targetUrl ? richLink(relation.targetUrl) : "";
+  const contextUrl = safeExternalUrl(item?.external_href || item?.externalHref || item?.post_url || item?.url || item?.href);
+  return `
+    <div class="context-relation">
+      <span>${escapeHtml(relation.label)}</span>
+      <p>${escapeHtml(relation.text)}${target ? ` ${target}` : ""}</p>
+      ${relation.note ? `<em>${escapeHtml(relation.note)}</em>` : ""}
+      ${contextUrl ? `<a href="${escapeHtml(contextUrl)}" target="_blank" rel="noreferrer">在 X 查看完整上下文</a>` : ""}
+    </div>
+  `;
+}
+
+function contextRelation(item) {
+  const quoteId = firstTextValue(item?.quoted_post_id, item?.quotedPostId, item?.quoted_status_id_str);
+  if (quoteId) {
+    return {
+      label: "引用",
+      text: "这条原帖引用了另一条 X 内容：",
+      targetUrl: postStatusUrl("", quoteId),
+      note: "引用原帖正文未随本次采集返回时，只展示关系入口。",
+    };
+  }
+  const replyId = firstTextValue(item?.reply_to_post_id, item?.replyToPostId, item?.in_reply_to_status_id);
+  const replyHandle = cleanHandle(firstTextValue(item?.reply_to_handle, item?.in_reply_to_screen_name, item?.inReplyToScreenName));
+  if (replyId || replyHandle) {
+    return {
+      label: "回复",
+      text: replyHandle ? `这条原帖是对 @${replyHandle} 的回复。` : "这条原帖属于一段回复链。",
+      targetUrl: replyId ? postStatusUrl(replyHandle, replyId) : "",
+      note: "父帖正文是否展示，取决于数据源是否在本次采集中返回。",
+    };
+  }
+  const mention = leadingMention(item);
+  if (mention) {
+    return {
+      label: "疑似回复",
+      text: `正文以 @${mention} 开头，通常表示它位于一段回复链中。`,
+      targetUrl: "",
+      note: "本次数据未返回父帖 ID 和父帖正文，因此这里只标注关系，不复原父帖内容。",
+    };
+  }
+  return null;
+}
+
+function leadingMention(item) {
+  const text = firstTextValue(item?.original_text, item?.originalText, item?.text, item?.translation_zh, item?.body_zh, item?.summary);
+  const match = String(text || "").trim().match(/^@([A-Za-z0-9_]{1,20})\b/);
+  return match ? match[1] : "";
+}
+
+function firstTextValue(...values) {
+  return values.map((value) => String(value || "").trim()).find(Boolean) || "";
+}
+
+function cleanHandle(value) {
+  return String(value || "").replace(/^@/, "").trim();
+}
+
+function postStatusUrl(handle, id) {
+  const postId = String(id || "").trim();
+  if (!postId) return "";
+  const user = cleanHandle(handle);
+  return user ? `https://x.com/${user}/status/${postId}` : `https://x.com/i/web/status/${postId}`;
+}
+
+function shortUrlLabel(url) {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.host.replace(/^www\./, "");
+    const path = `${parsed.pathname}${parsed.search}`.replace(/\/$/, "");
+    const label = `${host}${path}`;
+    return label.length > 42 ? `${label.slice(0, 39)}...` : label;
+  } catch (error) {
+    return url.length > 42 ? `${url.slice(0, 39)}...` : url;
+  }
 }
 
 function metricInline(label, value) {
@@ -615,7 +1428,6 @@ function allIntelligencePage() {
             <option value="risk" ${state.allTypeFilter === "risk" ? "selected" : ""}>风险</option>
             <option value="opportunity" ${state.allTypeFilter === "opportunity" ? "selected" : ""}>机会</option>
             <option value="competitor" ${state.allTypeFilter === "competitor" ? "selected" : ""}>竞品</option>
-            <option value="tracking" ${state.allTypeFilter === "tracking" ? "selected" : ""}>发酵追踪</option>
             <option value="summary" ${state.allTypeFilter === "summary" ? "selected" : ""}>摘要归档</option>
           </select>
         </label>
@@ -630,7 +1442,7 @@ function allIntelligencePage() {
       <div class="section-header">
         <div>
           <h2>信息流</h2>
-          <p class="muted">按日期与发布时间倒序排列。Joybuy 舆情进入详情页，X 原帖保留明确原文入口。</p>
+          <p class="muted">按日期与发布时间倒序排列。每条舆情保留明确 X 原帖入口。</p>
         </div>
         <span class="tag">${filteredItems.length} 条</span>
       </div>
@@ -701,11 +1513,11 @@ function allTimelineCard(item) {
             ${avatarNode(item)}
             <div>
               <div class="source-line">
-                <span>${escapeHtml(item.author_name || item.source_name || "Unknown source")}</span>
+                ${authorNameNode(item, item.author_name || item.source_name || "Unknown source")}
                 ${item.author_handle ? `<em>@${escapeHtml(item.author_handle)}</em>` : ""}
-                <strong>${escapeHtml(item.badge)}</strong>
+                ${sourceBadge(item.badge, item.brand === "temu" ? "competitor" : "focus")}
               </div>
-              <div class="source-subline">${escapeHtml(item.source_subline)}${translationStateInline(item)}${item.author_followers ? ` · ${escapeHtml(formatCompactNumber(item.author_followers))} followers` : ""}</div>
+              <div class="source-subline">${escapeHtml(item.source_subline)}${item.author_followers ? ` · ${escapeHtml(formatCompactNumber(item.author_followers))} followers` : ""}</div>
             </div>
           </div>
           <div class="all-score" aria-label="${escapeHtml(item.score_label)} ${escapeHtml(String(item.score_value ?? "n/a"))}">
@@ -714,9 +1526,10 @@ function allTimelineCard(item) {
           </div>
         </div>
         <div class="all-card-body">
-          ${allTitleNode(item)}
-          <p>${escapeHtml(body)}</p>
-          ${item.media?.length ? `<div class="featured-media-grid">${item.media.map(mediaNode).join("")}</div>` : ""}
+          ${item.type === "summary" ? allTitleNode(item) : ""}
+          ${postTextWithInlineLanguageToggle(item, body, "all-card-text", "all")}
+          ${contextRelationNode(item)}
+          ${mediaGridNode(item.media, item)}
           <div class="metric-inline card-metrics">
             ${metricInline("赞", item.post_metrics?.likes ?? item.metrics?.total_likes)}
             ${metricInline("评", item.post_metrics?.replies ?? item.metrics?.total_replies)}
@@ -727,11 +1540,10 @@ function allTimelineCard(item) {
           </div>
         </div>
         <div class="tag-row">${(item.tags || []).slice(0, 8).map((tag) => `<span class="plain-tag">#${escapeHtml(tag)}</span>`).join("")}</div>
-        ${item.reason ? `<div class="reason-line compact">关注原因：${escapeHtml(item.reason)}</div>` : ""}
+        ${reasonLine(item, "compact")}
         <div class="all-card-bottom">
           ${cardFootnote(item.source_count_label, item)}
           <div class="button-row">
-            ${item.href ? `<a class="text-button primary" href="${escapeHtml(item.href)}">详情</a>` : ""}
             ${allExternalLinkButton(item)}
           </div>
         </div>
@@ -742,19 +1554,18 @@ function allTimelineCard(item) {
 
 function allTitleNode(item) {
   const title = allDisplayTitle(item);
-  if (item.href) return `<h3><a href="${escapeHtml(item.href)}">${escapeHtml(title)}</a></h3>`;
   const externalUrl = item.is_sample ? "" : safeExternalUrl(item.external_href);
   if (externalUrl) return `<h3><a href="${escapeHtml(externalUrl)}" target="_blank" rel="noreferrer">${escapeHtml(title)}</a></h3>`;
   return `<h3>${escapeHtml(title)}</h3>`;
 }
 
 function allBodyText(item) {
-  const body = String(item.body_zh || item.summary || "").trim();
+  const body = firstSourceText(item.body_zh, item.original_text, item.text, item.summary);
   const title = allDisplayTitle(item);
   if (body && !sameDisplayText(body, title)) return body;
-  const fallback = String(item.summary || "").trim();
+  const fallback = firstSourceText(item.summary, item.summary_zh);
   if (fallback && !sameDisplayText(fallback, title)) return fallback;
-  return "暂无中文摘要";
+  return "暂无原帖内容";
 }
 
 function allDisplayTitle(item) {
@@ -781,7 +1592,6 @@ function generatedOpinionTitle(item) {
   }
   if (item.brand === "temu") return `Temu ${topic}竞品舆情`;
   if (item.kind === "opportunity") return `Joybuy / JD ${topic}机会信号`;
-  if (item.tracking_eligible) return `Joybuy / JD ${topic}发酵追踪`;
   return `Joybuy / JD ${topic}舆情`;
 }
 
@@ -799,12 +1609,15 @@ function opinionTopicLabel(item) {
     discount: "折扣",
     product: "商品",
     quality: "质量",
+    regulatory: "监管",
+    market_access: "市场准入",
+    acquisition: "并购",
     positive: "正向",
     negative: "负面",
     neutral: "常规",
   };
   const tags = (item.tags || []).map((tag) => String(tag).toLowerCase()).filter(Boolean);
-  const topicTags = tags.filter((tag) => !["竞品", "positive", "negative", "neutral", "发酵追踪"].includes(tag));
+  const topicTags = tags.filter((tag) => !["竞品", "positive", "negative", "neutral"].includes(tag));
   const matched = topicTags.map((tag) => labels[tag]).find(Boolean);
   if (matched) return matched;
   const text = `${item.title || ""} ${item.body_zh || ""} ${item.summary || ""}`.toLowerCase();
@@ -813,6 +1626,7 @@ function opinionTopicLabel(item) {
   if (/退款|退货|refund|return/.test(text)) return "退款";
   if (/支付|付款|payment|pay/.test(text)) return "支付";
   if (/折扣|优惠|discount|coupon/.test(text)) return "折扣";
+  if (/监管|欧盟|并购|收购|补贴|反垄断|regulator|regulatory|investigation|acquisition|takeover|ceconomy|subsid/.test(text)) return "监管";
   if (/价格|price|pricing/.test(text)) return "价格";
   if (/质量|损坏|quality|damaged/.test(text)) return "质量";
   if (item.sentiment === "positive") return "正向";
@@ -857,7 +1671,7 @@ function allCompetitorItemsForDaily(daily) {
         metrics: {},
         post_metrics: {},
         tags: sentimentTags(daily.competitor.sentiment),
-        reason: "用于对照 Joybuy 当日声量和风险语境。",
+        reason: "",
         source_count_label: "Temu 竞品摘要",
         is_sample: isDailySample(daily),
       },
@@ -872,7 +1686,7 @@ function allItemFromCluster(cluster, daily) {
   const count = Number(cluster.post_count || 1);
   const summaryOnly = Boolean(daily.summary_only);
   const post = leadPostFromCluster(cluster);
-  const tags = [...(cluster.risk_types || []), ...(cluster.opportunity_types || []), cluster.topic, ...(cluster.tracking_eligible ? ["发酵追踪"] : [])].filter(Boolean);
+  const tags = [...(cluster.risk_types || []), ...(cluster.opportunity_types || []), cluster.topic].filter(Boolean);
   return {
     id: `all-${daily.date}-${cluster.cluster_id}`,
     brand: "joybuy",
@@ -886,10 +1700,15 @@ function allItemFromCluster(cluster, daily) {
     author_avatar_url: post.author_avatar_url || post.author?.avatar_url || "",
     author_followers: post.author_followers ?? post.author?.followers ?? 0,
     author_verified: post.author_verified ?? post.author?.verified ?? false,
+    author_following: post.author_following ?? post.author?.following ?? 0,
+    author_bio: post.author_bio || post.author_description || post.author?.bio || post.author?.description || "",
+    author_location: post.author_location || post.author?.location || "",
+    author_joined_at: post.author_joined_at || post.author?.joined_at || "",
     source_subline: summaryOnly ? "历史摘要" : "X 原帖",
     time: post.created_at || cluster.first_seen_at || cluster.last_seen_at,
     title: generatedOpinionTitle({ brand: "joybuy", tags, topic: cluster.topic, sentiment: score.sentiment || "neutral", kind: score.sentiment === "positive" ? "opportunity" : "risk" }),
     body_zh: leadPostText(cluster),
+    original_text: post.original_text || post.text || post.clean_text || "",
     translation_status: post.translation_status || "unknown",
     translation_provider: post.translation_provider || "none",
     summary: cluster.summary || "",
@@ -899,12 +1718,16 @@ function allItemFromCluster(cluster, daily) {
     metrics,
     post_metrics: post.metrics || {},
     media: post.media || [],
+    links: post.links || [],
+    reply_to_post_id: post.reply_to_post_id || "",
+    reply_to_handle: post.reply_to_handle || post.in_reply_to_screen_name || "",
+    quoted_post_id: post.quoted_post_id || "",
     tags,
-    reason: score.explanation || cluster.tracking_reason || "进入当日情报归档。",
-    href: cluster.cluster_id && !String(cluster.cluster_id).startsWith("archive-") ? `#/intel/${cluster.cluster_id}` : "",
+    reason: score.explanation || cluster.tracking_reason || "",
+    href: "",
     external_href: post.url || "",
     source_count: count,
-    source_count_label: count > 1 ? `${count} 条相关原帖` : "1 条相关原帖",
+    source_count_label: count > 1 ? `${count} 条同日相似讨论` : "1 条原帖",
     is_sample: isDailySample(daily),
     level: score.level || "low",
     sentiment: score.sentiment || "neutral",
@@ -926,10 +1749,17 @@ function allItemFromCompetitorPost(post, daily) {
     author_name: post.author_name || "Temu Source",
     author_handle: post.author_handle || "",
     author_avatar_url: post.author_avatar_url || "",
+    author_followers: post.author_followers || 0,
+    author_verified: post.author_verified || false,
+    author_following: post.author_following || 0,
+    author_bio: post.author_bio || post.author_description || "",
+    author_location: post.author_location || "",
+    author_joined_at: post.author_joined_at || "",
     source_subline: "X 原帖",
     time: post.created_at,
     title: "",
-    body_zh: post.translation_zh || post.summary_zh || post.text || "",
+    body_zh: sourcePostBody(post, post.summary_zh || ""),
+    original_text: post.original_text || post.text || "",
     translation_status: post.translation_status || "unknown",
     translation_provider: post.translation_provider || "none",
     summary: post.text || "",
@@ -939,8 +1769,12 @@ function allItemFromCompetitorPost(post, daily) {
     metrics: {},
     post_metrics: metrics,
     media: post.media || [],
+    links: post.links || [],
+    reply_to_post_id: post.reply_to_post_id || "",
+    reply_to_handle: post.reply_to_handle || post.in_reply_to_screen_name || "",
+    quoted_post_id: post.quoted_post_id || "",
     tags: ["竞品", post.sentiment, ...(post.matched_terms || [])].filter(Boolean),
-    reason: "竞品基线内容，用于观察 Temu 当日讨论主题和互动强度。",
+    reason: "",
     href: "",
     external_href: post.url || "",
     source_count: 1,
@@ -959,7 +1793,6 @@ function itemMatchesAllFilters(item) {
   if (state.allTypeFilter === "risk" && item.kind !== "risk") return false;
   if (state.allTypeFilter === "opportunity" && item.kind !== "opportunity") return false;
   if (state.allTypeFilter === "competitor" && item.kind !== "competitor") return false;
-  if (state.allTypeFilter === "tracking" && !item.tracking_eligible) return false;
   if (state.allTypeFilter === "summary" && item.type !== "summary") return false;
   const query = String(state.allSearchQuery || "").trim().toLowerCase();
   if (!query) return true;
@@ -986,8 +1819,7 @@ function dailyPage() {
   const collection = daily.collection_status || {};
   const joybuyEvents = buildJoybuyEvents(daily);
   const competitorEvents = buildCompetitorEvents(daily);
-  const trackingEvents = buildTrackingEvents(daily);
-  const storyCount = joybuyEvents.length + competitorEvents.length + trackingEvents.length;
+  const storyCount = joybuyEvents.length + competitorEvents.length;
   return `
     <div class="daily-layout report-layout daily-newspaper-layout">
       ${historyRail()}
@@ -1009,26 +1841,192 @@ function dailyPage() {
           </div>
         </header>
         ${sampleDataNotice(daily)}
-        ${daily.summary_only ? `<div class="notice">该日报为摘要级归档：可查看当日指标与主题，原帖级详情从历史归档功能上线后开始保留。</div>` : ""}
-        <nav class="daily-toc" aria-label="今日看点">
+        ${daily.summary_only ? `<div class="notice">该日报为摘要级归档：可查看当日指标与主题，原帖级内容从历史归档功能上线后开始保留。</div>` : ""}
+        ${dailyBriefPanel(daily, joybuyEvents, competitorEvents)}
+        <nav class="daily-toc" aria-label="报告目录">
           <div class="daily-toc-head">
             <div>
-              <strong>今日看点</strong>
-              <span>${escapeHtml(String(storyCount))} 条舆情 · ${escapeHtml(daily.window_label || "Past 24 hours")}</span>
+              <strong>报告目录</strong>
+              <span>${escapeHtml(String(storyCount))} 条支撑舆情 · ${escapeHtml(daily.window_label || "Past 24 hours")}</span>
             </div>
           </div>
           <div class="report-toc">
             ${reportTocItem("01", "Joybuy / JD 舆情", dailyIssueSummary(daily), joybuyEvents.length)}
             ${reportTocItem("02", "Temu 竞品雷达", "Temu 当日声量、情绪和高互动内容。", competitorEvents.length)}
-            ${reportTocItem("03", "发酵追踪", "历史舆情是否出现二次传播或升温。", trackingEvents.length)}
           </div>
         </nav>
         ${dailyReportSection("01", "Joybuy / JD 舆情", "Brand Radar", `${brandBreakdown(source, "joybuy_effective", metrics.joybuy_volume)} 条有效内容，${metrics.high_risk || 0} 个高风险。`, "joybuy-radar", joybuyEvents, "该日暂无 Joybuy 有效舆情")}
         ${dailyReportSection("02", "Temu 竞品雷达", "Competitor", `当前竞品：Temu。${brandBreakdown(source, "temu_effective", metrics.temu_volume)} 条有效内容。`, "competitor-radar", competitorEvents, "该日暂无 Temu 竞品内容", competitorSummary(daily.competitor || state.competitor))}
-        ${dailyReportSection("03", "发酵追踪", "Fermentation", "跨日观察历史舆情是否被高影响力账号二次传播。", "tracking-radar", trackingEvents, "该日暂无需要高频追踪的发酵事件")}
       </article>
     </div>
   `;
+}
+
+function dailyBriefPanel(daily, joybuyEvents, competitorEvents) {
+  const brief = dailyBrief(daily, joybuyEvents, competitorEvents);
+  return `
+    <section class="daily-brief" aria-label="日报简报">
+      <div class="daily-verdict">
+        <span>日报结论</span>
+        <h3>${escapeHtml(brief.title)}</h3>
+        <p>${escapeHtml(brief.body)}</p>
+        <div class="daily-verdict-tags">
+          ${brief.badges.map((badge) => `<em class="${escapeHtml(badge.className)}">${escapeHtml(badge.label)}</em>`).join("")}
+        </div>
+      </div>
+      <div class="daily-change-grid">
+        ${dailyChangeCard("Joybuy 有效", brief.current.joybuy, brief.previous?.joybuy, "条")}
+        ${dailyChangeCard("最高 IPS", brief.current.ips, brief.previous?.ips, "分")}
+        ${dailyChangeCard("Temu 基线", brief.current.temu, brief.previous?.temu, "条")}
+        ${dailyChangeCard("高风险", brief.current.highRisk, brief.previous?.highRisk, "条", true)}
+      </div>
+      <div class="daily-action-board">
+        ${dailyActionCard("处置优先级", brief.actionLabel, brief.actionCopy)}
+        ${dailyActionCard("复核任务", brief.reviewLabel, brief.reviewCopy)}
+        ${dailyActionCard("竞品观察", brief.competitorLabel, brief.competitorCopy)}
+      </div>
+    </section>
+  `;
+}
+
+function dailyBrief(daily, joybuyEvents, competitorEvents) {
+  const metrics = daily.metrics || {};
+  const collection = daily.collection_status || {};
+  const translation = collection.translation || daily.source_status?.translation || {};
+  const previous = previousDailyIndexItem(daily.date);
+  const current = {
+    joybuy: Number(metrics.joybuy_volume ?? brandBreakdown(daily.source_status, "joybuy_effective", 0) ?? 0),
+    temu: Number(metrics.temu_volume ?? brandBreakdown(daily.source_status, "temu_effective", 0) ?? 0),
+    highRisk: Number(metrics.high_risk || 0),
+    needsReview: Number(metrics.needs_review || 0),
+    ips: topIps(daily),
+    storyCount: joybuyEvents.length + competitorEvents.length,
+    translationMissing: Number(translation.missing_count || 0) + Number(translation.fallback_original_count || 0),
+  };
+  const previousValues = previous
+    ? {
+        joybuy: Number(previous.joybuy_effective || 0),
+        temu: Number(previous.temu_effective || 0),
+        highRisk: Number(previous.high_risk || 0),
+        needsReview: Number(previous.needs_review || 0),
+        ips: Number(previous.ips || 0),
+      }
+    : null;
+  const title = dailyBriefTitle(current);
+  const body = dailyBriefBody(current, previousValues, daily);
+  const action = dailyActionAdvice(current);
+  const review = dailyReviewAdvice(current, collection);
+  const competitor = dailyCompetitorAdvice(current, previousValues);
+  const badges = [
+    { label: action.label, className: action.className },
+    { label: collection.status === "complete" ? "采集完整" : `采集${collection.status || "未知"}`, className: collection.status === "complete" ? "good" : "warn" },
+    { label: current.translationMissing ? `翻译兜底 ${current.translationMissing}` : "中文覆盖完整", className: current.translationMissing ? "warn" : "good" },
+  ];
+  return {
+    title,
+    body,
+    badges,
+    current,
+    previous: previousValues,
+    actionLabel: action.label,
+    actionCopy: action.copy,
+    reviewLabel: review.label,
+    reviewCopy: review.copy,
+    competitorLabel: competitor.label,
+    competitorCopy: competitor.copy,
+  };
+}
+
+function dailyBriefTitle(current) {
+  if (current.highRisk > 0) return "今日存在需优先复盘的风险舆情";
+  if (current.needsReview > 0) return "今日舆情整体可控，但存在待复核内容";
+  if (current.joybuy === 0) return "今日暂未发现有效 Joybuy / JD 舆情";
+  if (current.ips >= 70) return "今日舆情平稳，但最高 IPS 需要持续观察";
+  return "今日 Joybuy / JD 舆情整体平稳";
+}
+
+function dailyBriefBody(current, previous, daily) {
+  const windowLabel = daily.window_label || "过去 24 小时";
+  const joybuyTrend = previous ? `，较昨日${deltaPhrase(current.joybuy, previous.joybuy, "条")}` : "";
+  const ipsText = current.ips ? `最高 IPS ${current.ips}` : "暂无 IPS 信号";
+  const riskText = current.highRisk > 0 ? `识别到 ${current.highRisk} 条高风险` : "未识别到高风险";
+  return `${windowLabel} 内，Joybuy/JD 有效舆情 ${current.joybuy} 条${joybuyTrend}；${ipsText}，${riskText}。Temu 竞品基线 ${current.temu} 条，用于判断外部平台当日讨论热度。`;
+}
+
+function dailyActionAdvice(current) {
+  if (current.highRisk > 0) {
+    return { label: "立即复盘", className: "bad", copy: "优先打开高风险原帖，核对真实性、传播链路和是否需要客服/公关介入。" };
+  }
+  if (current.needsReview > 0) {
+    return { label: "人工复核", className: "warn", copy: "先复核待确认内容的真实性，再决定是否进入处置或继续观察。" };
+  }
+  if (current.ips >= 70) {
+    return { label: "重点观察", className: "warn", copy: "暂无明显风险，但最高 IPS 偏高，建议保留到下一日继续看传播变化。" };
+  }
+  if (current.joybuy === 0) {
+    return { label: "无需动作", className: "good", copy: "当日未发现有效 Joybuy/JD 舆情，可保持自动监测。" };
+  }
+  return { label: "常规观察", className: "good", copy: "未出现高风险信号，建议按日报归档，下一轮继续观察趋势。" };
+}
+
+function dailyReviewAdvice(current, collection) {
+  if (current.translationMissing > 0) {
+    return { label: "检查译文", copy: `有 ${current.translationMissing} 条内容使用原文兜底，建议人工看一眼是否影响判断。` };
+  }
+  if (collection.request_budget_exhausted) {
+    return { label: "额度受限", copy: "采集触达了请求上限，本日报可能是部分结果，建议谨慎解读声量变化。" };
+  }
+  if (current.needsReview > 0) {
+    return { label: `${current.needsReview} 条待复核`, copy: "优先核对低置信或潜在误匹配内容，避免把噪声带入汇报。" };
+  }
+  return { label: "暂无复核", copy: "采集与翻译状态正常，当前日报可直接作为日常归档参考。" };
+}
+
+function dailyCompetitorAdvice(current, previous) {
+  const delta = previous ? current.temu - previous.temu : 0;
+  if (current.temu >= Math.max(10, current.joybuy * 2)) {
+    return { label: "Temu 偏高", copy: `Temu 当日声量 ${current.temu} 条，高于 Joybuy/JD，可用于观察竞品讨论热度和话题类型。` };
+  }
+  if (previous && delta > 0) {
+    return { label: "Temu 上升", copy: `Temu 较昨日增加 ${delta} 条，建议关注是否有可借鉴或需警惕的传播点。` };
+  }
+  return { label: "常规基线", copy: "Temu 暂未出现异常跃升，作为竞品背景参考即可。" };
+}
+
+function dailyChangeCard(label, value, previous, suffix = "", reverseRisk = false) {
+  const hasPrevious = previous != null && !Number.isNaN(Number(previous));
+  const delta = hasPrevious ? Number(value || 0) - Number(previous || 0) : null;
+  const trendClass = !hasPrevious || delta === 0 ? "flat" : delta > 0 ? (reverseRisk ? "bad" : "up") : (reverseRisk ? "good" : "down");
+  return `
+    <div class="daily-change-card ${trendClass}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(String(value ?? 0))}${escapeHtml(suffix)}</strong>
+      <em>${escapeHtml(hasPrevious ? deltaPhrase(value, previous, suffix) : "无昨日基准")}</em>
+    </div>
+  `;
+}
+
+function dailyActionCard(label, value, copy) {
+  return `
+    <div class="daily-action-card">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+      <p>${escapeHtml(copy)}</p>
+    </div>
+  `;
+}
+
+function previousDailyIndexItem(date) {
+  const items = state.dailyIndex?.items || [];
+  const index = items.findIndex((item) => item.date === date);
+  if (index < 0) return null;
+  return items[index + 1] || null;
+}
+
+function deltaPhrase(value, previous, suffix = "") {
+  const delta = Number(value || 0) - Number(previous || 0);
+  if (delta === 0) return "持平";
+  return `${delta > 0 ? "+" : ""}${delta}${suffix}`;
 }
 
 function dailyReportSection(index, title, englishLabel, subtitle, id, events, emptyText, extra = "") {
@@ -1056,6 +2054,8 @@ function dailyStoryList(events, emptyText) {
 
 function dailyStoryCard(event) {
   const title = localizedTitle(event.title, event.summary, event.brand === "temu" ? "Temu 竞品原帖" : "Joybuy 舆情信号");
+  const body = String(event.summary || "").trim() || title;
+  const showTitle = Boolean(event.isSummary || (!event.externalHref && title && !sameDisplayText(title, body)));
   const metrics = event.metrics || {};
   const likes = metrics.likes ?? metrics.total_likes;
   const replies = metrics.replies ?? metrics.total_replies;
@@ -1072,8 +2072,10 @@ function dailyStoryCard(event) {
         </div>
         ${event.scoreValue !== "n/a" ? `<div class="daily-story-score"><strong>${escapeHtml(String(event.scoreValue))}</strong><em>${escapeHtml(event.scoreLabel)}</em></div>` : ""}
       </div>
-      <h3>${storyTitleLink(event, title)}</h3>
-      <p>${escapeHtml(event.summary)}</p>
+      ${showTitle ? `<h3>${storyTitleLink(event, title)}</h3>` : ""}
+      ${postTextWithInlineLanguageToggle(event, body, "daily-story-text", "daily")}
+      ${contextRelationNode(event)}
+      ${mediaGridNode(event.media, event)}
       ${hasMetrics ? `<div class="metric-inline card-metrics">
         ${metricInline("赞", likes)}
         ${metricInline("评", replies)}
@@ -1082,9 +2084,8 @@ function dailyStoryCard(event) {
         ${metricInline("浏览", views)}
       </div>` : ""}
       <div class="tag-row">${(event.tags || []).slice(0, 6).map((tag) => `<span class="plain-tag">#${escapeHtml(tag)}</span>`).join("")}</div>
-      ${event.reason ? `<div class="reason-line compact">关注原因：${escapeHtml(String(event.reason))}</div>` : ""}
+      ${reasonLine(event, "compact")}
       <div class="button-row daily-story-actions">
-        ${event.href && !event.external ? `<a class="text-button primary" href="${escapeHtml(event.href)}">详情</a>` : ""}
         ${event.externalHref ? externalLinkButton(event.externalHref, "在 X 查看原帖", "", { isSample: event.is_sample }) : ""}
       </div>
     </article>
@@ -1102,26 +2103,57 @@ function storyTitleLink(event, title = event.title) {
 
 function historyRail() {
   const history = state.dailyIndex?.items || [];
+  const groups = dailyHistoryMonthGroups(history);
   return `
     <aside class="daily-history">
-      <nav class="report-type-tabs" aria-label="切换日报、周报、月报">
-        <span class="active">日报</span>
-        <span class="disabled" aria-disabled="true">周报</span>
-        <span class="disabled" aria-disabled="true">月报</span>
-      </nav>
       <div class="daily-history-current">
-        <span>${escapeHtml(formatDateMonth((state.selectedDaily || state.daily).date))}</span>
-        <strong>${escapeHtml(formatDateDay((state.selectedDaily || state.daily).date))}</strong>
+        <span>当前日报</span>
+        <strong>${escapeHtml(formatDateLong((state.selectedDaily || state.daily).date))}</strong>
       </div>
       <div class="daily-history-head">
         <h2>日报历史</h2>
         <span class="tag">${history.length} 天</span>
       </div>
       <div class="daily-history-list">
-        ${history.map(dailyHistoryItem).join("") || empty("暂无历史日报")}
+        ${groups.map(dailyHistoryMonthGroup).join("") || empty("暂无历史日报")}
       </div>
     </aside>
   `;
+}
+
+function dailyHistoryMonthGroups(history) {
+  const groups = [];
+  for (const item of history) {
+    const key = dailyMonthKey(item.date);
+    let group = groups.find((entry) => entry.key === key);
+    if (!group) {
+      group = { key, label: formatDateMonth(item.date), items: [] };
+      groups.push(group);
+    }
+    group.items.push(item);
+  }
+  return groups;
+}
+
+function dailyHistoryMonthGroup(group) {
+  return `
+    <section class="daily-history-month">
+      <div class="daily-history-month-head">
+        <span aria-hidden="true">⌄</span>
+        <strong>${escapeHtml(group.label)}</strong>
+        <em>${escapeHtml(String(group.items.length))}</em>
+      </div>
+      <div class="daily-history-month-list">
+        ${group.items.map(dailyHistoryItem).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function dailyMonthKey(date) {
+  const parts = String(date || "").split("-");
+  if (parts.length < 2) return "unknown";
+  return `${parts[0]}-${parts[1]}`;
 }
 
 function dailyHistoryItem(item) {
@@ -1130,65 +2162,18 @@ function dailyHistoryItem(item) {
     <button class="daily-history-item ${active ? "active" : ""}" data-daily-date="${escapeHtml(item.date)}">
       <span class="daily-date">${formatDateDay(item.date)} 日</span>
       <span class="daily-title">${escapeHtml(dailyHistoryTitle(item))}</span>
-      <span class="daily-meta">
-        Joybuy ${escapeHtml(String(item.joybuy_effective ?? 0))}
-        · Temu ${escapeHtml(String(item.temu_effective ?? 0))}
-        · ${escapeHtml(item.collection_status || "unknown")}
-      </span>
-      ${item.summary_only ? `<span class="tag">摘要</span>` : ""}
+      <span class="daily-meta">${dailyHistoryMeta(item)}</span>
     </button>
   `;
 }
 
-function fermentationPage() {
-  const items = fermentationActiveItems();
-  const metrics = fermentationPageMetrics(items);
-  return `
-    ${pageHero({
-      eyebrow: "舆情雷达",
-      subtitle: `${formatDateLong(state.daily.date)} · 追踪低热舆情是否出现二次传播、引用增加或高影响力账号介入`,
-      stats: [
-        [metrics.tracking, "追踪中"],
-        [metrics.hot, "发酵/升温"],
-        [metrics.topIps, "最高 IPS"],
-        [metrics.newRelated, "24h 新增相关帖"],
-      ],
-    })}
-    ${sampleDataNotice(state.daily)}
-    <div class="featured-status-row">
-      <span>最近检查 ${escapeHtml(metrics.lastChecked)}</span>
-      <span>累计相关原帖 ${escapeHtml(String(metrics.postCount))}</span>
-      <span>24h 引用 ${escapeHtml(formatCompactNumber(metrics.quotes24h))}</span>
-      <span>归档日报 ${escapeHtml(String(state.dailyIndex?.items?.length || 0))} 天</span>
-    </div>
-    <section class="tracking-layout">
-      <div class="tracking-main">
-        <div class="section-header tracking-head">
-          <div>
-            <h2>发酵追踪流</h2>
-            <p class="muted">按最近检查时间倒序排列，只展示仍需观察的 Joybuy / JD 舆情。</p>
-          </div>
-          <span class="tag">${escapeHtml(String(items.length))} 条</span>
-        </div>
-        ${fermentationTimeline(items)}
-      </div>
-      <aside class="tracking-side">
-        <section class="side-panel">
-          <div class="side-panel-title">当前判断</div>
-          <p>${escapeHtml(fermentationInsight(items))}</p>
-        </section>
-        <section class="side-panel">
-          <div class="side-panel-title">进入追踪的条件</div>
-          <div class="rule-list">
-            <span>未来传播潜力较高</span>
-            <span>出现高影响力账号参与</span>
-            <span>退款、物流、客服等敏感链路</span>
-            <span>引用或相似内容在 24h 内增加</span>
-          </div>
-        </section>
-      </aside>
-    </section>
-  `;
+function dailyHistoryMeta(item) {
+  const parts = [
+    `Temu ${item.temu_effective ?? 0}`,
+    item.collection_status || "unknown",
+  ];
+  if (item.summary_only) parts.push("摘要归档");
+  return parts.map((part) => escapeHtml(String(part))).join(" · ");
 }
 
 function settingsPage() {
@@ -1222,7 +2207,6 @@ function settingsPage() {
             ${statusRow("最近生成", state.overview.generated_at_label || formatDateTime(state.overview.generated_at))}
             ${statusRow("采集窗口", state.overview.window_label || state.daily.window_label || "Past 24 hours")}
             ${statusRow("日报自动化", "Mac 本机 · 每日 08:00 BJT 生成，GitHub 仅部署")}
-            ${statusRow("发酵追踪", "随日报生成刷新，观察 7-14 天内的二次传播信号")}
             ${statusRow("运行状态", collection.status || state.overview.health || "unknown")}
           </div>
         </section>
@@ -1239,6 +2223,15 @@ function settingsPage() {
             ${qualityTile("Joybuy / JD", `${brand.joybuy_candidates ?? 0} → ${brand.joybuy_effective ?? 0}`, "候选到有效")}
             ${qualityTile("Temu", `${brand.temu_candidates ?? 0} → ${brand.temu_effective ?? 0}`, "竞品基线")}
           </div>
+        </section>
+        <section class="settings-card">
+          <div class="settings-card-head">
+            <div>
+              <h2>评分体系</h2>
+              <p class="muted">列表页只展示结果分，完整口径统一放在这里。</p>
+            </div>
+          </div>
+          ${scoreSystemPanel()}
         </section>
       </div>
       <aside class="settings-side">
@@ -1275,118 +2268,32 @@ function settingsPage() {
   `;
 }
 
-function fermentationActiveItems() {
-  return (state.fermentation?.items || []).filter((item) => {
-    const status = item.fermentation?.status || "";
-    return item.tracking_eligible || (status && status !== "不追踪");
-  });
-}
-
-function fermentationPageMetrics(items) {
-  const hotStatuses = new Set(["发酵中", "升温中"]);
-  const timestamps = items
-    .map((item) => item.fermentation?.last_checked_at || item.last_seen_at || item.first_seen_at)
-    .filter(Boolean)
-    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-  return {
-    tracking: items.length,
-    hot: items.filter((item) => hotStatuses.has(item.fermentation?.status)).length,
-    topIps: Math.max(0, ...items.map((item) => Number(item.score?.ips || 0))),
-    newRelated: items.reduce((sum, item) => sum + Number(item.fermentation?.growth?.new_related_posts_24h || 0), 0),
-    quotes24h: items.reduce((sum, item) => sum + Number(item.fermentation?.growth?.quotes_24h || 0), 0),
-    postCount: items.reduce((sum, item) => sum + Number(item.post_count || 0), 0),
-    lastChecked: timestamps[0] ? formatDateTime(timestamps[0]) : "--",
-  };
-}
-
-function fermentationTimeline(items) {
-  const sorted = [...items].sort((a, b) => {
-    const aTime = new Date(a.fermentation?.last_checked_at || a.last_seen_at || a.first_seen_at || 0).getTime();
-    const bTime = new Date(b.fermentation?.last_checked_at || b.last_seen_at || b.first_seen_at || 0).getTime();
-    return bTime - aTime;
-  });
-  if (!sorted.length) return empty("暂无需要高频追踪的舆情。");
+function scoreSystemPanel() {
+  const dimensions = [
+    ["品牌相关度", "是否真正与 Joybuy/JD 或指定竞品相关，过滤同名误伤与无关语境。"],
+    ["风险/机会强度", "判断内容是投诉风险、传播机会，还是普通日常提及。"],
+    ["当前传播影响", "基于赞、评、转、引、浏览、作者影响力等公开信号评估。"],
+    ["未来传播潜力", "结合敏感主题、二次传播可能性、高影响力账号参与概率判断。"],
+    ["真实性/可靠性", "看是否来自原始发帖、是否有具体事实、是否存在明显营销或误匹配。"],
+    ["业务影响", "衡量对履约、售后、价格心智、品牌信任、竞品参照的业务价值。"],
+    ["紧急程度", "判断是否需要当天人工复核、PR 准备、管理层同步或继续观察。"],
+  ];
   return `
-    <div class="publish-timeline tracking-timeline">
-      ${sorted.map(fermentationTimelineCard).join("")}
+    <div class="score-system">
+      <div class="score-formula">
+        <strong>IPS</strong>
+        <span>综合优先级分 = 各维度加权分 + 发酵加分，范围 0-100。</span>
+      </div>
+      <div class="score-formula">
+        <strong>CSI</strong>
+        <span>竞品信号分更偏观察价值，用于判断 Temu 内容是否值得进入焦点。</span>
+      </div>
+      <div class="score-dimension-grid">
+        ${dimensions.map(([title, copy]) => `<div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(copy)}</p></div>`).join("")}
+      </div>
+      <p class="muted">分数用于排序和筛选，不替代人工判断；高分内容应结合原帖、上下文和业务背景复核。</p>
     </div>
   `;
-}
-
-function fermentationTimelineCard(item) {
-  const status = item.fermentation?.status || "观察中";
-  const metrics = item.metrics || {};
-  const growth = item.fermentation?.growth || {};
-  const title = fermentationTitle(item);
-  const tags = [...(item.risk_types || []), ...(item.opportunity_types || []), item.topic].filter(Boolean);
-  const href = item.cluster_id && !String(item.cluster_id).startsWith("archive-") ? `#/intel/${item.cluster_id}` : "";
-  return `
-    <div class="publish-item tracking-item">
-      <div class="publish-time">${escapeHtml(formatEventTime(item.fermentation?.last_checked_at || item.last_seen_at || item.first_seen_at))}</div>
-      <div class="publish-line"><span></span></div>
-      <article class="opinion-card tracking-card ${scoreClass(item)}">
-        <div class="tracking-card-top">
-          <div class="source-identity">
-            ${avatarNode({ source_name: "Joybuy Radar" })}
-            <div>
-              <div class="source-line">
-                <span>Joybuy / JD</span>
-                <strong class="${escapeHtml(fermentationStatusClass(status))}">${escapeHtml(status)}</strong>
-              </div>
-              <div class="source-subline">${escapeHtml(fermentationTimeLabel(item))}</div>
-            </div>
-          </div>
-          <div class="featured-score">
-            <span>${escapeHtml(String(item.score?.ips ?? "n/a"))}</span>
-            <em>IPS</em>
-          </div>
-        </div>
-        <section class="x-signal-block">
-          <div class="block-heading">
-            <span>舆情内容</span>
-            <em>${escapeHtml(String(item.post_count || 0))} 条相关原帖</em>
-          </div>
-          <h3>${escapeHtml(title)}</h3>
-          <p class="featured-translation">${escapeHtml(item.summary_zh || item.summary || "暂无摘要")}</p>
-          <div class="metric-inline card-metrics">
-            ${metricInline("赞", metrics.total_likes)}
-            ${metricInline("评", metrics.total_replies)}
-            ${metricInline("转", metrics.total_reposts)}
-            ${metricInline("引", metrics.total_quotes)}
-            ${metricInline("收藏", metrics.total_bookmarks)}
-            ${metricInline("浏览", metrics.total_views)}
-          </div>
-          <div class="tracking-growth-row">
-            ${growthMetric("24h 互动", growth.public_interactions_24h)}
-            ${growthMetric("24h 引用", growth.quotes_24h)}
-            ${growthMetric("新增相关帖", growth.new_related_posts_24h)}
-            ${growthMetric("风险变化", riskChangeLabel(item.fermentation?.risk_change))}
-          </div>
-          <div class="tag-row">${tags.slice(0, 8).map((tag) => `<span class="plain-tag">#${escapeHtml(tag)}</span>`).join("")}</div>
-          <div class="tracking-signal-list">
-            ${(item.fermentation?.signals || []).length
-              ? item.fermentation.signals.map((signal) => `<span>${escapeHtml(signal)}</span>`).join("")
-              : `<span>暂无明显升温信号，保留观察</span>`}
-          </div>
-          <div class="reason-line compact">关注原因：${escapeHtml(trackingReasonText(item))}</div>
-        </section>
-        <div class="featured-card-bottom">
-          ${cardFootnote(item.score?.recommended_action || "持续观察", { is_sample: isDailySample(state.daily) })}
-          <div class="button-row">
-            ${href ? `<a class="text-button primary" href="${escapeHtml(href)}">详情</a>` : ""}
-          </div>
-        </div>
-      </article>
-    </div>
-  `;
-}
-
-function fermentationTitle(item) {
-  const topic = topicDisplayName(item.topic);
-  const status = item.fermentation?.status || "观察中";
-  if (item.score?.sentiment === "positive") return `${topic}出现传播机会`;
-  if (["发酵中", "升温中"].includes(status)) return `${topic}讨论${status}`;
-  return `${topic}讨论需持续观察`;
 }
 
 function topicDisplayName(topic) {
@@ -1394,60 +2301,11 @@ function topicDisplayName(topic) {
     refund: "退款与支付",
     delivery: "物流与包裹追踪",
     customer_service: "客服与售后",
+    regulatory: "监管与并购审查",
     price_opportunity: "价格与配送优势",
     general: "品牌认知",
   };
   return labels[topic] || String(topic || "Joybuy / JD");
-}
-
-function fermentationTimeLabel(item) {
-  const trackingDays = Number(item.fermentation?.tracking_days || 0);
-  const checked = item.fermentation?.last_checked_at ? `最近检查 ${formatDateTime(item.fermentation.last_checked_at)}` : "等待检查";
-  return trackingDays ? `${checked} · 追踪 ${trackingDays} 天` : checked;
-}
-
-function fermentationStatusClass(status) {
-  if (status === "发酵中") return "tracking-status hot";
-  if (status === "升温中") return "tracking-status warm";
-  if (status === "观察中") return "tracking-status watch";
-  return "tracking-status calm";
-}
-
-function growthMetric(label, value) {
-  const display = typeof value === "number" || /^\d+$/.test(String(value || "")) ? formatCompactNumber(value) : String(value ?? "--");
-  return `<span><em>${escapeHtml(label)}</em><strong>${escapeHtml(display)}</strong></span>`;
-}
-
-function riskChangeLabel(value) {
-  if (value === "up") return "上行";
-  if (value === "down") return "下降";
-  if (value === "flat") return "平稳";
-  return value || "--";
-}
-
-function trackingReasonText(item) {
-  const reasonMap = {
-    high_future_potential: "未来传播潜力高",
-    high_influence_account: "高影响力账号参与",
-    high_risk: "风险等级较高",
-    ips_top_candidate: "当日优先级靠前",
-    refund_issue: "退款/支付链路敏感",
-    delivery_issue: "物流体验敏感",
-    customer_service_issue: "客服售后体验敏感",
-  };
-  const reasons = (item.tracking_reason || []).map((reason) => reasonMap[reason] || reason).filter(Boolean);
-  if (reasons.length) return reasons.join(" · ");
-  return item.score?.explanation || "该舆情仍可能产生后续传播，保留观察。";
-}
-
-function fermentationInsight(items) {
-  if (!items.length) return "当前没有需要高频追踪的 Joybuy / JD 舆情，建议保持日报监测节奏。";
-  const hot = items.filter((item) => ["发酵中", "升温中"].includes(item.fermentation?.status));
-  const top = [...items].sort((a, b) => Number(b.score?.ips || 0) - Number(a.score?.ips || 0))[0];
-  if (hot.length) {
-    return `${hot.length} 条舆情出现发酵或升温信号，最高优先级来自${topicDisplayName(top.topic)}，建议优先进入详情页核对原帖证据。`;
-  }
-  return `当前以观察为主，最高 IPS ${top?.score?.ips ?? "n/a"}，建议等待下一次日报刷新后复盘是否出现引用或相似内容增加。`;
 }
 
 function sourceModeLabel(status) {
@@ -1491,16 +2349,7 @@ function settingsNoteText(note) {
 }
 
 async function renderDetail(clusterId) {
-  const content = document.getElementById("content");
-  content.innerHTML = `<section class="section">${empty("正在加载舆情详情")}</section>`;
-  try {
-    const detail = await loadJson(`./dashboard-data/clusters/${clusterId}.json`);
-    document.getElementById("page-title").textContent = "舆情详情";
-    content.innerHTML = detailPage(detail);
-    bindPageEvents(detail);
-  } catch (error) {
-    content.innerHTML = `<section class="section">${empty("未找到舆情详情")}</section>`;
-  }
+  window.location.hash = "#/";
 }
 
 function detailPage(detail) {
@@ -1519,11 +2368,11 @@ function detailPage(detail) {
             ${avatarNode(leadItem)}
             <div>
               <div class="source-line">
-                <span>${escapeHtml(leadItem.author_name || "X Source")}</span>
+                ${authorNameNode(leadItem, leadItem.author_name || "X Source")}
                 ${leadItem.author_handle ? `<em>@${escapeHtml(leadItem.author_handle)}</em>` : ""}
-                <strong>${escapeHtml(levelText(detail.score))}</strong>
+                ${sourceBadge(levelText(detail.score), "focus")}
               </div>
-              <div class="source-subline">X 舆情${translationStateInline(leadItem)}${leadItem.author_followers ? ` · ${escapeHtml(formatCompactNumber(leadItem.author_followers))} followers` : ""}</div>
+              <div class="source-subline">X 舆情${leadItem.author_followers ? ` · ${escapeHtml(formatCompactNumber(leadItem.author_followers))} followers` : ""}</div>
             </div>
           </div>
           <div class="readtop-meta">
@@ -1541,10 +2390,7 @@ function detailPage(detail) {
         </div>
       </section>
 
-      <section class="read-card">
-        <div class="read-card-label">关注原因</div>
-        <p>${escapeHtml(detail.score_explanation)}</p>
-      </section>
+      ${detailReasonCard(detail, leadItem, leadPost)}
 
       <section class="read-card">
         <div class="read-card-label">舆情摘要</div>
@@ -1586,6 +2432,35 @@ function detailPage(detail) {
   `;
 }
 
+function detailInsightReason(detail, leadItem, leadPost) {
+  const item = {
+    ...leadItem,
+    brand: "joybuy",
+    body_zh: chineseSignalText(leadItem),
+    summary: detail.summary_zh || detail.summary,
+    score: detail.score,
+    score_value: detail.score?.ips,
+    metrics: detail.metrics || {},
+    post_metrics: leadPost?.metrics || {},
+    author_followers: leadItem.author_followers,
+    source_count: detail.post_count || detail.posts?.length || 1,
+    tags: [...(detail.risk_types || []), ...(detail.opportunity_types || []), detail.topic].filter(Boolean),
+    reason: detail.score_explanation,
+  };
+  return insightReason(item, detail.score_explanation || detail.summary_zh || "");
+}
+
+function detailReasonCard(detail, leadItem, leadPost) {
+  const reason = detailInsightReason(detail, leadItem, leadPost);
+  if (!reason) return "";
+  return `
+      <section class="read-card">
+        <div class="read-card-label">关注原因</div>
+        <p>${escapeHtml(reason)}</p>
+      </section>
+  `;
+}
+
 function isDetailSample(detail) {
   if (typeof detail?.is_sample === "boolean") return detail.is_sample;
   const clusterId = detail?.cluster_id;
@@ -1616,7 +2491,7 @@ function formatDateTime(iso) {
 function relativeMonitorLabel(detail) {
   const count = Number(detail.post_count || detail.posts?.length || 0);
   const status = detail.fermentation?.status || "观察中";
-  return `${count} 条相关原帖 · ${status}`;
+  return `${count} 条同日相似讨论 · ${status}`;
 }
 
 function sourceHostLabel(url) {
@@ -1645,7 +2520,12 @@ function itemFromDetailPost(post, fallbackSource) {
     translation_zh: post?.translation_zh || post?.summary_zh || "",
     translation_status: post?.translation_status || "unknown",
     translation_provider: post?.translation_provider || "none",
-    original_text: post?.clean_text || post?.text || "",
+    original_text: post?.text || post?.clean_text || "",
+    links: post?.links || [],
+    media: post?.media || [],
+    url: post?.url || post?.post_url || "",
+    post_url: post?.url || post?.post_url || "",
+    post_id: post?.post_id || post?.id || "",
   };
 }
 
@@ -1662,8 +2542,8 @@ function detailPrimaryPostCard(post, language = state.detailLanguage) {
   const metrics = post.metrics || {};
   return `
     <article class="read-source-content">
-      <p class="detail-source-text">${escapeHtml(postTextForLanguage(post, language))}</p>
-      ${post.media?.length ? `<div class="featured-media-grid">${post.media.map(mediaNode).join("")}</div>` : ""}
+      ${richPostTextNode(itemFromDetailPost(post, "X Source"), postTextForLanguage(post, language), "detail-source-text")}
+      ${mediaGridNode(post.media, itemFromDetailPost(post, "X Source"))}
       <div class="metric-inline read-metrics">
         ${metricInline("赞", metrics.likes)}
         ${metricInline("评", metrics.replies)}
@@ -1683,7 +2563,7 @@ function relatedPostStrip(detail, language = state.detailLanguage, isSample = is
   if (!related.length) return "";
   return `
     <div class="related-source-strip">
-      <div class="block-heading"><span>相关原帖</span><em>${escapeHtml(String(related.length))} 条展示</em></div>
+      <div class="block-heading"><span>关联讨论</span><em>${escapeHtml(String(related.length))} 条展示</em></div>
       <div class="related-source-list">
         ${related.map((post) => relatedPostChip(post, labelsByPost[post.post_id || post.id] || [], language, isSample)).join("")}
       </div>
@@ -1706,7 +2586,7 @@ function relatedPostChip(post, labels = [], language = state.detailLanguage, isS
         ${relatedPostLink(post.url, isSample)}
       </div>
     </div>
-    <p class="related-source-text">${escapeHtml(text || "暂无正文")}</p>
+    ${richPostTextNode(item, text || "暂无正文", "related-source-text")}
     <div class="related-source-metrics">
       ${metricInline("赞", metrics.likes)}
       ${metricInline("评", metrics.replies)}
@@ -1784,18 +2664,32 @@ function buildCompetitorEvents(daily) {
         scoreValue: competitor.volume,
         timeLabel: "汇总",
         tags: sentimentTags(competitor.sentiment),
-        reason: "用于对照 Joybuy 当日声量和风险语境。",
+        reason: "",
         is_sample: dailySample,
+        isSummary: true,
       },
     ];
   }
   return posts.map((post) => {
     const interactions = Number(post.metrics?.likes || 0) + Number(post.metrics?.reposts || 0) + Number(post.metrics?.replies || 0) + Number(post.metrics?.quotes || 0);
+    const body = sourcePostBody(post, post.summary_zh || "");
     return {
       brand: "temu",
       source: `Temu · @${post.author_handle || "unknown"}`,
-      title: post.translation_zh || post.summary_zh || post.text || "Temu 竞品原帖",
-      summary: post.summary_zh || post.text || "",
+      author_name: post.author_name || "Temu Source",
+      author_handle: post.author_handle || "",
+      author_avatar_url: post.author_avatar_url || "",
+      author_followers: post.author_followers || 0,
+      author_verified: post.author_verified || false,
+      author_following: post.author_following || 0,
+      author_bio: post.author_bio || post.author_description || "",
+      author_location: post.author_location || "",
+      author_joined_at: post.author_joined_at || "",
+      title: "",
+      summary: body,
+      originalText: post.original_text || post.text || "",
+      translation_status: post.translation_status || "unknown",
+      translation_provider: post.translation_provider || "none",
       scoreLabel: "互动",
       scoreValue: interactions,
       time: post.created_at,
@@ -1803,17 +2697,16 @@ function buildCompetitorEvents(daily) {
       href: post.url,
       externalHref: post.url,
       external: true,
-      reason: "竞品基线内容，用于观察 Temu 当日讨论主题和互动强度。",
+      reason: "",
       metrics: post.metrics,
+      media: post.media || [],
+      links: post.links || [],
+      reply_to_post_id: post.reply_to_post_id || "",
+      reply_to_handle: post.reply_to_handle || post.in_reply_to_screen_name || "",
+      quoted_post_id: post.quoted_post_id || "",
       is_sample: dailySample,
     };
   });
-}
-
-function buildTrackingEvents(daily) {
-  return (daily.clusters || [])
-    .filter((cluster) => cluster.tracking_eligible || ["升温中", "发酵中"].includes(cluster.fermentation?.status))
-    .map((cluster) => clusterToEvent(cluster, "joybuy", "发酵追踪", isDailySample(daily)));
 }
 
 function clusterToEvent(cluster, brand, source, isSample = false) {
@@ -1824,17 +2717,29 @@ function clusterToEvent(cluster, brand, source, isSample = false) {
     source: leadPostSourceName(post, source),
     title: generatedOpinionTitle({ brand, tags, topic: cluster.topic, sentiment: cluster.score?.sentiment || "neutral" }),
     summary: leadPostText(cluster),
+    originalText: post.original_text || post.text || post.clean_text || "",
+    author_name: post.author_name || post.author?.name || "",
+    author_handle: post.author_handle || post.author?.handle || "",
+    author_avatar_url: post.author_avatar_url || post.author?.avatar_url || "",
+    author_followers: post.author_followers ?? post.author?.followers ?? 0,
+    author_following: post.author_following ?? post.author?.following ?? 0,
+    author_bio: post.author_bio || post.author_description || post.author?.bio || post.author?.description || "",
     scoreLabel: "IPS",
     scoreValue: cluster.score?.ips ?? "n/a",
     time: post.created_at || cluster.first_seen_at || cluster.last_seen_at,
     tags,
-    href: cluster.cluster_id && !String(cluster.cluster_id).startsWith("archive-") ? `#/intel/${cluster.cluster_id}` : "",
+    href: "",
     externalHref: post.url || "",
-    reason: cluster.score?.explanation || cluster.tracking_reason || "进入当日情报归档。",
+    links: post.links || [],
+    reply_to_post_id: post.reply_to_post_id || "",
+    reply_to_handle: post.reply_to_handle || post.in_reply_to_screen_name || "",
+    quoted_post_id: post.quoted_post_id || "",
+    reason: cluster.score?.explanation || cluster.tracking_reason || "",
     score: cluster.score,
     fermentation: cluster.fermentation,
     postCount: cluster.post_count,
     metrics: post.metrics || cluster.metrics,
+    isSummary: !post.url,
     is_sample: isSample,
   };
 }
@@ -1870,10 +2775,10 @@ function timelineCard(event) {
           ${event.scoreValue !== "n/a" ? `<span class="tag">${escapeHtml(event.scoreLabel)} ${escapeHtml(String(event.scoreValue))}</span>` : ""}
         </div>
         <h3>${escapeHtml(event.title)}</h3>
-        <p class="muted">${escapeHtml(event.summary)}</p>
+        ${richPostTextNode(event, event.summary, "publish-card-text muted")}
         <div class="tag-row">${(event.tags || []).slice(0, 6).map((tag) => `<span class="plain-tag">#${escapeHtml(tag)}</span>`).join("")}</div>
-        ${event.reason ? `<div class="reason-line">关注原因：${escapeHtml(String(event.reason))}</div>` : ""}
-        ${event.href ? `<div class="button-row">${event.external ? externalLinkButton(event.href, "查看原帖", "primary", { isSample: event.is_sample }) : `<a class="text-button primary" href="${escapeHtml(event.href)}">查看详情</a>`}</div>` : ""}
+        ${reasonLine(event)}
+        ${event.href && event.external ? `<div class="button-row">${externalLinkButton(event.href, "查看原帖", "primary", { isSample: event.is_sample })}</div>` : ""}
       </article>
     </div>
   `;
@@ -1896,7 +2801,7 @@ function featureCard(event) {
 }
 
 function reportTocItem(index, title, summary, count) {
-  const target = index === "01" ? "joybuy-radar" : index === "02" ? "competitor-radar" : "tracking-radar";
+  const target = index === "01" ? "joybuy-radar" : "competitor-radar";
   return `
     <button class="toc-card" type="button" data-scroll-target="${target}">
       <span>${escapeHtml(index)}</span>
@@ -1923,7 +2828,7 @@ function dailyIssueSummary(daily) {
   const highRisk = Number(metrics.high_risk || 0);
   const needsReview = Number(metrics.needs_review || 0);
   const topIpsValue = topIps(daily);
-  if (highRisk > 0) return `当日识别 ${highRisk} 条高风险舆情，最高 IPS ${topIpsValue}，建议优先复盘详情与原帖证据。`;
+  if (highRisk > 0) return `当日识别 ${highRisk} 条高风险舆情，最高 IPS ${topIpsValue}，建议优先复盘原帖证据。`;
   if (needsReview > 0) return `当日有 ${needsReview} 条舆情需要人工复核，建议关注真实性和潜在扩散。`;
   const joybuyVolume = Number(metrics.joybuy_volume || 0);
   if (joybuyVolume > 0) return `当日 Joybuy/JD 有效舆情 ${joybuyVolume} 条，整体以常规监测和历史归档为主。`;
@@ -1934,11 +2839,11 @@ function dailyHistoryTitle(item) {
   const highRisk = Number(item.high_risk || 0);
   const needsReview = Number(item.needs_review || 0);
   const joybuy = Number(item.joybuy_effective || 0);
-  const ips = item.ips ? `，最高 IPS ${item.ips}` : "";
+  const ips = item.ips ? ` · IPS ${item.ips}` : "";
   if (highRisk > 0) return `高风险 ${highRisk} 条${ips}`;
   if (needsReview > 0) return `待复核 ${needsReview} 条${ips}`;
-  if (joybuy > 0) return `Joybuy 有效舆情 ${joybuy} 条${ips}`;
-  return "当日暂无有效 Joybuy 舆情";
+  if (joybuy > 0) return `Joybuy ${joybuy} 条${ips}`;
+  return "暂无有效舆情";
 }
 
 function sentimentTags(sentiment = {}) {
@@ -2150,15 +3055,15 @@ function evidenceCard(item, isSample = false) {
           ${avatarNode(postItem)}
           <div>
             <div class="source-line">
-              <span>${escapeHtml(postItem.author_name)}</span>
+              ${authorNameNode(postItem, postItem.author_name)}
               ${postItem.author_handle ? `<em>@${escapeHtml(postItem.author_handle)}</em>` : ""}
-              <strong>${escapeHtml(item.label)}</strong>
+              ${sourceBadge(item.label, "focus")}
             </div>
-            <div class="source-subline">${escapeHtml(formatEventTime(item.created_at))}${translationStateInline(postItem)}${postItem.author_followers ? ` · ${escapeHtml(formatCompactNumber(postItem.author_followers))} followers` : ""}</div>
+            <div class="source-subline">${escapeHtml(formatEventTime(item.created_at))}${postItem.author_followers ? ` · ${escapeHtml(formatCompactNumber(postItem.author_followers))} followers` : ""}</div>
           </div>
         </div>
-        <p class="detail-source-text">${escapeHtml(item.translation_zh || item.summary_zh || item.text)}</p>
-        ${item.media?.length ? `<div class="featured-media-grid">${item.media.map(mediaNode).join("")}</div>` : ""}
+        ${richPostTextNode(postItem, item.translation_zh || item.summary_zh || item.text, "detail-source-text")}
+        ${mediaGridNode(item.media, postItem)}
         <div class="card-meta">
           <span>赞 ${escapeHtml(formatCompactNumber(metrics.likes))}</span>
           <span>评 ${escapeHtml(formatCompactNumber(metrics.replies))}</span>
@@ -2196,6 +3101,7 @@ function bindPageEvents(detail = null) {
   document.querySelectorAll("[data-featured-filter]").forEach((button) => {
     button.addEventListener("click", () => {
       state.featuredFilter = button.dataset.featuredFilter;
+      syncFeaturedExpandedDatesForFilter();
       render();
     });
   });
@@ -2243,24 +3149,58 @@ function bindPageEvents(detail = null) {
     });
   });
 
-  document.querySelectorAll("[data-detail-lang]").forEach((button) => {
+  document.querySelectorAll("[data-language-toggle]").forEach((button) => {
     button.addEventListener("click", () => {
-      if (!detail) return;
-      state.detailLanguage = button.dataset.detailLang;
-      document.getElementById("content").innerHTML = detailPage(detail);
-      bindPageEvents(detail);
+      const id = button.dataset.languageToggle;
+      const language = button.dataset.language;
+      const safeId = cssAttributeValue(id);
+      document.querySelectorAll(`[data-language-toggle="${safeId}"]`).forEach((item) => {
+        item.classList.toggle("active", item.dataset.language === language);
+      });
+      document.querySelectorAll(`[data-language-content="${safeId}"] [data-language-panel]`).forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.languagePanel === language);
+      });
     });
   });
 
-  document.querySelectorAll("[data-evidence]").forEach((button) => {
-    button.addEventListener("click", async () => {
-      state.currentEvidenceTab = button.dataset.evidence;
-      const clusterId = button.dataset.cluster;
-      const nextDetail = detail || (await loadJson(`./dashboard-data/clusters/${clusterId}.json`));
-      document.getElementById("evidence-list").innerHTML = evidenceList(nextDetail, state.currentEvidenceTab);
-      document.querySelectorAll("[data-evidence]").forEach((item) => item.classList.toggle("active", item.dataset.evidence === state.currentEvidenceTab));
-    });
+  document.querySelectorAll("[data-media-lightbox]").forEach((button) => {
+    button.addEventListener("click", () => openMediaLightbox(button.dataset.mediaLightbox));
   });
+
+}
+
+function openMediaLightbox(url) {
+  const safeUrl = safeExternalUrl(url);
+  if (!safeUrl) return;
+  closeMediaLightbox();
+  const node = document.createElement("div");
+  node.className = "media-lightbox";
+  node.innerHTML = `
+    <button type="button" class="media-lightbox-close" aria-label="关闭大图">×</button>
+    <img src="${escapeHtml(safeUrl)}" alt="" />
+  `;
+  node.addEventListener("click", (event) => {
+    if (event.target === node || event.target.closest(".media-lightbox-close")) closeMediaLightbox();
+  });
+  document.body.appendChild(node);
+  document.body.classList.add("lightbox-open");
+  const onKeydown = (event) => {
+    if (event.key === "Escape") closeMediaLightbox();
+  };
+  node._onKeydown = onKeydown;
+  window.addEventListener("keydown", onKeydown);
+}
+
+function closeMediaLightbox() {
+  const node = document.querySelector(".media-lightbox");
+  if (!node) return;
+  if (node._onKeydown) window.removeEventListener("keydown", node._onKeydown);
+  node.remove();
+  document.body.classList.remove("lightbox-open");
+}
+
+function cssAttributeValue(value) {
+  return String(value || "").replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
 function escapeHtml(value) {

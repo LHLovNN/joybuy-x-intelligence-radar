@@ -3,21 +3,22 @@
   "providers": [
     "twitterapi_io"
   ],
-  "raw_posts_collected": 20,
-  "effective_posts": 17,
+  "raw_posts_collected": 69,
+  "effective_posts": 60,
   "brand_breakdown": {
-    "joybuy_candidates": 5,
-    "joybuy_effective": 5,
-    "temu_candidates": 15,
-    "temu_effective": 12
+    "joybuy_candidates": 29,
+    "joybuy_effective": 27,
+    "temu_candidates": 40,
+    "temu_effective": 33
   },
-  "estimated_cost_usd": 0.003,
+  "estimated_cost_usd": 0.0103,
   "translation": {
     "providers": [
       "joybuilder"
     ],
     "counts": {
-      "translated": 20
+      "translated": 68,
+      "source_chinese": 1
     },
     "missing_count": 0,
     "fallback_original_count": 0

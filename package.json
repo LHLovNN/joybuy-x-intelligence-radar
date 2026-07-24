@@ -13,6 +13,8 @@
     "local:secrets": "bash scripts/macos/set_local_secrets.sh",
     "local:secrets:check": "bash scripts/macos/check_local_secrets.sh",
     "local:translation:check": "bash scripts/macos/check_joybuilder_translation.sh",
+    "local:daily:preview": "bash scripts/macos/run_local_daily_preview.sh",
+    "local:daily:preview:resume": "JOYBUY_RADAR_RESUME_FROM_CHECKPOINT=1 bash scripts/macos/run_local_daily_preview.sh",
     "local:daily": "bash scripts/macos/run_local_daily.sh",
     "local:daily:resume": "JOYBUY_RADAR_RESUME_FROM_CHECKPOINT=1 bash scripts/macos/run_local_daily.sh",
     "local:daily:install": "bash scripts/macos/install_daily_launchd.sh",
